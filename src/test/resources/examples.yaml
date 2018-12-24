@@ -1,0 +1,44 @@
+name: First
+class: org.femtoframework.coin.FirstBean
+second:
+  class: org.femtoframework.coin.SecondBean
+  ints: [1,2,3]
+  stringList:
+  - abc
+  - bcd
+  - efg
+  stringMap:
+    abc: 4
+    bcd: 5
+    efg: 6
+  intMap:
+    1: 1
+    2: 2
+    3: 3
+  parameters:
+    abc: value1
+    bcd: value2
+    cfg: 3
+    timestamp: 1545620324000
+    float: 0.1
+    double: 0.1545620324000
+    boolean: true
+    var: ${abc} #In current map
+    ref: ${b:third1} #
+    env: ${e:JAVA_HOME}
+    prop: ${p:file.separator}
+    current: ${second/thirds/0/name}
+  thirds:
+  - name: third1
+    class: org.femtoframework.coin.ThirdBean
+    integer: 123
+    bool: true
+    string: "Hello world!"
+  - name: third2
+    class: org.femtoframework.coin.ThirdBean
+    integer: 456
+    bool: false
+    string: "Merry Xmas!"
+
+
+
