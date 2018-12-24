@@ -64,9 +64,4 @@ public class ListElement<E extends Element> extends ArrayList<E>
     public Object getValue(String expectedType, BeanContext context) {
         return null;
     }
-
-    @Override
-    public void accept(ElementVisitor visitor) {
-
-    }
 }

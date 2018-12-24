@@ -71,11 +71,6 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
         return null;
     }
 
-    @Override
-    public void accept(ElementVisitor visitor) {
-
-    }
-
     public void setType(ElementType type) {
         this.type = type;
     }

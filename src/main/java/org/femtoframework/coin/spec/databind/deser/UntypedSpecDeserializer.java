@@ -86,9 +86,6 @@ public class UntypedSpecDeserializer extends UntypedObjectDeserializer {
                 return new PrimitiveElement(ElementType.BOOLEAN, value);
             case JsonTokenId.ID_NULL: // should not get this but...
                 return new PrimitiveElement(ElementType.NULL, value);
-            default:
-                //TODO
-                System.out.println(tokenId);
         }
         return value;
     }

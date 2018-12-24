@@ -19,7 +19,7 @@ package org.femtoframework.coin.spec.types;
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.spec.ElementType;
-import org.femtoframework.coin.spec.ElementVisitor;
+import org.femtoframework.coin.spec.PrimitiveSpec;
 
 /**
  * PrimitiveSpec Element
@@ -28,11 +28,11 @@ import org.femtoframework.coin.spec.ElementVisitor;
  * @version 1.0
  */
 
-public class PrimitiveElement extends AbstractElement {
+public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpec<E> {
 
-    private Object value;
+    private E value;
 
-    public PrimitiveElement(ElementType type, Object value) {
+    public PrimitiveElement(ElementType type, E value) {
         setType(type);
         this.value = value;
         if (value != null) {
@@ -60,17 +60,12 @@ public class PrimitiveElement extends AbstractElement {
         return String.valueOf(value);
     }
 
-    @Override
-    public void accept(ElementVisitor visitor) {
-
-    }
-
     @JsonValue
-    public Object getValue() {
+    public E getValue() {
         return value;
     }
 
-    public void setValue(Object value) {
+    public void setValue(E value) {
         this.value = value;
     }
 }
