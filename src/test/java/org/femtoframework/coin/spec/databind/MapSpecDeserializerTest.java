@@ -7,7 +7,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.databind.deser.CoinBeanDeserializerModifier;
-import org.femtoframework.coin.spec.types.BeanElement;
+import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.util.DataBindUtil;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
