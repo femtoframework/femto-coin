@@ -17,10 +17,17 @@
 package org.femtoframework.coin;
 
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * Configure bean
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public interface Configurator {
+
+    /**
+     * Configure the bean
+     *
+     * @param context BeanContext
+     */
+    void configure(BeanContext context);
 }

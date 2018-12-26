@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.spec.types;
+package org.femtoframework.coin.spec.element;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import org.femtoframework.coin.BeanContext;
@@ -41,7 +41,7 @@ public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpe
     }
 
     /**
-     * Return the value of this types definition
+     * Return the value of this element definition
      *
      * @param expectedType Expected type
      * @param context      Bean context

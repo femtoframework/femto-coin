@@ -17,10 +17,10 @@
 package org.femtoframework.coin;
 
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * Component Factory
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public interface ComponentFactory extends Factory<Component> {
 }

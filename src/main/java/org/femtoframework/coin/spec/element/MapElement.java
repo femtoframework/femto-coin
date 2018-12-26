@@ -1,4 +1,4 @@
-package org.femtoframework.coin.spec.types;
+package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.spec.*;
@@ -41,8 +41,8 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
     }
 
     /**
-     * Class of the types, for example "java.util.ArrayList"
-     * For all other types except "Bean" are certain class.
+     * Class of the element, for example "java.util.ArrayList"
+     * For all other element except "Bean" are certain class.
      * <p>
      * MAP: org.femtoframework.parameters.ParametersMap
      * LIST: java.util.ArrayList
@@ -60,7 +60,7 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
     }
 
     /**
-     * Return the value of this types definition
+     * Return the value of this element definition
      *
      * @param expectedType Expected type
      * @param context      Bean context

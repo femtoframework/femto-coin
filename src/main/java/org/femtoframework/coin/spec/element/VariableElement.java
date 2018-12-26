@@ -1,4 +1,4 @@
-package org.femtoframework.coin.spec.types;
+package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.spec.ElementType;

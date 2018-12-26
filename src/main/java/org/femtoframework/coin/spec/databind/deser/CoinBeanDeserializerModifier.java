@@ -37,7 +37,7 @@ public class CoinBeanDeserializerModifier extends BeanDeserializerModifier {
      * bean deserializer instance with properties collected and ordered earlier.
      * Implementations can modify or replace given deserializer and return deserializer
      * to use. Note that although initial deserializer being passed is of type
-     * {@link BeanDeserializer}, modifiers may return deserializers of other types;
+     * {@link BeanDeserializer}, modifiers may return deserializers of other element;
      * and this is why implementations must check for type before casting.
      */
     public JsonDeserializer<?> modifyDeserializer(DeserializationConfig config,

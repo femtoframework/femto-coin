@@ -41,8 +41,8 @@ public interface Element
     ElementType getType();
 
     /**
-     * Class of the types, for example "java.util.ArrayList"
-     * For all other types except "Bean" are certain class.
+     * Class of the element, for example "java.util.ArrayList"
+     * For all other element except "Bean" are certain class.
      *
      * MAP: org.femtoframework.parameters.ParametersMap
      * LIST: java.util.ArrayList
@@ -57,7 +57,7 @@ public interface Element
     String getElementClass();
 
     /**
-     * Return the value of this types definition
+     * Return the value of this element definition
      *
      * @param expectedType Expected type
      * @param context      Bean context

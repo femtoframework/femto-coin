@@ -17,10 +17,26 @@
 package org.femtoframework.coin;
 
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * Namespace Factory
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public interface NamespaceFactory extends Factory<Namespace> {
+    /**
+     * Get namespace with given name
+     *
+     * @param name Name
+     * @return
+     */
+    Namespace createNamespace(String name);
+
+    /**
+     * Get namespace with given name
+     *
+     * @param name Name
+     * @param createAuto true, Create the namespace automatically if it does not exist
+     * @return
+     */
+    Namespace getNamespace(String name, boolean createAuto);
 }

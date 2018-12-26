@@ -22,9 +22,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
 import org.femtoframework.coin.spec.ElementType;
-import org.femtoframework.coin.spec.types.ListElement;
-import org.femtoframework.coin.spec.types.MapElement;
-import org.femtoframework.coin.spec.types.PrimitiveElement;
+import org.femtoframework.coin.spec.element.ListElement;
+import org.femtoframework.coin.spec.element.MapElement;
+import org.femtoframework.coin.spec.element.PrimitiveElement;
 
 import java.io.IOException;
 import java.util.List;

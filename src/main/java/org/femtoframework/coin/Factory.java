@@ -16,11 +16,43 @@
  */
 package org.femtoframework.coin;
 
+import java.util.Set;
+
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * Factory interface
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public interface Factory<B> extends Iterable<B> {
+
+    /**
+     * Namespace of this factory
+     *
+     * @return Namespace
+     */
+    String getNamespace();
+
+    /**
+     * Return all names
+     *
+     * @return all names
+     */
+    Set<String> getNames();
+
+    /**
+     * Return object by given name
+     *
+     * @param name Name
+     * @return object in this factory
+     */
+    B get(String name);
+
+    /**
+     * Delete the object by given name
+     *
+     * @param name Name
+     * @return Deleted object
+     */
+    B delete(String name);
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.spec.types;
+package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.ScopeEnum;
 import org.femtoframework.coin.spec.BeanSpec;
@@ -44,7 +44,7 @@ public class BeanElement<E extends Element> extends MapElement<E> implements Bea
 
     /**
      * Class of the bean
-     * For all other types except "Bean" are certain class.
+     * For all other element except "Bean" are certain class.
      *
      * MAP: org.femtoframework.parameters.ParametersMap
      * LIST: java.util.ArrayList

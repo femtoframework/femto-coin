@@ -18,6 +18,8 @@ package org.femtoframework.coin.spec;
 
 import org.femtoframework.coin.ScopeEnum;
 
+import java.util.Collections;
+
 /**
  * Bean
  *
@@ -25,7 +27,6 @@ import org.femtoframework.coin.ScopeEnum;
  * @version 1.0
  */
 public interface BeanSpec<E extends Element> extends MapSpec<E> {
-
     /**
      * Indicate the class of this bean
      *
@@ -58,15 +59,6 @@ public interface BeanSpec<E extends Element> extends MapSpec<E> {
      */
     default boolean isDefault() {
         return true;
-    }
-
-    /**
-     * Is it singleton? Only singleton will be cached in the factory
-     *
-     * @return Singleton
-     */
-    default boolean isSingleton() {
-        return getScope() == ScopeEnum.SINGLETON;
     }
 
     /**

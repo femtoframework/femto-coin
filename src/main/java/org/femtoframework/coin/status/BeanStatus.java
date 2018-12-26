@@ -14,13 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.status;
+
+import org.femtoframework.coin.BeanPhase;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * Bean Status
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public interface BeanStatus {
+
+    /**
+     * Return conditions, container changes will add log information into this field.
+     *
+     * @return Condition
+     */
+    default List<BeanCondition> getConditions() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Bean Phase
+     *
+     * @return Phase
+     */
+    default BeanPhase getPhase() {
+        return BeanPhase.DISABLED;
+    }
 }

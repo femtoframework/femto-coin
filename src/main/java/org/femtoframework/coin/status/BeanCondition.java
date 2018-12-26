@@ -14,13 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.status;
 
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * Bean Condition
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public interface BeanCondition {
+
+    default ConditionState getState() {
+        return ConditionState.UNKNOWN;
+    }
+
+    String getType();
+
+    long getTimestamp();
+
+
+    enum ConditionState {
+
+        TRUE,
+
+        FALSE,
+
+        UNKNOWN;
+    }
 }

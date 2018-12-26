@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.spec.types;
+package org.femtoframework.coin.spec.element;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.femtoframework.coin.spec.Element;
@@ -38,9 +38,9 @@ public abstract class AbstractElement implements Element, Serializable
 //    private transient Class<?> typeClass = null;
 
     /**
-     * Type of the types
+     * Type of the element
      *
-     * @return Type of the types
+     * @return Type of the element
      */
     @JsonIgnore
     public ElementType getType()
@@ -49,7 +49,7 @@ public abstract class AbstractElement implements Element, Serializable
     }
 
     /**
-     * Set Type of the types
+     * Set Type of the element
      *
      * @param type Type
      */
@@ -94,10 +94,10 @@ public abstract class AbstractElement implements Element, Serializable
 //            return clazz.newInstance();
 //        }
 //        catch (IllegalAccessException e) {
-//            throw new ObjectCreationException("Illegal access", e);
+//            throw new BeanCreationException("Illegal access", e);
 //        }
 //        catch (InstantiationException e) {
-//            throw new ObjectCreationException("Instantiation", e);
+//            throw new BeanCreationException("Instantiation", e);
 //        }
 //    }
 //

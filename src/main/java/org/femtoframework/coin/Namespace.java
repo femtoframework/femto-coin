@@ -16,11 +16,43 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.coin.spec.BeanSpecFactory;
+
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * Namespace
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public interface Namespace {
+
+    /**
+     * Namespace
+     *
+     * @return Namespace's name
+     */
+    String getName();
+
+
+    /**
+     * Component Factory under this namespace
+     *
+     * @return Component Factory
+     */
+    ComponentFactory getComponentFactory();
+
+    /**
+     * Bean Factory under this namespace;
+     *
+     * @return BeanFactory
+     */
+    BeanFactory getBeanFactory();
+
+
+    /**
+     * Bean Spec Factory under this namespace;
+     *
+     * @return BeanSpecFactory
+     */
+    BeanSpecFactory getBeanSpecFactory();
 }

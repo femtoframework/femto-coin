@@ -17,40 +17,50 @@
 package org.femtoframework.coin;
 
 /**
- * Bean Stage
+ * Bean Lifecycle Strategy
  *
- * @author fengyun
- * @version 1.00 2005-9-2 21:08:35
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public enum BeanStage {
+public interface LifecycleStrategy extends Configurator {
 
     /**
-     * Construction stage
+     * Create bean
+     *
+     * @param context BeanContext
+     * @return the created bean
      */
-    CREATE,
+    Object create(BeanContext context);
 
     /**
-     * Calling setter or getter
+     *
+     * @param context
      */
-    CONFIG,
+    void initialize(BeanContext context);
 
     /**
-     * Do some simple initialization logic which simple setters are not able to do that.
+     * 根据将对象进行启动
+     *
+     * @param context 对象部署上下文
+     * @throws org.femtoframework.coin.exception.BeanLifecycleException
      */
-    INIT,
+    void start(BeanContext context);
+
 
     /**
-     * Start to run, for example, start the thread to make the bean on working state
+     * 根据将对象进行启动
+     *
+     * @param context 对象部署上下文
+     * @throws org.femtoframework.coin.exception.BeanLifecycleException
      */
-    START,
+    default void stop(BeanContext context) {
 
-    /**
-     * Stop running
-     */
-    STOP,
+    }
 
-    /**
-     * Destroy the bean
-     */
-    DESTROY
+
+    default void destroy(BeanContext context) {
+
+    }
+
+
 }

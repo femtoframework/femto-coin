@@ -17,40 +17,80 @@
 package org.femtoframework.coin;
 
 /**
- * Bean Stage
+ * Bean phase of lifecycle
  *
- * @author fengyun
- * @version 1.00 2005-9-2 21:08:35
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public enum BeanStage {
+public enum BeanPhase {
 
     /**
-     * Construction stage
+     * Bean is disabled, means it is not created or configured
      */
-    CREATE,
+    DISABLED,
 
     /**
-     * Calling setter or getter
+     * Bean is enabled, means it is ready for creating.
      */
-    CONFIG,
+    ENABLED,
 
     /**
-     * Do some simple initialization logic which simple setters are not able to do that.
+     * Bean is creating
      */
-    INIT,
+    CREATING,
 
     /**
-     * Start to run, for example, start the thread to make the bean on working state
+     * Bean is created
      */
-    START,
+    CREATED,
 
     /**
-     * Stop running
+     * Bean is configuring
      */
-    STOP,
+    CONFIGURING,
 
     /**
-     * Destroy the bean
+     * Bean is configured
      */
-    DESTROY
+    CONFIGURED,
+
+    /**
+     * Bean is initializing
+     */
+    INITIALIZING,
+
+    /**
+     * Bean is initialized
+     */
+    INITIALIZED,
+
+    /**
+     * Bean is starting
+     */
+    STARTING,
+
+    /**
+     * Bean is started
+     */
+    STARTED,
+
+    /**
+     * Bean is stopping
+     */
+    STOPPING,
+
+    /**
+     * Bean is stopped
+     */
+    STOPPED,
+
+    /**
+     * Bean is destroying
+     */
+    DESTROYING,
+
+    /**
+     * Bean is destroyed
+     */
+    DESTROYED;
 }

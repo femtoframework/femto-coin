@@ -1,10 +1,9 @@
-package org.femtoframework.coin.spec.types;
+package org.femtoframework.coin.spec.element;
 
 
 import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.ElementType;
-import org.femtoframework.coin.spec.ElementVisitor;
 import org.femtoframework.coin.spec.ListSpec;
 
 import java.util.ArrayList;
@@ -35,8 +34,8 @@ public class ListElement<E extends Element> extends ArrayList<E>
     }
 
     /**
-     * Class of the types, for example "java.util.ArrayList"
-     * For all other types except "Bean" are certain class.
+     * Class of the element, for example "java.util.ArrayList"
+     * For all other element except "Bean" are certain class.
      * <p>
      * MAP: org.femtoframework.parameters.ParametersMap
      * LIST: java.util.ArrayList
@@ -54,7 +53,7 @@ public class ListElement<E extends Element> extends ArrayList<E>
     }
 
     /**
-     * Return the value of this types definition
+     * Return the value of this element definition
      *
      * @param expectedType Expected type
      * @param context      Bean context
