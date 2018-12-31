@@ -43,8 +43,6 @@ public interface SpecConstants {
 
     String _DEFAULT = "_default";
 
-    String _SCOPE = "_scope";
-
     String _NAMESPACE = "_namespace";
 
     String _ENABLED = "_enabled";

@@ -17,9 +17,6 @@
 package org.femtoframework.coin.spec;
 
 import org.femtoframework.bean.NamedBean;
-import org.femtoframework.coin.ScopeEnum;
-
-import java.util.Collections;
 
 /**
  * Bean
@@ -68,15 +65,6 @@ public interface BeanSpec<E extends Element> extends MapSpec<E>, NamedBean {
      */
     default boolean isDefault() {
         return true;
-    }
-
-    /**
-     * Return the scope of this bean
-     *
-     * @return Singleton
-     */
-    default ScopeEnum getScope() {
-        return ScopeEnum.SINGLETON;
     }
 
     /**

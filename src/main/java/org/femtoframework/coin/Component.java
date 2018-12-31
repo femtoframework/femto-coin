@@ -70,16 +70,6 @@ public interface Component extends NamedBean {
     void setStage(BeanStage stage);
 
     /**
-     * Is it singleton? Only singleton will be cached in the factory
-     *
-     * @return Singleton
-     */
-    default boolean isSingleton() {
-        BeanSpec spec = getSpec();
-        return spec != null && spec.getScope() == ScopeEnum.SINGLETON;
-    }
-
-    /**
      * Return the right bean with expectedType
      *
      * @param expectedType ExpectedType, if the is null, that means returning the bean implementation object anyway

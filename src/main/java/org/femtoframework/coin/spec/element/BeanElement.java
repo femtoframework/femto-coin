@@ -16,7 +16,6 @@
  */
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.ScopeEnum;
 import org.femtoframework.coin.exception.NoSuchClassException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.Element;
@@ -122,15 +121,6 @@ public class BeanElement<E extends Element> extends MapElement<E> implements Bea
     @Override
     public boolean isDefault() {
         return DataUtil.getBoolean(get(_DEFAULT), BeanSpec.super.isDefault());
-    }
-
-    /**
-     * Return the scope of this bean
-     *
-     * @return Singleton
-     */
-    public ScopeEnum getScope() {
-        return DataUtil.getEnum(ScopeEnum.class, get(_SCOPE), BeanSpec.super.getScope());
     }
 
     /**
