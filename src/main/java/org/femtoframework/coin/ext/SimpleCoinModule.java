@@ -14,64 +14,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.ext;
 
-import java.io.File;
-import java.net.URI;
+import org.femtoframework.coin.CoinControl;
+import org.femtoframework.coin.CoinModule;
+import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.remote.RemoteGenerator;
 
 /**
- * Coin Control
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface CoinControl {
-    /**
-     * Create beans by specs
-     *
-     * @param uri Spec URI
-     */
-    void create(URI uri);
+public class SimpleCoinModule implements CoinModule {
+
+    private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory();
+
+    private SimpleCoinControl coinControl = new SimpleCoinControl();
 
     /**
-     * Create beans by specs
+     * Return namespace factory
      *
-     * @param file Spec File
+     * @return Namespace Factory
      */
-    default void create(File file) {
-        create(file.toURI());
+    @Override
+    public NamespaceFactory getNamespaceFactory() {
+        return namespaceFactory;
     }
 
     /**
-     * Apply changes by specs
+     * Coin Control, maintain objects by Yaml or JSON
      *
-     * @param uri Spec URI
+     * @return Coin Control
      */
-    void apply(URI uri);
-
-    /**
-     * Apply changes by specs
-     *
-     * @param file Spec File
-     */
-    default void apply(File file) {
-        apply(file.toURI());
+    @Override
+    public CoinControl getControl() {
+        return coinControl;
     }
 
-
     /**
-     * Delete beans by specs
+     * Remote Generator, for RMI or gRPC extension
      *
-     * @param uri Spec URI
+     * @return Remote Generator
      */
-    void delete(URI uri);
-
-    /**
-     *  Delete beans by specs
-     *
-     * @param file Spec File
-     */
-    default void delete(File file) {
-        delete(file.toURI());
+    @Override
+    public RemoteGenerator getRemoteGenerator() {
+        return null;
     }
 }

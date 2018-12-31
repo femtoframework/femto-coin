@@ -7,6 +7,8 @@ A tiny JSR330 standard Inversion Of Control container.  COIN stands for "New Inv
 ### p: System.properties
 ### r: Remote service
 ### c: Configurators
+### s: Bean Specs
+
 
 
 # Annotations

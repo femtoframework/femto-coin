@@ -36,6 +36,6 @@ public class FirstBeanTest {
         File file = NutletUtil.getResourceAsFile("examples.yaml");
         Parameters parameters = DataBindUtil.readValueFromYaml(file, ParametersMap.class);
         assertNotNull(parameters.getParameters("second"));
-        assertEquals("First", parameters.getString("name"));
+        assertEquals("First", parameters.getString("_name"));
     }
 }

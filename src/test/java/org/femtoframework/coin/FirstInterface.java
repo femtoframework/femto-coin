@@ -8,7 +8,5 @@ package org.femtoframework.coin;
  */
 public interface FirstInterface
 {
-    String getName();
-
     SecondInterface getSecond();
 }

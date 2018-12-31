@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.spec;
 
+import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.ScopeEnum;
 
 import java.util.Collections;
@@ -26,13 +27,21 @@ import java.util.Collections;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanSpec<E extends Element> extends MapSpec<E> {
+public interface BeanSpec<E extends Element> extends MapSpec<E>, NamedBean {
     /**
-     * Indicate the class of this bean
+     * Indicate the kind of this bean (Same as type)
      *
      * @return
      */
-    String getBeanClass();
+    String getKind();
+
+    /**
+     * The real class of the kind
+     *
+     * @return Kind class
+     * @return Kind class
+     */
+    Class<?> getKindClass();
 
     /**
      * Bean Name

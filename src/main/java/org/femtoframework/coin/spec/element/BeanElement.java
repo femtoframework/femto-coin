@@ -17,10 +17,12 @@
 package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.ScopeEnum;
+import org.femtoframework.coin.exception.NoSuchClassException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.ElementType;
 import org.femtoframework.coin.spec.SpecConstants;
+import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.util.DataUtil;
 
 import java.util.Map;
@@ -42,6 +44,8 @@ public class BeanElement<E extends Element> extends MapElement<E> implements Bea
         setType(ElementType.BEAN);
     }
 
+    private transient Class<?> kindClass;
+
     /**
      * Class of the bean
      * For all other element except "Bean" are certain class.
@@ -56,12 +60,30 @@ public class BeanElement<E extends Element> extends MapElement<E> implements Bea
      *
      * @return
      */
-    public String getBeanClass() {
-        String value = getString(CLASS, null);
-        if (value == null) {
-            value = getString(_CLASS, null);
+    public String getKind() {
+        return getString(_KIND, null);
+    }
+
+    /**
+     * The real class of the kind
+     *
+     * @return Kind class
+     */
+    @Override
+    public Class<?> getKindClass() {
+        String kind = getKind();
+        if (kindClass == null) {
+            if (kind != null) {
+                if (kindClass == null) {
+                    try {
+                        kindClass = Reflection.getClass(kind);
+                    } catch (ClassNotFoundException e) {
+                        throw new NoSuchClassException("No such kind:" + kind);
+                    }
+                }
+            }
         }
-        return value;
+        return kindClass;
     }
 
 
@@ -75,7 +97,11 @@ public class BeanElement<E extends Element> extends MapElement<E> implements Bea
      * @return Bean Name
      */
     public String getName() {
-        return getString(NAME, null);
+        String name = getString(_NAME, null);
+        if (name == null) {
+            name = getString(NAME, null);
+        }
+        return name;
     }
 
     /**

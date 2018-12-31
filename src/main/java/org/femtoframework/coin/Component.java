@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.status.BeanStatus;
 
@@ -27,7 +28,7 @@ import org.femtoframework.coin.status.BeanStatus;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface Component {
+public interface Component extends NamedBean {
     /**
      * Namespace of this component
      *
@@ -64,6 +65,11 @@ public interface Component {
     BeanStatus getStatus();
 
     /**
+     * Set the target bean stage, that means the component will be executed to given stage
+     */
+    void setStage(BeanStage stage);
+
+    /**
      * Is it singleton? Only singleton will be cached in the factory
      *
      * @return Singleton
@@ -76,7 +82,7 @@ public interface Component {
     /**
      * Return the right bean with expectedType
      *
-     * @param expectedType ExpectedType
+     * @param expectedType ExpectedType, if the is null, that means returning the bean implementation object anyway
      * @return Bean
      */
     <T> T getBean(Class<T> expectedType);

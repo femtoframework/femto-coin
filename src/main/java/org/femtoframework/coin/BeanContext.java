@@ -36,7 +36,6 @@ public interface BeanContext {
      */
     String getNamespace();
 
-
     /**
      * The name of current bean
      *
@@ -51,4 +50,41 @@ public interface BeanContext {
      */
     Object getBean();
 
+
+    /**
+     * Bean Factory
+     *
+     * @return Current Bean Factory
+     */
+    default BeanFactory getCurrentBeanFactory() {
+        return getCurrentNamespace().getBeanFactory();
+    }
+
+    /**
+     * Return current namespace
+     *
+     * @return Current Namespace
+     */
+    Namespace getCurrentNamespace();
+
+    /**
+     *
+     * Get Namespace object by name
+     *
+     * @param namespace Namespace name, if it is null or empty string, return the current namespace object
+     * @return Namespace object
+     */
+    default Namespace getNamespaceByName(String namespace) {
+        if (namespace == null || namespace.isEmpty()) {
+            return getCurrentNamespace();
+        }
+        return getNamespaceFactory().getNamespace(namespace, true);
+    }
+
+    /**
+     * Return namespace factory
+     *
+     * @return namespace factory
+     */
+    NamespaceFactory getNamespaceFactory();
 }

@@ -14,32 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.ext;
+
+import org.femtoframework.coin.CoinControl;
+
+import java.net.URI;
 
 /**
- * Component Factory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface ComponentFactory extends Factory<Component> {
+public class SimpleCoinControl implements CoinControl {
+    /**
+     * Create beans by specs
+     *
+     * @param uri Spec URI
+     */
+    @Override
+    public void create(URI uri) {
+
+    }
 
     /**
-     * Create component on-demand
+     * Apply changes by specs
      *
-     * @param name Component name, the name could be null, if it is null, the created object won'be
-     * @param implClass Implement class
-     * @param targetStage TargetStage, since the required implementation should have same stage with the parent bean
-     * @return
+     * @param uri Spec URI
      */
-    Component create(String name, Class implClass, BeanStage targetStage);
+    @Override
+    public void apply(URI uri) {
+
+    }
 
     /**
-     * Get the default implementation by interface class
+     * Delete beans by specs
      *
-     * @param name Bean Name, it could be null
-     * @param interfaceClass Interface Class
-     * @return The implement class, return null, if it is not able to find a right implementation
+     * @param uri Spec URI
      */
-    Class<?> getImplement(String name, Class<?> interfaceClass);
+    @Override
+    public void delete(URI uri) {
+
+    }
 }

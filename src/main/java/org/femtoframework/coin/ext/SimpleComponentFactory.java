@@ -14,32 +14,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.ext;
+
+import org.femtoframework.coin.BeanStage;
+import org.femtoframework.coin.Component;
+import org.femtoframework.coin.ComponentFactory;
+import org.femtoframework.coin.spec.BeanSpecFactory;
 
 /**
- * Component Factory
+ * Simple Component Factory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface ComponentFactory extends Factory<Component> {
+public class SimpleComponentFactory extends BaseFactory<Component> implements ComponentFactory {
 
+    private BeanSpecFactory specFactory;
+
+
+    public SimpleComponentFactory(BeanSpecFactory specFactory) {
+        this.specFactory = specFactory;
+        setNamespace(specFactory.getNamespace());
+    }
     /**
      * Create component on-demand
      *
-     * @param name Component name, the name could be null, if it is null, the created object won'be
-     * @param implClass Implement class
+     * @param name        Component name, the name could be null, if it is null, the created object won'be
+     * @param implClass   Implement class
      * @param targetStage TargetStage, since the required implementation should have same stage with the parent bean
      * @return
      */
-    Component create(String name, Class implClass, BeanStage targetStage);
+    @Override
+    public Component create(String name, Class implClass, BeanStage targetStage) {
+        return null;
+    }
 
     /**
      * Get the default implementation by interface class
      *
-     * @param name Bean Name, it could be null
+     * @param name           Bean Name, it could be null
      * @param interfaceClass Interface Class
      * @return The implement class, return null, if it is not able to find a right implementation
      */
-    Class<?> getImplement(String name, Class<?> interfaceClass);
+    @Override
+    public Class<?> getImplement(String name, Class<?> interfaceClass) {
+        return null;
+    }
+
+    public BeanSpecFactory getSpecFactory() {
+        return specFactory;
+    }
 }

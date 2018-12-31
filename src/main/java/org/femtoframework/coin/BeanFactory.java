@@ -23,4 +23,12 @@ package org.femtoframework.coin;
  * @version 1.00 2005-1-27 14:12:22
  */
 public interface BeanFactory extends Factory<Object> {
+    /**
+     * Return object by given name
+     *
+     * @param name Name
+     * @param create Create object automatically
+     * @return object in this factory
+     */
+    Object get(String name, boolean create);
 }

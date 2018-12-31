@@ -9,20 +9,9 @@ import org.femtoframework.bean.Nameable;
  * @version 1.00 2005-1-26 20:58:27
  */
 public class FirstBean
-    implements FirstInterface, Nameable
+    implements FirstInterface
 {
-    private String name;
     private SecondInterface second;
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
 
     public SecondInterface getSecond()
     {

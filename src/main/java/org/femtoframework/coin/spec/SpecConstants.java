@@ -19,16 +19,33 @@ package org.femtoframework.coin.spec;
 /**
  * Spec Constants
  *
+ * All attribute names start with "_" are for bean spec only
+ *
  * @author Sheldon Shao
  * @version 1.0
  */
 public interface SpecConstants {
 
-    String CLASS = "class";
-    String _CLASS = "_class";
+    /**
+     * Kind
+     */
+    String _KIND = "_kind";
+
+    /**
+     * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
+     */
     String NAME = "name";
+
+    /**
+     * If it uses "_name" in the spec, the attribute won't be injected to bean
+     */
+    String _NAME = "_name";
+
     String _DEFAULT = "_default";
+
     String _SCOPE = "_scope";
+
     String _NAMESPACE = "_namespace";
+
     String _ENABLED = "_enabled";
 }

@@ -14,32 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.configurator;
+
+import org.femtoframework.bean.Nameable;
+import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Configurator;
 
 /**
- * Component Factory
+ * Configure container related stuff,
+ * 1. Name
+ * 2. Namespace
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface ComponentFactory extends Factory<Component> {
-
+public class GenericConfigurator implements Configurator {
     /**
-     * Create component on-demand
+     * Configure the bean
      *
-     * @param name Component name, the name could be null, if it is null, the created object won'be
-     * @param implClass Implement class
-     * @param targetStage TargetStage, since the required implementation should have same stage with the parent bean
-     * @return
+     * @param context BeanContext
      */
-    Component create(String name, Class implClass, BeanStage targetStage);
+    @Override
+    public void configure(BeanContext context) {
+        Object obj = context.getBean();
+        if (obj instanceof Nameable) {
+            String name = context.getName();
+            if (name != null && !name.isEmpty()) {
+                ((Nameable)obj).setName(name);
+            }
+        }
 
-    /**
-     * Get the default implementation by interface class
-     *
-     * @param name Bean Name, it could be null
-     * @param interfaceClass Interface Class
-     * @return The implement class, return null, if it is not able to find a right implementation
-     */
-    Class<?> getImplement(String name, Class<?> interfaceClass);
+    }
 }
