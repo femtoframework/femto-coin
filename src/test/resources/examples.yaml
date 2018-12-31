@@ -1,5 +1,10 @@
-_name: First
-_kind: org.femtoframework.coin.FirstBean
+_version: v1
+_namespace: test
+_name: first
+_kind: bean
+_type: org.femtoframework.coin.FirstBean
+_aliases:
+  - first_bean
 second:
   ints: [1,2,3]
   stringList:

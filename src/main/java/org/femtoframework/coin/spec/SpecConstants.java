@@ -46,4 +46,10 @@ public interface SpecConstants {
     String _NAMESPACE = "_namespace";
 
     String _ENABLED = "_enabled";
+
+    String _TYPE = "_type";
+
+    String _VERSION = "_version";
+
+    String _ALIASES = "_aliases";
 }

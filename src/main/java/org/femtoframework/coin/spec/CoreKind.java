@@ -17,9 +17,9 @@
 package org.femtoframework.coin.spec;
 
 /**
- * Element Type
+ * Kind
  *
- * bean, it must have a "class" field which indicates the type of this bean
+ * bean, it must have a "class" field which indicates the kind of this bean
  * map, if there is no "class" specified in a map structure, that means it is a map
  * list, multiple components
  * string, text value
@@ -41,7 +41,7 @@ package org.femtoframework.coin.spec;
  * @author Sheldon Shao
  * @version 1.0
  */
-public enum ElementType {
+public enum CoreKind implements Kind {
     /**
      * Null
      */
@@ -85,7 +85,7 @@ public enum ElementType {
     /**
      * An extension of MAP
      *
-     * It must have a "class" which indicates the type of this bean
+     * It must have a "class" which indicates the kind of this bean
      */
     BEAN(false),
 
@@ -94,11 +94,21 @@ public enum ElementType {
      *
      * @param primitive
      */
-    VAR(false);
+    VAR(false),
+
+    /**
+     * NameSpace
+     */
+    NAMESPACE(false),
+
+    /**
+     * Custom
+     */
+    CUSTOM(false);
 
     private boolean primitive;
 
-    private ElementType(boolean primitive) {
+    CoreKind(boolean primitive) {
         this.primitive = primitive;
     }
 

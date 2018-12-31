@@ -87,7 +87,7 @@ public class BaseFactory<B> implements Factory<B> {
     }
 
     /**
-     * Returns an iterator over elements of type {@code T}.
+     * Returns an iterator over elements of kind {@code T}.
      *
      * @return an Iterator.
      */

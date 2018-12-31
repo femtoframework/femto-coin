@@ -21,7 +21,7 @@ import com.fasterxml.jackson.core.JsonTokenId;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.deser.std.UntypedObjectDeserializer;
-import org.femtoframework.coin.spec.ElementType;
+import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.element.ListElement;
 import org.femtoframework.coin.spec.element.MapElement;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
@@ -71,21 +71,21 @@ public class UntypedSpecDeserializer extends UntypedObjectDeserializer {
             case JsonTokenId.ID_EMBEDDED_OBJECT:
                 return p.getEmbeddedObject();
             case JsonTokenId.ID_STRING:
-                return new PrimitiveElement(ElementType.STRING, value);
+                return new PrimitiveElement(CoreKind.STRING, value);
             case JsonTokenId.ID_NUMBER_INT:
                 if (value instanceof Long){
-                    return new PrimitiveElement(ElementType.LONG, value);
+                    return new PrimitiveElement(CoreKind.LONG, value);
                 }
                 else  {
-                    return new PrimitiveElement(ElementType.INT, value);
+                    return new PrimitiveElement(CoreKind.INT, value);
                 }
             case JsonTokenId.ID_NUMBER_FLOAT:
-                return new PrimitiveElement(ElementType.DOUBLE, value);
+                return new PrimitiveElement(CoreKind.DOUBLE, value);
             case JsonTokenId.ID_TRUE:
             case JsonTokenId.ID_FALSE:
-                return new PrimitiveElement(ElementType.BOOLEAN, value);
+                return new PrimitiveElement(CoreKind.BOOLEAN, value);
             case JsonTokenId.ID_NULL: // should not get this but...
-                return new PrimitiveElement(ElementType.NULL, value);
+                return new PrimitiveElement(CoreKind.NULL, value);
         }
         return value;
     }

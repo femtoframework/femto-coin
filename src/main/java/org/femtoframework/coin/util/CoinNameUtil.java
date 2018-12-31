@@ -14,29 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.status;
+package org.femtoframework.coin.util;
+
+import org.femtoframework.util.StringUtil;
 
 /**
- * Bean Condition
+ * Coin Name Util
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanCondition {
+public class CoinNameUtil {
 
-    default ConditionState getState() {
-        return ConditionState.UNKNOWN;
-    }
-
-    String getType();
-
-    long getTimestamp();
-
-    enum ConditionState {
-        UNKNOWN,
-
-        FALSE,
-
-        TRUE;
+    /**
+     * Split qualifier name to two parts.
+     *
+     * Qualifier name is namespace + ":" + name
+     *
+     * @param qName qualifier name
+     * @return
+     */
+    public static String[] splitName(String qName) {
+        String[] names = new String[2];
+        names[1] = qName;
+        if (StringUtil.isValid(qName)) {
+            int i = qName.indexOf(':');
+            if (i > 0) {
+                names[0] = qName.substring(0, i);
+                names[1] = qName.substring(i + 1);
+            }
+        }
+        return names;
     }
 }

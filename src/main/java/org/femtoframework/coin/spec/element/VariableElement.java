@@ -1,7 +1,7 @@
 package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.BeanContext;
-import org.femtoframework.coin.spec.ElementType;
+import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.ElementVisitor;
 
 /**
@@ -15,7 +15,7 @@ public class VariableElement extends PrimitiveElement
 
     private String name;
 
-    public VariableElement(ElementType type, Object value) {
+    public VariableElement(CoreKind type, Object value) {
         super(type, value);
     }
 

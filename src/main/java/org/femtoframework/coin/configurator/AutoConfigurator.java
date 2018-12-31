@@ -18,6 +18,7 @@ package org.femtoframework.coin.configurator;
 
 import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +96,7 @@ public class AutoConfigurator implements Configurator {
      */
     private void autoInject(Object parent, Named named, BeanContext context, Method method) {
         String namespace = null;
-        String[] names = splitName(named != null ? named.value() : null);
+        String[] names = CoinNameUtil.splitName(named != null ? named.value() : null);
         if (names == null || StringUtil.isInvalid(names[0])) {
             namespace = context.getNamespace();
         }
@@ -126,84 +127,7 @@ public class AutoConfigurator implements Configurator {
                             return;
                         }
 
-//                    Iterator<BeanSpec> it = ns.getBeanSpecFactory().iterator();
-//                    BeanSpec found = null;
-//                    while (it.hasNext()) {
-//                        BeanSpec spec = it.next();
-//                        Class<?> typeClass = spec.getKindClass();
-//                        if (typeClass != null) {
-//                            if (expectedType.isAssignableFrom(typeClass)) {
-//                                if (found != null) {
-//                                    log.warn("More than one object can be injected for the method=" + method.getName() +
-//                                            " namespace=" + namespace + " expectedType:" + expectedType);
-//                                    break;
-//                                }
-//                                else {
-//                                    found = spec;
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    if (found != null) {
-//                        name = found.getName();
-//                        value = ns.getBeanFactory().get(name, true);
-//                    }
-//                    else {
-//                        ImplementedBy implementedBy = expectedType.getAnnotation(ImplementedBy.class);
-//                        String qName = context.getNamespace() + ":" + context.getName();
-//                        if (implementedBy != null) {
-//                            String implClassName = implementedBy.value();
-//                            Class<?> implClass;
-//                            try {
-//                                implClass = Reflection.getClass(implClassName, expectedType.getClassLoader());
-//                            }
-//                            catch (ClassNotFoundException e) {
-//                                log.warn("No such object of the Injection:  objectName=" + qName + " function=" +
-//                                        method.getName() + " name=" + name, e);
-//                                return;
-//                            }
-//
-
-//                        }
-//                    }
                       component = ns.getComponentFactory().create(targetName, clazz, context.getTargetStage());
-
-//TODO
-//                    String newBeanName = name;
-//                    String newBeanNamespace = namespace;
-//                    String qName = context.getNamespace() + ":" + context.getName();
-//
-//                    ManagedBean mb = clazz.getAnnotation(ManagedBean.class);
-//                    if (mb != null) {
-//                        String[] names = splitName(mb.value());
-//                        newBeanName = names[1];
-//                        newBeanNamespace = names[0];
-//                        if (!StringUtil.equals(newBeanNamespace, namespace) || !StringUtil.equals(newBeanName, name)) {
-//                            log.warn("No such bean of the Injection:  beanName=" + qName + " function=" +
-//                                    method.getName() + " name=" + name);
-//                        }
-//                    }
-//                    else if (name == null || name.isEmpty()) {
-//                        String packageName = expectedType.getPackage().getName();
-//                        String parentPackage = parent.getClass().getPackage().getName();
-//                        String implPackageName = clazz.getPackage().getName();
-//                        if (parentPackage.equals(packageName) || parentPackage.equals(implPackageName)) {
-//                            //Create bean automatically
-//                            newBeanName = NamingFormat.format(expectedType.getSimpleName());
-//                        }
-//                        else {
-//                            log.warn("No such bean of the Injection:  beanName=" + qName + " function=" +
-//                                    method.getName() + " name=" + name);
-//                            return;
-//                        }
-//                    }
-
-
-//                    Namespace newBeanNs = context.getNamespaceByName(newBeanNamespace);
-//                    ComponentFactory factory = newBeanNs.getComponentFactory();
-//                    value = factory.create(newBeanName, clazz, context.getTargetStage()).getBean(expectedType);
-
                     }
                 }
                 else {
@@ -227,24 +151,12 @@ public class AutoConfigurator implements Configurator {
     }
 
 
-    protected static String[] splitName(String qName) {
-        String[] names = new String[2];
-        names[1] = qName;
-        if (StringUtil.isValid(qName)) {
-            int i = qName.indexOf(':');
-            if (i > 0) {
-                names[0] = qName.substring(0, i);
-                names[1] = qName.substring(i + 1);
-            }
-        }
-        return names;
-    }
 
     private void autoInject(Object parent, Resource injection, BeanContext context, Method method) {
         Class<?> clazz = injection.type();
 
         String namespace = null;
-        String[] names = splitName(injection.name());
+        String[] names = CoinNameUtil.splitName(injection.name());
         if (names == null || StringUtil.isInvalid(names[0])) {
             namespace = context.getNamespace();
         }

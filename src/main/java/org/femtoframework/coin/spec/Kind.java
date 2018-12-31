@@ -14,29 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.status;
+package org.femtoframework.coin.spec;
 
 /**
- * Bean Condition
+ * Kind
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanCondition {
+public interface Kind {
 
-    default ConditionState getState() {
-        return ConditionState.UNKNOWN;
-    }
+    String name();
 
-    String getType();
+    int ordinal();
 
-    long getTimestamp();
-
-    enum ConditionState {
-        UNKNOWN,
-
-        FALSE,
-
-        TRUE;
+    default boolean isPrimitive() {
+        return false;
     }
 }

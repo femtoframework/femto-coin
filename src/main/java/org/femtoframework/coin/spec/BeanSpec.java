@@ -18,27 +18,46 @@ package org.femtoframework.coin.spec;
 
 import org.femtoframework.bean.NamedBean;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Bean
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanSpec<E extends Element> extends MapSpec<E>, NamedBean {
+public interface BeanSpec extends MapSpec<Element>, NamedBean {
+
     /**
-     * Indicate the kind of this bean (Same as type)
+     * Version
+     */
+    default String getVersion() {
+        return "v1";
+    }
+
+    /**
+     * Return aliases
+     *
+     * @return aliases
+     */
+    default List<String> getAliases() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * Indicate the kind of this bean
      *
      * @return
      */
-    String getKind();
+    String getType();
 
     /**
      * The real class of the kind
      *
-     * @return Kind class
-     * @return Kind class
+     * @return kind class
      */
-    Class<?> getKindClass();
+    Class<?> getTypeClass();
 
     /**
      * Bean Name

@@ -21,7 +21,7 @@ import org.femtoframework.coin.BeanContext;
 /**
  * Element
  *
- * bean, has a must have field "class" which indicates the type of this bean.
+ * bean, has a must have field "class" which indicates the kind of this bean.
  * map, if there is no "class" specified in a map structure, that means it is a map
  * list, multiple values
  * string, text value
@@ -38,7 +38,7 @@ public interface Element
      *
      * @return Element Type
      */
-    ElementType getType();
+    Kind getKind();
 
     /**
      * Class of the element, for example "java.util.ArrayList"
@@ -54,12 +54,12 @@ public interface Element
      *
      * @return
      */
-    String getElementClass();
+    String getKindClass();
 
     /**
      * Return the value of this element definition
      *
-     * @param expectedType Expected type
+     * @param expectedType Expected kind
      * @param context      Bean context
      * @return the value
      */

@@ -14,29 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.status;
+package org.femtoframework.coin.ext;
+
+import org.femtoframework.coin.status.BeanCondition;
 
 /**
- * Bean Condition
+ * Simple Bean Condition
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanCondition {
+public class SimpleBeanCondition implements BeanCondition {
 
-    default ConditionState getState() {
-        return ConditionState.UNKNOWN;
+    private long timestamp;
+    private String type;
+    private ConditionState state = ConditionState.UNKNOWN;
+
+    public SimpleBeanCondition(String type, ConditionState state) {
+        this.type = type;
+        this.state = state;
+        this.timestamp = System.currentTimeMillis();
     }
 
-    String getType();
+    @Override
+    public ConditionState getState() {
+        return state;
+    }
 
-    long getTimestamp();
+    @Override
+    public String getType() {
+        return type;
+    }
 
-    enum ConditionState {
-        UNKNOWN,
-
-        FALSE,
-
-        TRUE;
+    @Override
+    public long getTimestamp() {
+        return timestamp;
     }
 }

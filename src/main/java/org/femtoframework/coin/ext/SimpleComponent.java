@@ -14,39 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.ext;
 
-import org.femtoframework.bean.NamedBean;
+import org.femtoframework.coin.BeanStage;
+import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.status.BeanStatus;
 
 /**
- * Component
- *
- * A component includes spec, bean, and lifecycle status.
+ * Simple Component
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface Component extends NamedBean {
-    /**
-     * Namespace of this component
-     *
-     * @return Namespace
-     */
-    default String getNamespace() {
-        BeanSpec spec = getSpec();
-        return spec != null ? spec.getNamespace() : null;
-    }
+public class SimpleComponent implements Component {
 
-    /**
-     * Name of this bean
-     *
-     * @return Name of the bean and component
-     */
-    default String getName() {
-        BeanSpec spec = getSpec();
-        return spec != null ? spec.getName() : null;
+    private BeanSpec spec;
+    private BeanStatus status = new SimpleBeanStatus();
+    private BeanStage stage = BeanStage.CREATE;
+
+
+    public SimpleComponent(String name, Class<?> implClass) {
+        spec = new BeanElement(name, implClass);
     }
 
     /**
@@ -54,28 +44,30 @@ public interface Component extends NamedBean {
      *
      * @return BeanSpec
      */
-    BeanSpec getSpec();
-
+    @Override
+    public BeanSpec getSpec() {
+        return spec;
+    }
 
     /**
      * Bean Status
      *
      * @return BeanStatus
      */
-    BeanStatus getStatus();
-
-
-    /**
-     * Return expected Stage
-     *
-     * @return expected Stage
-     */
-    BeanStage getStage();
+    @Override
+    public BeanStatus getStatus() {
+        return status;
+    }
 
     /**
      * Set the target bean stage, that means the component will be executed to given stage
+     *
+     * @param stage
      */
-    void setStage(BeanStage stage);
+    @Override
+    public void setStage(BeanStage stage) {
+        this.stage = stage;
+    }
 
     /**
      * Return the right bean with expectedType
@@ -83,5 +75,19 @@ public interface Component extends NamedBean {
      * @param expectedType ExpectedType, if the is null, that means returning the bean implementation object anyway
      * @return Bean
      */
-    <T> T getBean(Class<T> expectedType);
+    @Override
+    public <T> T getBean(Class<T> expectedType) {
+        //TODO
+        return null;
+    }
+
+    /**
+     * Return expected Stage
+     *
+     * @return expected Stage
+     */
+    @Override
+    public BeanStage getStage() {
+        return stage;
+    }
 }

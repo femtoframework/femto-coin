@@ -17,7 +17,7 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
     implements MapSpec<E>
 {
 
-    private ElementType type = ElementType.MAP;
+    private Kind kind = CoreKind.MAP;
 
     public MapElement() {
     }
@@ -26,8 +26,8 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
         super(map);
     }
 
-    protected MapElement(ElementType type) {
-        this.type = type;
+    protected MapElement(Kind kind) {
+        this.kind = kind;
     }
 
     /**
@@ -36,8 +36,8 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
      * @return Element Type
      */
     @Override
-    public ElementType getType() {
-        return type;
+    public Kind getKind() {
+        return kind;
     }
 
     /**
@@ -55,14 +55,14 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
      * @return
      */
     @Override
-    public String getElementClass() {
+    public String getKindClass() {
         return null;
     }
 
     /**
      * Return the value of this element definition
      *
-     * @param expectedType Expected type
+     * @param expectedType Expected kind
      * @param context      Bean context
      * @return the value
      */
@@ -71,7 +71,7 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
         return null;
     }
 
-    public void setType(ElementType type) {
-        this.type = type;
+    public void setKind(CoreKind kind) {
+        this.kind = kind;
     }
 }

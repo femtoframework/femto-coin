@@ -3,7 +3,8 @@ package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.spec.Element;
-import org.femtoframework.coin.spec.ElementType;
+import org.femtoframework.coin.spec.CoreKind;
+import org.femtoframework.coin.spec.Kind;
 import org.femtoframework.coin.spec.ListSpec;
 
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ public class ListElement<E extends Element> extends ArrayList<E>
      * @return Element Type
      */
     @Override
-    public ElementType getType() {
-        return ElementType.LIST;
+    public Kind getKind() {
+        return CoreKind.LIST;
     }
 
     /**
@@ -48,14 +49,14 @@ public class ListElement<E extends Element> extends ArrayList<E>
      * @return
      */
     @Override
-    public String getElementClass() {
+    public String getKindClass() {
         return "java.util.ArrayList";
     }
 
     /**
      * Return the value of this element definition
      *
-     * @param expectedType Expected type
+     * @param expectedType Expected kind
      * @param context      Bean context
      * @return the value
      */

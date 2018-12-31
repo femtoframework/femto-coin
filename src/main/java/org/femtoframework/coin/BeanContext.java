@@ -16,6 +16,8 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.coin.exception.NoSuchNamespaceException;
+
 /**
  * Bean lifecycle context
  *
@@ -73,12 +75,17 @@ public interface BeanContext {
      *
      * @param namespace Namespace name, if it is null or empty string, return the current namespace object
      * @return Namespace object
+     * @throws org.femtoframework.coin.exception.NoSuchNamespaceException if the namespace doesn't exist
      */
     default Namespace getNamespaceByName(String namespace) {
         if (namespace == null || namespace.isEmpty()) {
             return getCurrentNamespace();
         }
-        return getNamespaceFactory().getNamespace(namespace, true);
+        Namespace ns = getNamespaceFactory().get(namespace);
+        if (ns == null) {
+            throw new NoSuchNamespaceException("No such namespace:" + namespace);
+        }
+        return ns;
     }
 
     /**

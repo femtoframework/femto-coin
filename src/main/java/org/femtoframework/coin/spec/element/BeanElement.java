@@ -16,14 +16,15 @@
  */
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.exception.NoSuchClassException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.Element;
-import org.femtoframework.coin.spec.ElementType;
+import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.SpecConstants;
+import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.util.DataUtil;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,62 +33,83 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class BeanElement<E extends Element> extends MapElement<E> implements BeanSpec<E>, SpecConstants {
+public class BeanElement extends MapElement<Element> implements BeanSpec, SpecConstants {
 
     public BeanElement() {
-        super(ElementType.BEAN);
+        super(CoreKind.BEAN);
     }
 
     public BeanElement(Map map) {
         super(map);
-        setType(ElementType.BEAN);
+        setKind(CoreKind.BEAN);
     }
 
-    private transient Class<?> kindClass;
+    public BeanElement(String name, Class<?> implClass) {
+        put(_NAME, new PrimitiveElement<>(CoreKind.STRING, name));
+        put(_TYPE, new PrimitiveElement<>(CoreKind.STRING, implClass.getName()));
+        this.typeClass = implClass;
+    }
+
+    private transient Class<?> typeClass;
 
     /**
-     * Class of the bean
-     * For all other element except "Bean" are certain class.
+     * Version
+     */
+    public String getVersion() {
+        return getString(_VERSION, BeanSpec.super.getVersion());
+    }
+
+    /**
+     * Return aliases
      *
-     * MAP: org.femtoframework.parameters.ParametersMap
-     * LIST: java.util.ArrayList
-     * STRING: java.lang.String
-     * INT: java.lang.Integer
-     * LONG: java.lang.Long
-     * DOUBLE: java.lang.Double
-     * Bean: the class in the "class" field
+     * @return aliases
+     */
+    public List<String> getAliases() {
+        return DataUtil.getStringList(getValue(_ALIASES), BeanSpec.super.getAliases());
+    }
+
+    /**
+     * Indicate the kind of this bean
      *
      * @return
      */
-    public String getKind() {
-        return getString(_KIND, null);
+    public String getType() {
+        return getString(_TYPE, null);
     }
 
     /**
      * The real class of the kind
      *
-     * @return Kind class
+     * @return kind class
      */
     @Override
-    public Class<?> getKindClass() {
-        String kind = getKind();
-        if (kindClass == null) {
+    public Class<?> getTypeClass() {
+        String kind = getType();
+        if (typeClass == null) {
             if (kind != null) {
-                if (kindClass == null) {
+                if (typeClass == null) {
                     try {
-                        kindClass = Reflection.getClass(kind);
+                        typeClass = Reflection.getClass(kind);
                     } catch (ClassNotFoundException e) {
-                        throw new NoSuchClassException("No such kind:" + kind);
+                        throw new NoSuchClassException("No such kind:" + kind + " in spec:" + getName());
                     }
                 }
             }
         }
-        return kindClass;
+        return typeClass;
     }
 
 
+    protected Object getValue(String key) {
+        Element element = get(key);
+        if (element != null) {
+            return element.getValue(null, null);
+        }
+        return null;
+    }
+
     protected String getString(String key, String defaultValue) {
-        return DataUtil.getString(get(key), defaultValue);
+        return DataUtil.getString(getValue(key), defaultValue);
     }
 
     /**

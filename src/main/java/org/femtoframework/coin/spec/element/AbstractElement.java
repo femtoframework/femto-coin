@@ -18,7 +18,7 @@ package org.femtoframework.coin.spec.element;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.femtoframework.coin.spec.Element;
-import org.femtoframework.coin.spec.ElementType;
+import org.femtoframework.coin.spec.Kind;
 
 import java.io.Serializable;
 
@@ -31,11 +31,9 @@ import java.io.Serializable;
 public abstract class AbstractElement implements Element, Serializable
 {
 
-    protected ElementType type = null;
+    protected Kind kind = null;
 
-    private String elementClass = null;
-
-//    private transient Class<?> typeClass = null;
+    private String kindClass = null;
 
     /**
      * Type of the element
@@ -43,19 +41,19 @@ public abstract class AbstractElement implements Element, Serializable
      * @return Type of the element
      */
     @JsonIgnore
-    public ElementType getType()
+    public Kind getKind()
     {
-        return type;
+        return kind;
     }
 
     /**
      * Set Type of the element
      *
-     * @param type Type
+     * @param kind Type
      */
-    public void setType(ElementType type)
+    public void setKind(Kind kind)
     {
-        this.type = type;
+        this.kind = kind;
     }
 
 //    /**
@@ -134,7 +132,7 @@ public abstract class AbstractElement implements Element, Serializable
 //            }
 //        }
 //        else {
-//            throw new CoinException("Unsupported type for <list> structure");
+//            throw new CoinException("Unsupported kind for <list> structure");
 //        }
 //    }
 //
@@ -171,7 +169,7 @@ public abstract class AbstractElement implements Element, Serializable
 //            }
 //        }
 //        else {
-//            throw new CoinException("Unsupported type for <list> structure");
+//            throw new CoinException("Unsupported kind for <list> structure");
 //        }
 //    }
 //
@@ -180,10 +178,10 @@ public abstract class AbstractElement implements Element, Serializable
 //     *
 //     * @return 数据定义对应的值
 //     */
-//    protected static Object getValue(String type, Object value, Object defValue)
+//    protected static Object getValue(String kind, Object value, Object defValue)
 //    {
-//        if (type != null) {
-//            return ConverterUtil.convertToType(value, type, defValue);
+//        if (kind != null) {
+//            return ConverterUtil.convertToType(value, kind, defValue);
 //        }
 //        else {
 //            return value;
@@ -249,41 +247,18 @@ public abstract class AbstractElement implements Element, Serializable
 //    }
 
     /**
-     * Convert type(String) to Class
+     * Convert kind(String) to Class
      *
      * @return Class
      */
     @JsonIgnore
-    public String getElementClass()
+    public String getKindClass()
     {
-        return elementClass;
+        return kindClass;
     }
 
-    /**
-     * Convert type(String) to Class
-     *
-     * @return
-     */
-    protected Class<?> getTypeClass(String expectedType)
-    {
-        //TODO
-//        ElementType type = this.type != null ? this.type : expectedType;
-//        if (type != null) {
-//            if (typeClass == null) {
-//                try {
-//                    typeClass = Reflection.getClass(type);
-//                }
-//                catch (ClassNotFoundException e) {
-//                    throw new NoSuchClassException("No such class:" + type);
-//                }
-//            }
-//        }
-//        return typeClass;
-        return null;
-    }
-
-    public void setElementClass(String elementClass) {
-        this.elementClass = elementClass;
+    public void setKindClass(String kindClass) {
+        this.kindClass = kindClass;
     }
 
 }
