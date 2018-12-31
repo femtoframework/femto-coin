@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -78,12 +79,10 @@ public class AutoConfigurator implements Configurator {
                 continue;
             }
 
-//            Inject inject = method.getAnnotation(Inject.class);
-//            if (inject != null) {
-//                autoInject(obj, method.getAnnotation(Named.class), context, method);
-//                continue;
-//            }
-            autoInject(obj, method.getAnnotation(Named.class), context, method);
+            Inject inject = method.getAnnotation(Inject.class);
+            if (inject != null || method.getName().startsWith("set")) {
+                autoInject(obj, method.getAnnotation(Named.class), context, method);
+            }
         }
     }
 

@@ -1,11 +1,14 @@
 package org.femtoframework.coin;
 
+import org.femtoframework.annotation.ImplementedBy;
+
 /**
  * 第三接口
  *
  * @author fengyun
  * @version 1.00 2005-1-27 15:42:02
  */
+@ImplementedBy(value = "org.femtoframework.coin.ThirdBean")
 public interface ThirdInterface
 {
     /**
@@ -13,11 +16,11 @@ public interface ThirdInterface
      *
      * @return
      */
-    public String getName();
+    String getName();
 
-    public int getInteger();
+    int getInteger();
 
-    public String getString();
+    String getString();
 
-    public boolean isBool();
+    boolean isBool();
 }

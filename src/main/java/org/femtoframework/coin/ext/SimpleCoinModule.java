@@ -16,7 +16,7 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.CoinControl;
+import org.femtoframework.coin.CoinController;
 import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.NamespaceFactory;
 import org.femtoframework.coin.remote.RemoteGenerator;
@@ -30,7 +30,7 @@ public class SimpleCoinModule implements CoinModule {
 
     private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory();
 
-    private SimpleCoinControl coinControl = new SimpleCoinControl();
+    private SimpleCoinController coinControl = new SimpleCoinController();
 
     /**
      * Return namespace factory
@@ -48,7 +48,7 @@ public class SimpleCoinModule implements CoinModule {
      * @return Coin Control
      */
     @Override
-    public CoinControl getControl() {
+    public CoinController getControlller() {
         return coinControl;
     }
 

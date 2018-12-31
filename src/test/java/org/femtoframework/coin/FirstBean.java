@@ -8,6 +8,7 @@ import org.femtoframework.bean.Nameable;
  * @author fengyun
  * @version 1.00 2005-1-26 20:58:27
  */
+
 public class FirstBean
     implements FirstInterface
 {

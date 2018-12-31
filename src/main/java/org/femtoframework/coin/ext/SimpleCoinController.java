@@ -16,7 +16,7 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.CoinControl;
+import org.femtoframework.coin.CoinController;
 
 import java.net.URI;
 
@@ -25,7 +25,7 @@ import java.net.URI;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleCoinControl implements CoinControl {
+public class SimpleCoinController implements CoinController {
     /**
      * Create beans by specs
      *

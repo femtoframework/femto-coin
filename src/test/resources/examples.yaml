@@ -1,7 +1,6 @@
 _name: First
 _kind: org.femtoframework.coin.FirstBean
 second:
-  _kind: org.femtoframework.coin.SecondBean
   ints: [1,2,3]
   stringList:
   - abc
@@ -30,12 +29,10 @@ second:
     current: ${second/thirds/0/name}
   thirds:
   - name: third1
-    _kind: org.femtoframework.coin.ThirdBean
     integer: 123
     bool: true
     string: "Hello world!"
   - name: third2
-    _kind: org.femtoframework.coin.ThirdBean
     integer: 456
     bool: false
     string: "Merry Xmas!"

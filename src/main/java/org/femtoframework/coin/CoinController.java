@@ -25,7 +25,7 @@ import java.net.URI;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface CoinControl {
+public interface CoinController {
     /**
      * Create beans by specs
      *
