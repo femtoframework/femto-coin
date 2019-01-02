@@ -46,6 +46,19 @@ public interface BeanSpec extends MapSpec<Element>, NamedBean {
     }
 
     /**
+     * Return belongsTo
+     *
+     * belongsTo syntax
+     *
+     *
+     * TODO
+     * @return
+     */
+    default List<String> getBelongsTo() {
+        return Collections.emptyList();
+    }
+
+    /**
      * Indicate the kind of this bean
      *
      * @return
@@ -66,6 +79,16 @@ public interface BeanSpec extends MapSpec<Element>, NamedBean {
      */
     String getName();
 
+
+    /**
+     * Is it singleton?
+     * If it is true, then coin will try to create it in singleton pattern first.
+     *
+     * @return Singleton
+     */
+    default boolean isSingleton() {
+        return false;
+    }
 
     /**
      * Return namespace of current bean spec

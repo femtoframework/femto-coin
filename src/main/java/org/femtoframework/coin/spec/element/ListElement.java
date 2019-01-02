@@ -6,6 +6,7 @@ import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.Kind;
 import org.femtoframework.coin.spec.ListSpec;
+import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +61,11 @@ public class ListElement<E extends Element> extends ArrayList<E>
      * @param context      Bean context
      * @return the value
      */
-    @Override
-    public Object getValue(String expectedType, BeanContext context) {
-        return null;
+    public <T> T getValue(Class<T> expectedType, BeanContext context) {
+        List values = new ArrayList(size());
+        for(Element element : this) {
+            values.add(element.getValue(null, context));
+        }
+        return ConverterUtil.convertToType(values, expectedType);
     }
 }

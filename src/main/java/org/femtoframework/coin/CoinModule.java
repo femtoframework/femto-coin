@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
 
 /**
@@ -49,4 +50,18 @@ public interface CoinModule {
      * @return Remote Generator
      */
     RemoteGenerator getRemoteGenerator();
+
+
+    /**
+     * Return LifecycleStrategy
+     *
+     * @return LifecycleStrategy
+     */
+    LifecycleStrategy getLifecycleStrategy();
+
+
+    /**
+     * Return BeanEventListeners
+     */
+    BeanEventListeners getBeanEventListeners();
 }

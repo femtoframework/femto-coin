@@ -14,49 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.spec;
+package org.femtoframework.coin.naming;
+
+import javax.naming.Name;
+import javax.naming.NameParser;
+import java.io.Serializable;
 
 /**
- * Spec Constants
- *
- * All attribute names start with "_" are for bean spec only
+ * Naming Parser
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface SpecConstants {
+public class CoinNamingParser implements NameParser, Serializable
+{
 
-    /**
-     * Kind
-     */
-    String _KIND = "_kind";
+    private static CoinNamingParser instance = new CoinNamingParser();
 
-    /**
-     * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
-     */
-    String NAME = "name";
+    private CoinNamingParser()
+    {
+    }
 
-    /**
-     * If it uses "_name" in the spec, the attribute won't be injected to bean
-     */
-    String _NAME = "_name";
+    public static CoinNamingParser getInstance()
+    {
+        return instance;
+    }
 
-    String _DEFAULT = "_default";
+    public Name parse(String name)
+    {
+        return new CoinName(name);
+    }
 
-    String _NAMESPACE = "_namespace";
-
-    String _ENABLED = "_enabled";
-
-    String _TYPE = "_type";
-
-    String _VERSION = "_version";
-
-    String _ALIASES = "_aliases";
-
-    String _SINGLETON = "_singleton";
-
-    /**
-     * Link the current bean to target beans
-     */
-    String _BELONGS_TO = "_belongsTo";
+    private Object readResolve()
+    {
+        return instance;
+    }
 }

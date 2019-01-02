@@ -10,7 +10,7 @@ import org.femtoframework.coin.spec.ElementVisitor;
  * @author fengyun
  * @version 1.00 2011-04-28 13:18
  */
-public class VariableElement extends PrimitiveElement
+public class VariableElement extends PrimitiveElement<Object>
 {
 
     private String name;
@@ -40,13 +40,13 @@ public class VariableElement extends PrimitiveElement
     }
 
     /**
-     * 返回属性数据定义对应的值
+     * Return the value of this element definition
      *
-     * @param expectedType
-     * @param context      对象部署上下文
-     * @return 数据定义对应的值
+     * @param expectedType Expected kind
+     * @param context      Bean context
+     * @return the value
      */
-    public Object getValue(String expectedType, BeanContext context)
+    public <T> T getValue(Class<T> expectedType, BeanContext context)
     {
 //        if ("namespace".equals(name)) {
 //            return context.getNamespace();

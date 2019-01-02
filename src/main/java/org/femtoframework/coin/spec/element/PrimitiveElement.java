@@ -31,11 +31,11 @@ import org.femtoframework.util.convert.ConverterUtil;
 
 public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpec<E> {
 
-    private E value;
+    private E primitiveValue;
 
     public PrimitiveElement(CoreKind type, E value) {
         setKind(type);
-        this.value = value;
+        this.primitiveValue = value;
         if (value != null) {
             setKindClass(value.getClass().getName());
         }
@@ -48,29 +48,28 @@ public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpe
      * @param context      Bean context
      * @return the value
      */
-    @Override
-    public Object getValue(String expectedType, BeanContext context) {
+    public <T> T getValue(Class<T> expectedType, BeanContext context) {
         if (kind == CoreKind.NULL) {
             return null;
         }
         if (expectedType == null) {
-            return value;
+            return (T)primitiveValue;
         }
         else {
-            return ConverterUtil.convertToType(value, expectedType);
+            return ConverterUtil.convertToType(primitiveValue, expectedType);
         }
     }
 
     public String toString() {
-        return String.valueOf(value);
+        return String.valueOf(primitiveValue);
     }
 
     @JsonValue
-    public E getValue() {
-        return value;
+    public E getPrimitiveValue() {
+        return primitiveValue;
     }
 
-    public void setValue(E value) {
-        this.value = value;
+    public void setPrimitiveValue(E value) {
+        this.primitiveValue = value;
     }
 }

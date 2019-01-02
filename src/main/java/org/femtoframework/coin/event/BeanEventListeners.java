@@ -14,49 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.spec;
+package org.femtoframework.coin.event;
+
+import java.util.List;
 
 /**
- * Spec Constants
- *
- * All attribute names start with "_" are for bean spec only
+ * Event Listeners
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface SpecConstants {
+public interface BeanEventListeners {
 
     /**
-     * Kind
+     * Add new listener
+     *
+     * @param listener BeanEventListener
      */
-    String _KIND = "_kind";
+    void addListener(BeanEventListener listener);
 
     /**
-     * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
+     * Delete listener
+     *
+     * @param listener BeanEventListener
      */
-    String NAME = "name";
+    void removeListener(BeanEventListener listener);
 
     /**
-     * If it uses "_name" in the spec, the attribute won't be injected to bean
+     * Return all listeners
+     *
+     * @return all listeners
      */
-    String _NAME = "_name";
-
-    String _DEFAULT = "_default";
-
-    String _NAMESPACE = "_namespace";
-
-    String _ENABLED = "_enabled";
-
-    String _TYPE = "_type";
-
-    String _VERSION = "_version";
-
-    String _ALIASES = "_aliases";
-
-    String _SINGLETON = "_singleton";
-
-    /**
-     * Link the current bean to target beans
-     */
-    String _BELONGS_TO = "_belongsTo";
+    List<BeanEventListener> getListeners();
 }

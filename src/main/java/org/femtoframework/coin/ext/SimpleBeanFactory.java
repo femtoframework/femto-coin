@@ -17,7 +17,9 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.BeanFactory;
+import org.femtoframework.coin.BeanStage;
 import org.femtoframework.coin.ComponentFactory;
+import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.BeanSpecFactory;
 
 /**
@@ -47,6 +49,18 @@ public class SimpleBeanFactory extends BaseFactory<Object> implements BeanFactor
      */
     @Override
     public Object get(String name, boolean create) {
+        return null;
+    }
+
+    /**
+     * Create Object by BeanSpec
+     *
+     * @param name Bean Name
+     * @param spec Bean Spec
+     * @param stage BeanStage
+     */
+    @Override
+    public Object create(String name, BeanSpec spec, BeanStage stage) {
         return null;
     }
 

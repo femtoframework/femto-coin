@@ -2,9 +2,9 @@ package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.spec.*;
+import org.femtoframework.util.convert.ConverterUtil;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -66,9 +66,12 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
      * @param context      Bean context
      * @return the value
      */
-    @Override
-    public Object getValue(String expectedType, BeanContext context) {
-        return null;
+    public <T> T getValue(Class<T> expectedType, BeanContext context) {
+        Map values = new HashMap(size());
+        for(Map.Entry<String, E> entry: entrySet()) {
+            values.put(entry.getKey(), entry.getValue().getValue(null, context));
+        }
+        return ConverterUtil.convertToType(values, expectedType);
     }
 
     public void setKind(CoreKind kind) {

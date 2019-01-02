@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.event;
 
+import org.femtoframework.bean.Initializable;
 import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.BeanFactory;
 import org.femtoframework.coin.BeanPhase;
@@ -29,7 +30,7 @@ import java.util.List;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class BeanEventSupport implements BeanEventListener {
+public class BeanEventSupport implements BeanEventListeners, BeanEventListener {
     
     private List<BeanEventListener> listeners = new ArrayList<>(2);
     
@@ -106,4 +107,29 @@ public class BeanEventSupport implements BeanEventListener {
             handleEvent(new BeanEvent(factory, beanName, phase, bean, context));
         }
     }
+
+    /**
+     * Fire Event
+     *
+     * @param phase
+     * @param context
+     */
+    public void fireEvent(BeanPhase phase, BeanContext context)
+    {
+        if (!listeners.isEmpty()) {
+            handleEvent(new BeanEvent(context.getCurrentBeanFactory(), context.getName(),
+                    phase, context.getBean(), context));
+        }
+    }
+
+    //TODO
+//    /**
+//     * Initialize the bean
+//     *
+//     * @throws InitializeException
+//     */
+//    @Override
+//    public void initialize() {
+//        Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
+//    }
 }

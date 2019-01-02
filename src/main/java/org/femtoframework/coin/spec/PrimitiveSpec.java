@@ -23,7 +23,9 @@ package org.femtoframework.coin.spec;
  * @version 1.0
  */
 public interface PrimitiveSpec<E> extends Element {
-    E getValue();
+
+
+    E getPrimitiveValue();
 
     /**
      * Start visiting this spec

@@ -18,7 +18,12 @@ package org.femtoframework.coin.configurator;
 
 import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.CoreKind;
+import org.femtoframework.coin.spec.Element;
+import org.femtoframework.coin.spec.Kind;
 import org.femtoframework.coin.util.CoinNameUtil;
+import org.femtoframework.text.NamingFormat;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,16 +114,28 @@ public class AutoConfigurator implements Configurator {
         Object value = null;
         Namespace ns = context.getNamespaceByName(targetNamespace);
 
-        if (targetName != null && !targetName.isEmpty()) {
+        if (StringUtil.isValid(targetName)) {
             value = ns.getBeanFactory().get(targetName);
         }
         if (value == null) {
-            Component component = ns.getComponentFactory().get(targetName);
-            if (component == null) {
-                Class<?> expectedType = method.getParameterTypes()[0];
-                //If the bean does not exist, try to match by expectedType in the factory
-                if (clazz == null || clazz == Object.class) {
-                    if (expectedType.isInterface()) {
+            Class<?> expectedType = method.getParameterTypes()[0];
+            BeanSpec spec = context.getSpec();
+            String propertyName = NamingFormat.parse(method.getName().substring(3), false); //PropertyName
+            Element element = spec.get(propertyName);
+
+            Component component = null;
+            //If the bean does not exist, try to match by expectedType in the factory
+            boolean beanInjection = (element != null && element.getKind() == CoreKind.BEAN)
+                     || (element == null && expectedType.isInterface());
+
+            if (beanInjection) {
+                if (clazz != null && clazz != Object.class) {
+                    component = ns.getComponentFactory().create(targetName, clazz, context.getTargetStage());
+                } else if (expectedType.isInterface()) {
+                    if (StringUtil.isValid(targetName)) {
+                        component = ns.getComponentFactory().get(targetName);
+                    }
+                    if (component == null) {
                         clazz = ns.getComponentFactory().getImplement(targetName, expectedType);
                         if (clazz == null) { //Ignore this
                             if (log.isInfoEnabled()) {
@@ -127,19 +144,20 @@ public class AutoConfigurator implements Configurator {
                             return;
                         }
 
-                      component = ns.getComponentFactory().create(targetName, clazz, context.getTargetStage());
+                        component = ns.getComponentFactory().create(targetName, clazz, context.getTargetStage());
                     }
                 }
-                else {
-                    component = ns.getComponentFactory().create(targetName, clazz, context.getTargetStage());
-                }
-                if (component != null) {
-                    value = component.getBean(expectedType);
-                }
-                else {
-                    if (log.isWarnEnabled()) {
-                        log.warn("Not able to create component:" + targetName + " class:" + clazz + " expected Type:" + expectedType);
-                    }
+            }
+            else if (element != null) { //Primitive value
+                value = element.getValue(expectedType, context);
+            }
+
+            if (component != null) { //TODO
+                value = component.getBean(expectedType);
+            }
+            else {
+                if (log.isWarnEnabled()) {
+                    log.warn("Not able to create component:" + targetName + " class:" + clazz + " expected Type:" + expectedType);
                 }
             }
 

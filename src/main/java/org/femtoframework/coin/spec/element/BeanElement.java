@@ -16,6 +16,8 @@
  */
 package org.femtoframework.coin.spec.element;
 
+import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.BeanFactory;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.CoreKind;
@@ -23,6 +25,7 @@ import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.util.DataUtil;
+import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -66,6 +69,17 @@ public class BeanElement extends MapElement<Element> implements BeanSpec, SpecCo
      */
     public List<String> getAliases() {
         return DataUtil.getStringList(getValue(_ALIASES), BeanSpec.super.getAliases());
+    }
+
+    /**
+     * Return belongsTo
+     *
+     * belongsTo syntax
+     *
+     * @return
+     */
+    public List<String> getBelongsTo() {
+        return DataUtil.getStringList(getValue(_BELONGS_TO), BeanSpec.super.getBelongsTo());
     }
 
     /**
@@ -123,6 +137,38 @@ public class BeanElement extends MapElement<Element> implements BeanSpec, SpecCo
             name = getString(NAME, null);
         }
         return name;
+    }
+
+    /**
+     * Return the value of this element definition
+     *
+     * @param expectedType Expected kind
+     * @param context      Bean context
+     * @return the value
+     */
+    public <T> T getValue(Class<T> expectedType, BeanContext context) {
+//        Map values = new ParametersMap();
+//        for(Map.Entry<String, Element> entry: entrySet()) {
+//            String key = entry.getKey();
+//            if (!key.startsWith("_")) {
+//                values.put(, entry.getValue().getValue(null, context));
+//            }
+//        }
+//
+//        return ConverterUtil.convertToType(values, expectedType);
+        BeanFactory factory = context.getCurrentBeanFactory();
+        Object obj = factory.create(getName(), this, context.getTargetStage());
+        return ConverterUtil.convertToType(obj, expectedType);
+    }
+
+    /**
+     * Is it singleton?
+     * If it is true, then coin will try to create it in singleton pattern first.
+     *
+     * @return Singleton
+     */
+    public boolean isSingleton() {
+        return DataUtil.getBoolean(getValue(_SINGLETON), BeanSpec.super.isSingleton());
     }
 
     /**

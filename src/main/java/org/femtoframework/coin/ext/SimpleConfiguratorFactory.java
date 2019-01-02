@@ -14,49 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.spec;
+package org.femtoframework.coin.ext;
+
+import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Configurator;
+import org.femtoframework.coin.ConfiguratorFactory;
 
 /**
- * Spec Constants
- *
- * All attribute names start with "_" are for bean spec only
+ * Simple Configurator Factory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface SpecConstants {
+public class SimpleConfiguratorFactory extends BaseFactory<Configurator> implements ConfiguratorFactory {
+
+    private static SimpleConfiguratorFactory instance = new SimpleConfiguratorFactory();
+
+    public static ConfiguratorFactory getInstance() {
+        return instance;
+    }
 
     /**
-     * Kind
+     * Configure the bean
+     *
+     * @param context BeanContext
      */
-    String _KIND = "_kind";
-
-    /**
-     * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
-     */
-    String NAME = "name";
-
-    /**
-     * If it uses "_name" in the spec, the attribute won't be injected to bean
-     */
-    String _NAME = "_name";
-
-    String _DEFAULT = "_default";
-
-    String _NAMESPACE = "_namespace";
-
-    String _ENABLED = "_enabled";
-
-    String _TYPE = "_type";
-
-    String _VERSION = "_version";
-
-    String _ALIASES = "_aliases";
-
-    String _SINGLETON = "_singleton";
-
-    /**
-     * Link the current bean to target beans
-     */
-    String _BELONGS_TO = "_belongsTo";
+    @Override
+    public void configure(BeanContext context) {
+        for(Configurator configurator: this) {
+            configurator.configure(context);
+        }
+    }
 }

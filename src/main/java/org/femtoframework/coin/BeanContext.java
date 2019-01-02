@@ -17,6 +17,7 @@
 package org.femtoframework.coin;
 
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
+import org.femtoframework.coin.spec.BeanSpec;
 
 /**
  * Bean lifecycle context
@@ -36,14 +37,34 @@ public interface BeanContext {
      *
      * @return Namespace
      */
-    String getNamespace();
+    default String getNamespace() {
+        return getSpec().getNamespace();
+    }
 
     /**
      * The name of current bean
      *
      * @return Current name
      */
-    String getName();
+    default String getName() {
+        return getSpec().getName();
+    }
+
+    /**
+     * Set bean name
+     *
+     * @param name bean name
+     */
+    void setName(String name);
+
+    /**
+     * Qualified Name
+     *
+     * @return Qualified Name
+     */
+    default String getQualifiedName() {
+        return getNamespace() + ":" + getName();
+    }
 
     /**
      * Return current bean
@@ -52,6 +73,13 @@ public interface BeanContext {
      */
     Object getBean();
 
+
+    /**
+     * Return bean spec of this bean
+     *
+     * @return bean spec of this bean
+     */
+    BeanSpec getSpec();
 
     /**
      * Bean Factory

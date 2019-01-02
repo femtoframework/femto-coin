@@ -18,7 +18,9 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.CoinController;
 import org.femtoframework.coin.CoinModule;
+import org.femtoframework.coin.LifecycleStrategy;
 import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
 
 /**
@@ -31,6 +33,9 @@ public class SimpleCoinModule implements CoinModule {
     private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory();
 
     private SimpleCoinController coinControl = new SimpleCoinController();
+
+
+    private SimpleLifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy();
 
     /**
      * Return namespace factory
@@ -60,5 +65,23 @@ public class SimpleCoinModule implements CoinModule {
     @Override
     public RemoteGenerator getRemoteGenerator() {
         return null;
+    }
+
+    /**
+     * Return LifecycleStrategy
+     *
+     * @return LifecycleStrategy
+     */
+    @Override
+    public LifecycleStrategy getLifecycleStrategy() {
+        return lifecycleStrategy;
+    }
+
+    /**
+     * Return BeanEventListeners
+     */
+    @Override
+    public BeanEventListeners getBeanEventListeners() {
+        return lifecycleStrategy.getEventListeners();
     }
 }

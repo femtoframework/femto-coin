@@ -33,16 +33,6 @@ A tiny JSR330 standard Inversion Of Control container.  COIN stands for "New Inv
 ### @JsonIgnore
 ### @JsonIgnoreProperties
 
-## Spring
-### @Component
-### @Service
-### @Controller
-### @Repository
-### @Autowired
-### @Configuration
-### @Bean
-
-
 ## Doesn't support
 ### @Qualifier
 

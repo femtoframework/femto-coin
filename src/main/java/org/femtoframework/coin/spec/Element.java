@@ -63,8 +63,7 @@ public interface Element
      * @param context      Bean context
      * @return the value
      */
-    Object getValue(String expectedType, BeanContext context);
-
+    <T> T getValue(Class<T> expectedType, BeanContext context);
 
     /**
      * Start visiting this spec

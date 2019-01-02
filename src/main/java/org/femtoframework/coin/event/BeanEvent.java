@@ -50,7 +50,7 @@ public class BeanEvent extends EventObject {
      */
     public BeanEvent(BeanFactory source, String name, BeanPhase phase, Object target, BeanContext context) {
         super(source);
-        this.source = source;
+        this.factory = source;
         this.name = name;
         this.phase = phase;
         this.target = target;
