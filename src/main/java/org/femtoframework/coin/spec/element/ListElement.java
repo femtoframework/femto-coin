@@ -1,7 +1,7 @@
 package org.femtoframework.coin.spec.element;
 
 
-import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.Kind;
@@ -58,13 +58,13 @@ public class ListElement<E extends Element> extends ArrayList<E>
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param context      Bean context
+     * @param component    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, BeanContext context) {
+    public <T> T getValue(Class<T> expectedType, Component component) {
         List values = new ArrayList(size());
         for(Element element : this) {
-            values.add(element.getValue(null, context));
+            values.add(element.getValue(null, component));
         }
         return ConverterUtil.convertToType(values, expectedType);
     }

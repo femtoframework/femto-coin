@@ -27,38 +27,39 @@ public interface LifecycleStrategy extends Configurator {
     /**
      * Create bean
      *
-     * @param context BeanContext
+     * @param component Component
      * @return the created bean
      */
-    Object create(BeanContext context);
+    Object create(Component component);
 
     /**
+     * Initialize component
      *
-     * @param context
+     * @param component
      */
-    void initialize(BeanContext context);
+    void initialize(Component component);
 
     /**
-     * 根据将对象进行启动
+     * Start component
      *
-     * @param context 对象部署上下文
+     * @param component Component
      * @throws org.femtoframework.coin.exception.BeanLifecycleException
      */
-    void start(BeanContext context);
+    void start(Component component);
 
 
     /**
-     * 根据将对象进行启动
+     * Stop component
      *
-     * @param context 对象部署上下文
+     * @param component Component
      * @throws org.femtoframework.coin.exception.BeanLifecycleException
      */
-    default void stop(BeanContext context) {
+    default void stop(Component component) {
 
     }
 
 
-    default void destroy(BeanContext context) {
+    default void destroy(Component component) {
 
     }
 

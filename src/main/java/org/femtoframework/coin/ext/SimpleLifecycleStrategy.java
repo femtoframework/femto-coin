@@ -16,15 +16,12 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.bean.Destroyable;
-import org.femtoframework.bean.Initializable;
-import org.femtoframework.bean.Startable;
-import org.femtoframework.bean.Stoppable;
+import org.femtoframework.bean.*;
+import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.configurator.AutoConfigurator;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.event.BeanEventSupport;
-import org.femtoframework.coin.exception.BeanLifecycleException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.ObjectCreationException;
@@ -46,16 +43,22 @@ import java.lang.reflect.Modifier;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleLifecycleStrategy implements LifecycleStrategy {
+public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable {
 
     private Logger log = LoggerFactory.getLogger(SimpleLifecycleStrategy.class);
 
     private Configurator autoConfigurator = new AutoConfigurator();
 
-    private ConfiguratorFactory configuratorFactory = SimpleConfiguratorFactory.getInstance();
+    private ConfiguratorFactory configuratorFactory;
 
-    private BeanEventSupport eventSupport = new BeanEventSupport();
+    private BeanEventSupport eventSupport;
 
+
+    public SimpleLifecycleStrategy(ConfiguratorFactory configuratorFactory) {
+        this.configuratorFactory = configuratorFactory;
+        this.eventSupport = new BeanEventSupport();
+        this.eventSupport.addListener(new SimpleStatusUpdater());
+    }
 
     public BeanEventListeners getEventListeners() {
         return eventSupport;
@@ -64,17 +67,17 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy {
     /**
      * Create bean
      *
-     * @param context BeanContext
+     * @param component Component
      * @return the created bean
      */
     @Override
-    public Object create(BeanContext context) {
-        String beanName = context.getName();
-        BeanSpec spec = context.getSpec();
+    public Object create(Component component) {
+        String beanName = component.getName();
+        BeanSpec spec = component.getSpec();
 
         String className = spec.getType();
         if (className == null) {
-            throw new ObjectCreationException("No _type found in bean, " + context.getNamespace() + ":" + beanName);
+            throw new ObjectCreationException("No _type found in bean, " + component.getNamespace() + ":" + beanName);
         }
         Class<?> clazz = null;
         try {
@@ -87,6 +90,8 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy {
             throw new NoSuchClassException("Load class " + className + " error:", ndfe);
         }
 
+        eventSupport.fireEvent(BeanPhase.ENABLED, component);
+
         if (beanName == null) {
             //Try to get name from Annotation
             ManagedBean mb = clazz.getAnnotation(ManagedBean.class);
@@ -95,12 +100,14 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy {
                 String qName = mb.value();
                 if ((index = qName.indexOf(':')) > 0) {
                     beanName = qName.substring(index + 1);
-                    context.setName(beanName);
+                    if (component instanceof Nameable) {
+                        ((Nameable)component).setName(beanName);
+                    }
                 }
             }
         }
 
-        eventSupport.fireEvent(BeanPhase.CREATING, context.getCurrentBeanFactory(), beanName, null, context);
+        eventSupport.fireEvent(BeanPhase.CREATING, component);
 
         Object bean;
         if (spec.isSingleton()) {
@@ -121,34 +128,34 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy {
             }
         }
 
-        eventSupport.fireEvent(BeanPhase.CREATED, context.getCurrentBeanFactory(), beanName, bean, context);
+        eventSupport.fireEvent(BeanPhase.CREATED, component);
         return bean;
     }
 
     /**
      * Configure the bean
      *
-     * @param context BeanContext
+     * @param component Component
      */
     @Override
-    public void configure(BeanContext context) {
-        eventSupport.fireEvent(BeanPhase.CONFIGURING,context);
+    public void configure(Component component) {
+        eventSupport.fireEvent(BeanPhase.CONFIGURING, component);
 
-        autoConfigurator.configure(context);
+        autoConfigurator.configure(component);
 
-        configuratorFactory.configure(context);
+        configuratorFactory.configure(component);
 
-        eventSupport.fireEvent(BeanPhase.CONFIGURED,context);
+        eventSupport.fireEvent(BeanPhase.CONFIGURED, component);
     }
 
     /**
-     * @param context
+     * @param component
      */
     @Override
-    public void initialize(BeanContext context) {
-        eventSupport.fireEvent(BeanPhase.INITIALIZING,context);
+    public void initialize(Component component) {
+        eventSupport.fireEvent(BeanPhase.INITIALIZING,component);
 
-        Object bean = context.getBean();
+        Object bean = component.getBean();
         if (bean instanceof Initializable) {
             ((Initializable)bean).initialize();
         }
@@ -156,41 +163,41 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy {
             Class<?> clazz = bean.getClass();
             invokeByAnnotation(clazz, bean, PostConstruct.class);
         }
-        eventSupport.fireEvent(BeanPhase.INITIALIZED,context);
+        eventSupport.fireEvent(BeanPhase.INITIALIZED,component);
     }
 
     /**
-     * 根据将对象进行启动
+     * Start component
      *
-     * @param context 对象部署上下文
-     * @throws BeanLifecycleException
+     * @param component Component
+     * @throws org.femtoframework.coin.exception.BeanLifecycleException
      */
     @Override
-    public void start(BeanContext context) {
-        eventSupport.fireEvent(BeanPhase.STARTING,context);
+    public void start(Component component) {
+        eventSupport.fireEvent(BeanPhase.STARTING,component);
 
-        Object obj = context.getBean();
+        Object obj = component.getBean();
         if (obj instanceof Startable) {
             ((Startable)obj).start();
         }
-        eventSupport.fireEvent(BeanPhase.STARTED,context);
+        eventSupport.fireEvent(BeanPhase.STARTED,component);
     }
 
     /**
-     * 根据将对象进行启动
+     * Stop component
      *
-     * @param context 对象部署上下文
-     * @throws BeanLifecycleException
+     * @param component Component
+     * @throws org.femtoframework.coin.exception.BeanLifecycleException
      */
     @Override
-    public void stop(BeanContext context) {
-        eventSupport.fireEvent(BeanPhase.STOPPING,context);
+    public void stop(Component component) {
+        eventSupport.fireEvent(BeanPhase.STOPPING,component);
 
-        Object obj = context.getBean();
+        Object obj = component.getBean();
         if (obj instanceof Stoppable) {
             ((Stoppable)obj).stop();
         }
-        eventSupport.fireEvent(BeanPhase.STOPPED, context);
+        eventSupport.fireEvent(BeanPhase.STOPPED, component);
     }
 
     protected void invokeByAnnotation(Class<?> clazz, Object bean, Class<? extends Annotation> annotationClass) {
@@ -215,12 +222,17 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy {
         invokeByAnnotation(clazz.getSuperclass(), bean, annotationClass);
     }
 
-
+    /**
+     * Destroy component
+     *
+     * @param component Component
+     * @throws org.femtoframework.coin.exception.BeanLifecycleException
+     */
     @Override
-    public void destroy(BeanContext context) {
-        eventSupport.fireEvent(BeanPhase.DESTROYING,context);
+    public void destroy(Component component) {
+        eventSupport.fireEvent(BeanPhase.DESTROYING, component);
 
-        Object bean = context.getBean();
+        Object bean = component.getBean();
         if (bean instanceof Destroyable) {
             ((Destroyable)bean).destroy();
         }
@@ -228,7 +240,16 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy {
             Class clazz = bean.getClass();
             invokeByAnnotation(clazz, bean, PreDestroy.class);
         }
-        eventSupport.fireEvent(BeanPhase.DESTROYED, context);
+        eventSupport.fireEvent(BeanPhase.DESTROYED, component);
     }
 
+    /**
+     * Initialize the bean
+     *
+     * @throws InitializeException
+     */
+    @Override
+    public void initialize() {
+        eventSupport.initialize();
+    }
 }

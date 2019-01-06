@@ -16,11 +16,9 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.BeanFactory;
-import org.femtoframework.coin.BeanStage;
-import org.femtoframework.coin.ComponentFactory;
-import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.BeanSpecFactory;
+import org.femtoframework.coin.*;
+
+import java.util.Set;
 
 /**
  * Simple Bean Factory
@@ -30,45 +28,39 @@ import org.femtoframework.coin.spec.BeanSpecFactory;
  */
 public class SimpleBeanFactory extends BaseFactory<Object> implements BeanFactory {
 
-    private BeanSpecFactory specFactory;
     private ComponentFactory componentFactory;
 
-
-    public SimpleBeanFactory(SimpleComponentFactory componentFactory) {
+    public SimpleBeanFactory(NamespaceFactory namespaceFactory, SimpleComponentFactory componentFactory) {
+        super(namespaceFactory, componentFactory.getNamespace());
         this.componentFactory = componentFactory;
-        this.specFactory = componentFactory.getSpecFactory();
-        setNamespace(componentFactory.getNamespace());
+    }
+
+    /**
+     * Return all names
+     *
+     * @return all names
+     */
+    @Override
+    public Set<String> getNames() {
+        return componentFactory.getNames();
     }
 
     /**
      * Return object by given name
      *
-     * @param name   Name
-     * @param create Create object automatically
+     * @param name Name
      * @return object in this factory
      */
     @Override
-    public Object get(String name, boolean create) {
-        return null;
-    }
-
-    /**
-     * Create Object by BeanSpec
-     *
-     * @param name Bean Name
-     * @param spec Bean Spec
-     * @param stage BeanStage
-     */
-    @Override
-    public Object create(String name, BeanSpec spec, BeanStage stage) {
-        return null;
-    }
-
-    public BeanSpecFactory getSpecFactory() {
-        return specFactory;
-    }
-
-    public ComponentFactory getComponentFactory() {
-        return componentFactory;
+    public Object get(String name) {
+        Object bean = super.get(name);
+        if (bean == null) {
+            Component component = componentFactory.get(name);
+            if (component != null) {
+                bean = component.getBean();
+                add(name, bean);
+            }
+        }
+        return bean;
     }
 }

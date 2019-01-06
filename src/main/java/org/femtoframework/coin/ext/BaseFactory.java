@@ -18,6 +18,8 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.Factory;
+import org.femtoframework.coin.Namespace;
+import org.femtoframework.coin.NamespaceFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -42,6 +44,17 @@ public class BaseFactory<B> implements Factory<B> {
 
     protected void add(NamedBean bean) {
         add(bean.getName(), (B)bean);
+    }
+
+    private NamespaceFactory namespaceFactory;
+
+    protected BaseFactory(NamespaceFactory namespaceFactory, String namespace) {
+        setNamespace(namespace);
+        setNamespaceFactory(namespaceFactory);
+    }
+
+    protected void setNamespaceFactory(NamespaceFactory namespaceFactory) {
+        this.namespaceFactory = namespaceFactory;
     }
 
     /**
@@ -96,7 +109,13 @@ public class BaseFactory<B> implements Factory<B> {
         return map.values().iterator();
     }
 
+
     public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
+
+    public NamespaceFactory getNamespaceFactory() {
+        return namespaceFactory;
+    }
+
 }

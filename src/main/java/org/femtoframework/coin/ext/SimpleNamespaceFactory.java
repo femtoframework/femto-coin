@@ -16,20 +16,28 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.coin.CoinConstants;
+import org.femtoframework.coin.LifecycleStrategy;
 import org.femtoframework.coin.Namespace;
 import org.femtoframework.coin.NamespaceFactory;
 
 /**
- * Namesapce Factory implementation
+ * Namespace Factory implementation
  *
  * @author Sheldon Shao
  * @version 1.0
  */
 public class SimpleNamespaceFactory extends BaseFactory<Namespace> implements NamespaceFactory {
 
+    private LifecycleStrategy strategy;
 
-    public SimpleNamespaceFactory() {
-        setNamespace("namespace");
+    public SimpleNamespaceFactory(LifecycleStrategy strategy) {
+        super(null, CoinConstants.NAMESPACE_NAMESPACE);
+        this.strategy = strategy;
+        setNamespaceFactory(this);
+        createNamespace(CoinConstants.NAMESPACE_NAMESPACE);
+        createNamespace(CoinConstants.NAMESPACE_COIN);
+        createNamespace(CoinConstants.DEFAULT_NAMESPACE);
     }
 
     /**
@@ -40,7 +48,7 @@ public class SimpleNamespaceFactory extends BaseFactory<Namespace> implements Na
      */
     @Override
     public Namespace createNamespace(String name) {
-        SimpleNamespace ns = new SimpleNamespace(name);
+        SimpleNamespace ns = new SimpleNamespace(name, this, strategy);
         add(ns);
         return ns;
     }

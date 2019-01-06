@@ -17,11 +17,14 @@
 package org.femtoframework.coin.event;
 
 import org.femtoframework.bean.Initializable;
-import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.BeanFactory;
 import org.femtoframework.coin.BeanPhase;
+import org.femtoframework.coin.Component;
+import org.femtoframework.implement.ImplementUtil;
+import org.femtoframework.lang.reflect.Reflection;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,7 +33,7 @@ import java.util.List;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class BeanEventSupport implements BeanEventListeners, BeanEventListener {
+public class BeanEventSupport implements BeanEventListeners, BeanEventListener, Initializable {
     
     private List<BeanEventListener> listeners = new ArrayList<>(2);
     
@@ -98,13 +101,13 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener {
      * @param factory Bean Factory
      * @param beanName BeanName
      * @param bean Bean
-     * @param context Context
+     * @param component Component
      */
     public void fireEvent(BeanPhase phase, BeanFactory factory,
-                          String beanName, Object bean, BeanContext context)
+                          String beanName, Object bean, Component component)
     {
         if (!listeners.isEmpty()) {
-            handleEvent(new BeanEvent(factory, beanName, phase, bean, context));
+            handleEvent(new BeanEvent(factory, beanName, phase, bean, component));
         }
     }
 
@@ -112,24 +115,26 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener {
      * Fire Event
      *
      * @param phase
-     * @param context
+     * @param component
      */
-    public void fireEvent(BeanPhase phase, BeanContext context)
+    public void fireEvent(BeanPhase phase, Component component)
     {
         if (!listeners.isEmpty()) {
-            handleEvent(new BeanEvent(context.getCurrentBeanFactory(), context.getName(),
-                    phase, context.getBean(), context));
+            handleEvent(new BeanEvent(component.getCurrentBeanFactory(), component.getName(),
+                    phase, component.getBean(), component));
         }
     }
 
-    //TODO
-//    /**
-//     * Initialize the bean
-//     *
-//     * @throws InitializeException
-//     */
-//    @Override
-//    public void initialize() {
-//        Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
-//    }
+    /**
+     * Initialize the bean
+     */
+    @Override
+    public void initialize() {
+        Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
+        while(it.hasNext()) {
+            Class<? extends BeanEventListener> clazz = it.next();
+            BeanEventListener listener = Reflection.newInstance(clazz);
+            listeners.add(listener);
+        }
+    }
 }

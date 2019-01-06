@@ -25,6 +25,11 @@ package org.femtoframework.coin;
 public enum BeanStage {
 
     /**
+     * The bean is disabled
+     */
+    DISABLED,
+
+    /**
      * Construction stage
      */
     CREATE,
@@ -32,12 +37,12 @@ public enum BeanStage {
     /**
      * Calling setter or getter
      */
-    CONFIG,
+    CONFIGURE,
 
     /**
      * Do some simple initialization logic which simple setters are not able to do that.
      */
-    INIT,
+    INITIALIZE,
 
     /**
      * Start to run, for example, start the thread to make the bean on working state

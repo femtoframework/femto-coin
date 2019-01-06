@@ -27,7 +27,7 @@ public interface Configurator {
     /**
      * Configure the bean
      *
-     * @param context BeanContext
+     * @param component Component
      */
-    void configure(BeanContext context);
+    void configure(Component component);
 }

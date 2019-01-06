@@ -17,7 +17,7 @@
 package org.femtoframework.coin.spec.element;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.PrimitiveSpec;
 import org.femtoframework.util.convert.ConverterUtil;
@@ -45,10 +45,10 @@ public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpe
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param context      Bean context
+     * @param component    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, BeanContext context) {
+    public <T> T getValue(Class<T> expectedType, Component component) {
         if (kind == CoreKind.NULL) {
             return null;
         }

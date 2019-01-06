@@ -16,8 +16,6 @@
  */
 package org.femtoframework.coin;
 
-import org.femtoframework.coin.spec.BeanSpec;
-
 /**
  * Bean factory
  * 
@@ -25,22 +23,22 @@ import org.femtoframework.coin.spec.BeanSpec;
  * @version 1.00 2005-1-27 14:12:22
  */
 public interface BeanFactory extends Factory<Object> {
-    /**
-     * Return object by given name
-     *
-     * @param name Name
-     * @param create Create object automatically
-     * @return object in this factory
-     */
-    Object get(String name, boolean create);
+//    /**
+//     * Return object by given name
+//     *
+//     * @param name Name
+//     * @param create Create object automatically
+//     * @return object in this factory
+//     */
+//    Object get(String name, boolean create);
 
 
-    /**
-     * Create Object by BeanSpec
-     *
-     * @param name Bean Name
-     * @param spec Bean Spec
-     * @param stage BeanStage
-     */
-    Object create(String name, BeanSpec spec, BeanStage stage);
+//    /**
+//     * Create Object by BeanSpec
+//     *
+//     * @param name Bean Name
+//     * @param spec Bean Spec
+//     * @param stage BeanStage
+//     */
+//    Object create(String name, BeanSpec spec, BeanStage stage);
 }

@@ -1,6 +1,6 @@
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.util.convert.ConverterUtil;
 
@@ -63,13 +63,13 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param context      Bean context
+     * @param component    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, BeanContext context) {
+    public <T> T getValue(Class<T> expectedType, Component component) {
         Map values = new HashMap(size());
         for(Map.Entry<String, E> entry: entrySet()) {
-            values.put(entry.getKey(), entry.getValue().getValue(null, context));
+            values.put(entry.getKey(), entry.getValue().getValue(null, component));
         }
         return ConverterUtil.convertToType(values, expectedType);
     }

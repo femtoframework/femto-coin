@@ -17,6 +17,7 @@
 package org.femtoframework.coin;
 
 import org.femtoframework.bean.NamedBean;
+import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.status.BeanStatus;
 
@@ -56,6 +57,65 @@ public interface Component extends NamedBean {
      */
     BeanSpec getSpec();
 
+    /**
+     * Qualified Name
+     *
+     * @return Qualified Name
+     */
+    default String getQualifiedName() {
+        return getNamespace() + ":" + getName();
+    }
+
+    /**
+     *
+     * Get Namespace object by name
+     *
+     * @param namespace Namespace name, if it is null or empty string, return the current namespace object
+     * @return Namespace object
+     * @throws org.femtoframework.coin.exception.NoSuchNamespaceException if the namespace doesn't exist
+     */
+    default Namespace getNamespaceByName(String namespace) {
+        if (namespace == null || namespace.isEmpty()) {
+            return getCurrentNamespace();
+        }
+        Namespace ns = getNamespaceFactory().get(namespace);
+        if (ns == null) {
+            throw new NoSuchNamespaceException("No such namespace:" + namespace);
+        }
+        return ns;
+    }
+
+    /**
+     * Return current namespace
+     *
+     * @return Current Namespace
+     */
+    Namespace getCurrentNamespace();
+
+    /**
+     * Bean Factory
+     *
+     * @return Current Bean Factory
+     */
+    default BeanFactory getCurrentBeanFactory() {
+        return getCurrentNamespace().getBeanFactory();
+    }
+
+    /**
+     * Component Factory
+     *
+     * @return Current Component Factory
+     */
+    default ComponentFactory getCurrentComponentFactory() {
+        return getCurrentNamespace().getComponentFactory();
+    }
+
+    /**
+     * Return current bean
+     *
+     * @return current bean
+     */
+    Object getBean();
 
     /**
      * Bean Status
@@ -63,7 +123,6 @@ public interface Component extends NamedBean {
      * @return BeanStatus
      */
     BeanStatus getStatus();
-
 
     /**
      * Return expected Stage
@@ -84,4 +143,11 @@ public interface Component extends NamedBean {
      * @return Bean
      */
     <T> T getBean(Class<T> expectedType);
+
+    /**
+     * Return namespace factory
+     *
+     * @return namespace factory
+     */
+    NamespaceFactory getNamespaceFactory();
 }

@@ -16,7 +16,7 @@
  */
 package org.femtoframework.coin.spec;
 
-import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Component;
 
 /**
  * Element
@@ -60,10 +60,10 @@ public interface Element
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param context      Bean context
+     * @param component    Component
      * @return the value
      */
-    <T> T getValue(Class<T> expectedType, BeanContext context);
+    <T> T getValue(Class<T> expectedType, Component component);
 
     /**
      * Start visiting this spec

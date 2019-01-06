@@ -16,11 +16,18 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.Nameable;
 import org.femtoframework.coin.BeanStage;
 import org.femtoframework.coin.Component;
+import org.femtoframework.coin.Namespace;
+import org.femtoframework.coin.NamespaceFactory;
 import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.element.BeanElement;
+import org.femtoframework.coin.spec.CoreKind;
+import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.status.BeanStatus;
+import org.femtoframework.util.convert.ConverterUtil;
+
+import static org.femtoframework.coin.spec.SpecConstants.NAME;
 
 /**
  * Simple Component
@@ -28,15 +35,20 @@ import org.femtoframework.coin.status.BeanStatus;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleComponent implements Component {
+public class SimpleComponent implements Component, Nameable {
 
     private BeanSpec spec;
     private BeanStatus status = new SimpleBeanStatus();
     private BeanStage stage = BeanStage.CREATE;
+    private Object bean;
 
+    private transient NamespaceFactory namespaceFactory;
+    private transient Namespace currentNamespace;
 
-    public SimpleComponent(String name, Class<?> implClass) {
-        spec = new BeanElement(name, implClass);
+    public SimpleComponent(NamespaceFactory namespaceFactory, BeanSpec spec) {
+        this.namespaceFactory = namespaceFactory;
+        this.spec = spec;
+        this.currentNamespace = namespaceFactory.get(spec.getNamespace());
     }
 
     /**
@@ -47,6 +59,16 @@ public class SimpleComponent implements Component {
     @Override
     public BeanSpec getSpec() {
         return spec;
+    }
+
+    /**
+     * Return current namespace
+     *
+     * @return Current Namespace
+     */
+    @Override
+    public Namespace getCurrentNamespace() {
+        return currentNamespace;
     }
 
     /**
@@ -77,8 +99,22 @@ public class SimpleComponent implements Component {
      */
     @Override
     public <T> T getBean(Class<T> expectedType) {
-        //TODO
-        return null;
+        if (expectedType == null) {
+            return (T)getBean();
+        }
+        else {
+            return ConverterUtil.convertToType(getBean(), expectedType);
+        }
+    }
+
+    /**
+     * Return namespace factory
+     *
+     * @return namespace factory
+     */
+    @Override
+    public NamespaceFactory getNamespaceFactory() {
+        return namespaceFactory;
     }
 
     /**
@@ -89,5 +125,25 @@ public class SimpleComponent implements Component {
     @Override
     public BeanStage getStage() {
         return stage;
+    }
+
+    public Object getBean() {
+        return bean;
+    }
+
+    public void setBean(Object bean) {
+        this.bean = bean;
+    }
+
+    /**
+     * Set name of the object
+     *
+     * @param name Name
+     */
+    @Override
+    public void setName(String name) {
+        if (spec != null) {
+            spec.put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
+        }
     }
 }

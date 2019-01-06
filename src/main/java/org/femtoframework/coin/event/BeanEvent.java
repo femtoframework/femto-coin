@@ -16,9 +16,9 @@
  */
 package org.femtoframework.coin.event;
 
-import org.femtoframework.coin.BeanContext;
 import org.femtoframework.coin.BeanFactory;
 import org.femtoframework.coin.BeanPhase;
+import org.femtoframework.coin.Component;
 
 import java.util.EventObject;
 
@@ -39,7 +39,7 @@ public class BeanEvent extends EventObject {
 
     private Object target;
 
-    private BeanContext context;
+    private Component component;
 
 
     /**
@@ -48,13 +48,13 @@ public class BeanEvent extends EventObject {
      * @param source The object on which the Event initially occurred.
      * @throws IllegalArgumentException if source is null.
      */
-    public BeanEvent(BeanFactory source, String name, BeanPhase phase, Object target, BeanContext context) {
+    public BeanEvent(BeanFactory source, String name, BeanPhase phase, Object target, Component component) {
         super(source);
         this.factory = source;
         this.name = name;
         this.phase = phase;
         this.target = target;
-        this.context = context;
+        this.component = component;
     }
 
     /**
@@ -86,9 +86,9 @@ public class BeanEvent extends EventObject {
     }
 
     /**
-     * Bean Context
+     * Component
      */
-    public BeanContext getContext() {
-        return context;
+    public Component getComponent() {
+        return component;
     }
 }

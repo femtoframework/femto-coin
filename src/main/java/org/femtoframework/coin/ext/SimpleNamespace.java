@@ -16,9 +16,7 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.BeanFactory;
-import org.femtoframework.coin.ComponentFactory;
-import org.femtoframework.coin.Namespace;
+import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.BeanSpecFactory;
 
 /**
@@ -35,11 +33,11 @@ public class SimpleNamespace implements Namespace {
     private SimpleComponentFactory componentFactory;
     private BeanFactory beanFactory;
 
-    public SimpleNamespace(String name) {
+    public SimpleNamespace(String name, NamespaceFactory namespaceFactory, LifecycleStrategy strategy) {
         this.name = name;
-        this.specFactory = new SimpleBeanSpecFactory(name);
-        this.componentFactory = new SimpleComponentFactory(specFactory);
-        this.beanFactory = new SimpleBeanFactory(componentFactory);
+        this.specFactory = new SimpleBeanSpecFactory(namespaceFactory, name);
+        this.componentFactory = new SimpleComponentFactory(namespaceFactory, specFactory, strategy);
+        this.beanFactory = new SimpleBeanFactory(namespaceFactory, componentFactory);
     }
 
     /**

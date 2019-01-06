@@ -16,26 +16,36 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.CoinController;
-import org.femtoframework.coin.CoinModule;
-import org.femtoframework.coin.LifecycleStrategy;
-import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.bean.Initializable;
+import org.femtoframework.bean.exception.InitializeException;
+import org.femtoframework.coin.*;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
 
+import static org.femtoframework.coin.CoinConstants.*;
+
 /**
+ * Simple Coin Module
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleCoinModule implements CoinModule {
-
-    private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory();
-
-    private SimpleCoinController coinControl = new SimpleCoinController();
+public class SimpleCoinModule implements CoinModule, Initializable {
 
 
-    private SimpleLifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy();
+    private SimpleCoinController coinController = new SimpleCoinController();
+
+
+    private SimpleConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
+
+
+    private SimpleLifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(configuratorFactory);
+
+
+    private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory(lifecycleStrategy);
+
+
+    private Namespace namespaceCoin;
 
     /**
      * Return namespace factory
@@ -54,7 +64,7 @@ public class SimpleCoinModule implements CoinModule {
      */
     @Override
     public CoinController getControlller() {
-        return coinControl;
+        return coinController;
     }
 
     /**
@@ -83,5 +93,24 @@ public class SimpleCoinModule implements CoinModule {
     @Override
     public BeanEventListeners getBeanEventListeners() {
         return lifecycleStrategy.getEventListeners();
+    }
+
+    /**
+     * Initialize the bean
+     *
+     * @throws InitializeException
+     */
+    @Override
+    public void initialize() {
+        configuratorFactory.setNamespaceFactory(namespaceFactory);
+
+        namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
+
+        ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
+        componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
     }
 }

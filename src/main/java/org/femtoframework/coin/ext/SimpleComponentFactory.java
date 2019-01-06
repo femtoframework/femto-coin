@@ -16,12 +16,12 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.BeanStage;
-import org.femtoframework.coin.Component;
-import org.femtoframework.coin.ComponentFactory;
+import org.femtoframework.coin.*;
+import org.femtoframework.coin.exception.BeanCreationException;
 import org.femtoframework.coin.exception.BeanNotExpectedException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.BeanSpecFactory;
+import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.NoSuchClassException;
@@ -46,10 +46,12 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
 
     private Logger log = LoggerFactory.getLogger(SimpleComponentFactory.class);
 
+    private LifecycleStrategy strategy;
 
-    public SimpleComponentFactory(BeanSpecFactory specFactory) {
+    public SimpleComponentFactory(NamespaceFactory namespaceFactory, BeanSpecFactory specFactory, LifecycleStrategy strategy) {
+        super(namespaceFactory, specFactory.getNamespace());
         this.specFactory = specFactory;
-        setNamespace(specFactory.getNamespace());
+        this.strategy = strategy;
     }
 
     /**
@@ -62,6 +64,12 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
      */
     @Override
     public Component create(String name, Class<?> implClass, BeanStage targetStage) {
+        name = checkName(name, implClass);
+        BeanSpec spec = new BeanElement(getNamespace(), name, implClass);
+        return doCreate(null, spec, targetStage);
+    }
+
+    protected String checkName(String name, Class<?> implClass) {
         String newBeanName = name;
         ManagedBean mb = implClass.getAnnotation(ManagedBean.class);
         if (mb != null) {
@@ -81,12 +89,83 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
         else if (StringUtil.isInvalid(name)) {
             throw new BeanNotExpectedException(name, implClass.getSimpleName());
         }
+        return newBeanName;
+    }
 
-        SimpleComponent component = new SimpleComponent(newBeanName, implClass);
+    /**
+     * Create component by BeanSpec
+     *
+     * @param name        Bean Name
+     * @param spec        Bean Spec
+     * @param targetStage BeanStage
+     */
+    @Override
+    public Component create(String name, BeanSpec spec, BeanStage targetStage) {
+        checkName(name, spec.getTypeClass());
+        return doCreate(null, spec, targetStage);
+    }
+
+    /**
+     * Create component by existing bean
+     *
+     * @param name        Bean Name
+     * @param bean        Bean
+     * @param targetStage BeanStage
+     */
+    @Override
+    public Component create(String name, Object bean, BeanStage targetStage) {
+        checkName(name, bean.getClass());
+        BeanSpec spec = new BeanElement(getNamespace(), name, bean.getClass());
+        return doCreate(bean, spec, targetStage);
+    }
+
+    protected Component doCreate(Object bean, BeanSpec spec, BeanStage targetStage) {
+        SimpleComponent component = new SimpleComponent(getNamespaceFactory(), spec);
         component.setStage(targetStage);
-        //TODO go to target stage?
+        component.setBean(bean);
+        createBean(component);
         add(component);
         return component;
+    }
+
+    /**
+     * Create Object in Component
+     *
+     * @param component Component
+     */
+    protected Object createBean(SimpleComponent component) {
+        Object bean = component.getBean();
+        if (bean == null) {
+            bean = strategy.create(component);
+        }
+        if (bean == null) {
+            throw new BeanCreationException("Can not create the bean, namespace:" + getNamespace() + " bean name:" + component.getName());
+        }
+        component.setBean(bean);
+
+        BeanStage targetStage = component.getStage();
+        BeanPhase phase = component.getStatus().getPhase();
+        BeanPhase expectedPhase = BeanPhase.expectedPhase(targetStage);
+
+        if (expectedPhase.ordinal() > phase.ordinal()) {
+            if (phase.isRunning()) { //Some other is running
+                return bean;
+            }
+            else {
+                int stageInt = expectedPhase.ordinal();
+                if (stageInt >= BeanPhase.CONFIGURED.ordinal()) {
+                    strategy.configure(component);
+                }
+                if (stageInt >= BeanPhase.INITIALIZED.ordinal()) {
+                    strategy.initialize(component);
+                }
+                if (stageInt >= BeanPhase.STARTED.ordinal()) {
+                    strategy.start(component);
+                }
+            }
+        }
+
+        return bean;
     }
 
     /**

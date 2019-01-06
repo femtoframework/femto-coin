@@ -16,7 +16,7 @@
  */
 package org.femtoframework.coin.remote;
 
-import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Component;
 
 /**
  * Remote Generator
@@ -32,10 +32,10 @@ public interface RemoteGenerator {
      * Generate object
      *
      * @param expectedType Expected Type
-     * @param context Bean Context
+     * @param component Component
      * @param interfaces Interfaces the generated bean should have
      * @param uri Remote URI
      * @return Generated Object
      */
-    Object generate(String expectedType, BeanContext context, String[] interfaces, String uri);
+    Object generate(String expectedType, Component component, String[] interfaces, String uri);
 }

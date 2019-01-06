@@ -14,35 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.configurator;
-
-import org.femtoframework.bean.Nameable;
-import org.femtoframework.coin.Component;
-import org.femtoframework.coin.Configurator;
+package org.femtoframework.coin;
 
 /**
- * Configure container related stuff,
- * 1. Name
- * 2. Namespace
+ * Coin Constants
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class GenericConfigurator implements Configurator {
-    /**
-     * Configure the bean
-     *
-     * @param component Component
-     */
-    @Override
-    public void configure(Component component) {
-        Object obj = component.getBean();
-        if (obj instanceof Nameable) {
-            String name = component.getName();
-            if (name != null && !name.isEmpty()) {
-                ((Nameable)obj).setName(name);
-            }
-        }
+public interface CoinConstants {
 
-    }
+    String NAME_MODULE = "module";
+    String NAME_CONTROLLER = "controller";
+    String NAME_CONFIGURATOR_FACTORY = "configurator_factory";
+    String NAME_LIFECYCLE_STRATEGY = "lifecycle_strategy";
+    String NAME_NAMESPACE_FACTORY = "namespace_factory";
+
+    String NAMESPACE_COIN = "coin";
+
+    String NAMESPACE_NAMESPACE = "namespace";
+
+    String DEFAULT_NAMESPACE = "default";
+
+    String NAMESPACE_CONFIGURQTOR = "configurator";
 }

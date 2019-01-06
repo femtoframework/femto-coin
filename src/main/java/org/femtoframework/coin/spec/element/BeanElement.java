@@ -16,8 +16,7 @@
  */
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.BeanContext;
-import org.femtoframework.coin.BeanFactory;
+import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.CoreKind;
@@ -25,7 +24,6 @@ import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.util.DataUtil;
-import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +45,8 @@ public class BeanElement extends MapElement<Element> implements BeanSpec, SpecCo
         setKind(CoreKind.BEAN);
     }
 
-    public BeanElement(String name, Class<?> implClass) {
+    public BeanElement(String namespace, String name, Class<?> implClass) {
+        put(_NAMESPACE, new PrimitiveElement<>(CoreKind.STRING, namespace));
         put(_NAME, new PrimitiveElement<>(CoreKind.STRING, name));
         put(_TYPE, new PrimitiveElement<>(CoreKind.STRING, implClass.getName()));
         this.typeClass = implClass;
@@ -143,10 +142,10 @@ public class BeanElement extends MapElement<Element> implements BeanSpec, SpecCo
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param context      Bean context
+     * @param component    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, BeanContext context) {
+    public <T> T getValue(Class<T> expectedType, Component component) {
 //        Map values = new ParametersMap();
 //        for(Map.Entry<String, Element> entry: entrySet()) {
 //            String key = entry.getKey();
@@ -156,9 +155,8 @@ public class BeanElement extends MapElement<Element> implements BeanSpec, SpecCo
 //        }
 //
 //        return ConverterUtil.convertToType(values, expectedType);
-        BeanFactory factory = context.getCurrentBeanFactory();
-        Object obj = factory.create(getName(), this, context.getTargetStage());
-        return ConverterUtil.convertToType(obj, expectedType);
+//        ComponentFactory factory = component.getCurrentComponentFactory();
+        return component.getBean(expectedType);
     }
 
     /**

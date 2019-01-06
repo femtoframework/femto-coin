@@ -27,70 +27,107 @@ public enum BeanPhase {
     /**
      * Bean is disabled, means it is not created or configured
      */
-    DISABLED,
+    DISABLED(false),
 
     /**
      * Bean is enabled, means it is ready for creating.
      */
-    ENABLED,
+    ENABLED(true),
 
     /**
      * Bean is creating
      */
-    CREATING,
+    CREATING(true),
 
     /**
      * Bean is created
      */
-    CREATED,
+    CREATED(false),
 
     /**
      * Bean is configuring
      */
-    CONFIGURING,
+    CONFIGURING(true),
 
     /**
      * Bean is configured
      */
-    CONFIGURED,
+    CONFIGURED(false),
 
     /**
      * Bean is initializing
      */
-    INITIALIZING,
+    INITIALIZING(true),
 
     /**
      * Bean is initialized
      */
-    INITIALIZED,
+    INITIALIZED(false),
 
     /**
      * Bean is starting
      */
-    STARTING,
+    STARTING(true),
 
     /**
      * Bean is started
      */
-    STARTED,
+    STARTED(false),
 
     /**
      * Bean is stopping
      */
-    STOPPING,
+    STOPPING(true),
 
     /**
      * Bean is stopped
      */
-    STOPPED,
+    STOPPED(false),
 
     /**
      * Bean is destroying
      */
-    DESTROYING,
+    DESTROYING(true),
 
     /**
      * Bean is destroyed
      */
-    DESTROYED;
+    DESTROYED(false);
+
+
+    private boolean running;
+
+    BeanPhase(boolean running) {
+        this.running = running;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    /**
+     * Bean Stage
+     *
+     * @param stage Bean Stage
+     * @return
+     */
+    public static BeanPhase expectedPhase(BeanStage stage) {
+        switch (stage) {
+            case DISABLED:
+                return BeanPhase.DISABLED;
+            case CREATE:
+                return BeanPhase.CREATED;
+            case CONFIGURE:
+                return BeanPhase.CONFIGURED;
+            case INITIALIZE:
+                return BeanPhase.INITIALIZED;
+            case START:
+                return BeanPhase.STARTED;
+            case STOP:
+                return BeanPhase.STOPPED;
+            case DESTROY:
+                return BeanPhase.DESTROYED;
+        }
+        return BeanPhase.DISABLED;
+    }
 }

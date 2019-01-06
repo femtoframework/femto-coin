@@ -1,6 +1,6 @@
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.BeanContext;
+import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.ElementVisitor;
 
@@ -43,10 +43,10 @@ public class VariableElement extends PrimitiveElement<Object>
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param context      Bean context
+     * @param component      Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, BeanContext context)
+    public <T> T getValue(Class<T> expectedType, Component component)
     {
 //        if ("namespace".equals(name)) {
 //            return context.getNamespace();

@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.coin.BeanPhase;
 import org.femtoframework.coin.status.BeanCondition;
 
 /**
@@ -29,6 +30,10 @@ public class SimpleBeanCondition implements BeanCondition {
     private long timestamp;
     private String type;
     private ConditionState state = ConditionState.UNKNOWN;
+
+    public SimpleBeanCondition(BeanPhase phase) {
+        this(phase.name(), ConditionState.TRUE);
+    }
 
     public SimpleBeanCondition(String type, ConditionState state) {
         this.type = type;

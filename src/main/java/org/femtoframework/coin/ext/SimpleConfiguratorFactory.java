@@ -16,9 +16,14 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.BeanContext;
-import org.femtoframework.coin.Configurator;
-import org.femtoframework.coin.ConfiguratorFactory;
+import org.femtoframework.bean.Initializable;
+import org.femtoframework.bean.NamedBean;
+import org.femtoframework.bean.exception.InitializeException;
+import org.femtoframework.coin.*;
+import org.femtoframework.implement.ImplementUtil;
+import org.femtoframework.lang.reflect.Reflection;
+
+import java.util.Iterator;
 
 /**
  * Simple Configurator Factory
@@ -26,23 +31,42 @@ import org.femtoframework.coin.ConfiguratorFactory;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleConfiguratorFactory extends BaseFactory<Configurator> implements ConfiguratorFactory {
+public class SimpleConfiguratorFactory extends BaseFactory<Configurator> implements ConfiguratorFactory, Initializable {
 
-    private static SimpleConfiguratorFactory instance = new SimpleConfiguratorFactory();
+    protected SimpleConfiguratorFactory() {
+        super(null, CoinConstants.NAMESPACE_CONFIGURQTOR);
 
-    public static ConfiguratorFactory getInstance() {
-        return instance;
     }
 
     /**
      * Configure the bean
      *
-     * @param context BeanContext
+     * @param component Component
      */
     @Override
-    public void configure(BeanContext context) {
+    public void configure(Component component) {
         for(Configurator configurator: this) {
-            configurator.configure(context);
+            configurator.configure(component);
+        }
+    }
+
+    /**
+     * Initialize the bean
+     *
+     * @throws InitializeException
+     */
+    @Override
+    public void initialize() {
+        Iterator<Class<? extends Configurator>> implementations = ImplementUtil.getImplements(Configurator.class);
+        while(implementations.hasNext()) {
+            Class<? extends Configurator> clazz = implementations.next();
+            Configurator configurator = Reflection.newInstance(clazz);
+            if (configurator instanceof NamedBean) {
+                add((NamedBean)configurator);
+            }
+            else {
+                add(clazz.getSimpleName(), configurator);
+            }
         }
     }
 }

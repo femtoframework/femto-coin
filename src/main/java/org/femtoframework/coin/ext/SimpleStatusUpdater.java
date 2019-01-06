@@ -14,35 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.configurator;
+package org.femtoframework.coin.ext;
 
-import org.femtoframework.bean.Nameable;
+import org.femtoframework.coin.BeanPhase;
 import org.femtoframework.coin.Component;
-import org.femtoframework.coin.Configurator;
+import org.femtoframework.coin.event.BeanEvent;
+import org.femtoframework.coin.event.BeanEventListener;
+import org.femtoframework.coin.status.BeanStatus;
 
 /**
- * Configure container related stuff,
- * 1. Name
- * 2. Namespace
+ * Update the component phase to Component Object
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class GenericConfigurator implements Configurator {
+public class SimpleStatusUpdater implements BeanEventListener {
+
     /**
-     * Configure the bean
+     * Handle bean event
      *
-     * @param component Component
+     * @param event Bean Event
      */
     @Override
-    public void configure(Component component) {
-        Object obj = component.getBean();
-        if (obj instanceof Nameable) {
-            String name = component.getName();
-            if (name != null && !name.isEmpty()) {
-                ((Nameable)obj).setName(name);
-            }
+    public void handleEvent(BeanEvent event) {
+        Component component = event.getComponent();
+        BeanStatus status = component.getStatus();
+        BeanPhase phase = event.getPhase();
+        if (status instanceof SimpleBeanStatus) {
+            SimpleBeanStatus simpleBeanStatus = (SimpleBeanStatus)status;
+            simpleBeanStatus.setPhase(phase);
+            simpleBeanStatus.getConditions().add(new SimpleBeanCondition(phase));
         }
-
     }
 }

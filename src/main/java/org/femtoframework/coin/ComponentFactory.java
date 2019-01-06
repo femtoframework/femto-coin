@@ -16,6 +16,8 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.coin.spec.BeanSpec;
+
 /**
  * Component Factory
  *
@@ -33,6 +35,24 @@ public interface ComponentFactory extends Factory<Component> {
      * @return
      */
     Component create(String name, Class<?> implClass, BeanStage targetStage);
+
+    /**
+     * Create component by BeanSpec
+     *
+     * @param name Bean Name
+     * @param spec Bean Spec
+     * @param targetStage BeanStage
+     */
+    Component create(String name, BeanSpec spec, BeanStage targetStage);
+
+    /**
+     * Create component by existing bean
+     *
+     * @param name Bean Name
+     * @param bean Bean
+     * @param targetStage BeanStage
+     */
+    Component create(String name, Object bean, BeanStage targetStage);
 
     /**
      * Get the default implementation by interface class
