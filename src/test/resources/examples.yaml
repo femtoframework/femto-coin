@@ -26,6 +26,19 @@ second:
     1: 1
     2: 2
     3: 3
+  stringSet: !!set
+    ? Jan
+    ? Feb
+    ? Mar
+    ? Apr
+    ? May
+    ? Jun
+    ? Jul
+    ? Aug
+    ? Sep
+    ? Oct
+    ? Nov
+    ? Dec
   parameters:
     abc: value1
     bcd: value2

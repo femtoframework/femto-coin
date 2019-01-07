@@ -34,6 +34,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Auto Inject
@@ -149,6 +150,9 @@ public class AutoConfigurator implements Configurator {
                 }
                 else if (element instanceof MapSpec) {
                     if (Map.class.isAssignableFrom(expectedType)) {
+                        value = element.getValue(expectedType, component);
+                    }
+                    else if (Set.class.isAssignableFrom(expectedType)) {
                         value = element.getValue(expectedType, component);
                     }
                     else {

@@ -5,6 +5,7 @@ import org.femtoframework.parameters.Parameters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Second Bean
@@ -26,6 +27,8 @@ public class SecondBean implements SecondInterface
     }
 
     private List<String> stringList;
+
+    private Set<String> stringSet;
 
     public List<String> getStringList() {
         return stringList;
@@ -63,5 +66,13 @@ public class SecondBean implements SecondInterface
 
     public void setInts(int[] ints) {
         this.ints = ints;
+    }
+
+    public Set<String> getStringSet() {
+        return stringSet;
+    }
+
+    public void setStringSet(Set<String> stringSet) {
+        this.stringSet = stringSet;
     }
 }
