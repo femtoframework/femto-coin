@@ -27,6 +27,9 @@ import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.util.convert.ConverterUtil;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.femtoframework.coin.spec.SpecConstants.NAME;
 
 /**
@@ -145,5 +148,30 @@ public class SimpleComponent implements Component, Nameable {
         if (spec != null) {
             spec.put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
         }
+    }
+
+    private Map<String, Component> children = null;
+
+    /**
+     * Add Child component, if the child bean is an anonymous Component, it will be put into the parent instead of adding it to ComponentFactory
+     *
+     * @param propertyName Property Name
+     * @param component Child Component
+     */
+    public void addChild(String propertyName, Component component) {
+        if (children == null) {
+            children = new HashMap<>(4);
+        }
+        children.put(propertyName, component);
+    }
+
+    /**
+     * Return Component by Formatted property name
+     *
+     * @param name Formatted Property Name,
+     * @return
+     */
+    public Component getChild(String name) {
+        return children.get(name);
     }
 }

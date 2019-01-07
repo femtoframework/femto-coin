@@ -51,7 +51,7 @@ public interface CoinModule {
      *
      * @return Coin Control
      */
-    CoinController getControlller();
+    CoinController getController();
 
     /**
      * Remote Generator, for RMI or gRPC extension

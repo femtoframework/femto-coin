@@ -27,8 +27,8 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class NamespaceElement extends ObjectElement implements NamespaceSpec {
-    
+public class NamespaceElement extends ModelElement implements NamespaceSpec {
+
     public NamespaceElement() {
         super(CoreKind.NAMESPACE);
     }

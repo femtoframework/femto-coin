@@ -125,16 +125,21 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener, 
         }
     }
 
+    private boolean initialized = false;
+
     /**
      * Initialize the bean
      */
     @Override
     public void initialize() {
-        Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
-        while(it.hasNext()) {
-            Class<? extends BeanEventListener> clazz = it.next();
-            BeanEventListener listener = Reflection.newInstance(clazz);
-            listeners.add(listener);
+        if (!initialized) {
+            Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
+            while(it.hasNext()) {
+                Class<? extends BeanEventListener> clazz = it.next();
+                BeanEventListener listener = Reflection.newInstance(clazz);
+                listeners.add(listener);
+            }
+            initialized = true;
         }
     }
 }

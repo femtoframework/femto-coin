@@ -71,7 +71,12 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
         for(Map.Entry<String, E> entry: entrySet()) {
             values.put(entry.getKey(), entry.getValue().getValue(null, component));
         }
-        return ConverterUtil.convertToType(values, expectedType);
+        if (expectedType != null) {
+            return ConverterUtil.convertToType(values, expectedType);
+        }
+        else {
+            return (T)values;
+        }
     }
 
     public void setKind(CoreKind kind) {

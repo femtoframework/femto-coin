@@ -60,10 +60,10 @@ public interface Element
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param component    Component
+     * @param parentComponent  Component
      * @return the value
      */
-    <T> T getValue(Class<T> expectedType, Component component);
+    <T> T getValue(Class<T> expectedType, Component parentComponent);
 
     /**
      * Start visiting this spec

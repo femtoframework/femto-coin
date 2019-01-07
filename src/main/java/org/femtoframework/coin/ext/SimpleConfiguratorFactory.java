@@ -49,6 +49,8 @@ public class SimpleConfiguratorFactory extends BaseFactory<Configurator> impleme
         }
     }
 
+    private boolean initialized = false;
+
     /**
      * Initialize the bean
      *
@@ -56,16 +58,18 @@ public class SimpleConfiguratorFactory extends BaseFactory<Configurator> impleme
      */
     @Override
     public void initialize() {
-        Iterator<Class<? extends Configurator>> implementations = ImplementUtil.getImplements(Configurator.class);
-        while(implementations.hasNext()) {
-            Class<? extends Configurator> clazz = implementations.next();
-            Configurator configurator = Reflection.newInstance(clazz);
-            if (configurator instanceof NamedBean) {
-                add((NamedBean)configurator);
+        if (!initialized) {
+            Iterator<Class<? extends Configurator>> implementations = ImplementUtil.getImplements(Configurator.class);
+            while (implementations.hasNext()) {
+                Class<? extends Configurator> clazz = implementations.next();
+                Configurator configurator = Reflection.newInstance(clazz);
+                if (configurator instanceof NamedBean) {
+                    add((NamedBean) configurator);
+                } else {
+                    add(clazz.getSimpleName(), configurator);
+                }
             }
-            else {
-                add(clazz.getSimpleName(), configurator);
-            }
+            initialized = true;
         }
     }
 }

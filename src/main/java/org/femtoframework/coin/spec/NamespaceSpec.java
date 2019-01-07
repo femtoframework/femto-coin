@@ -22,7 +22,7 @@ package org.femtoframework.coin.spec;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface NamespaceSpec extends ObjectSpec {
+public interface NamespaceSpec extends ModelSpec {
 
     /**
      * Start visiting this spec

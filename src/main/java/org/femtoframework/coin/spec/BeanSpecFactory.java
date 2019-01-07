@@ -25,4 +25,11 @@ import org.femtoframework.coin.Factory;
  * @version 1.0
  */
 public interface BeanSpecFactory extends Factory<BeanSpec> {
+
+    /**
+     * Add new BeanSpec
+     *
+     * @param spec BeanSpec
+     */
+    void add(BeanSpec spec);
 }

@@ -26,11 +26,9 @@ import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.KindSpecFactory;
-import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.coin.spec.element.ListElement;
-import org.femtoframework.coin.spec.element.ObjectElement;
+import org.femtoframework.coin.spec.element.ModelElement;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
-import org.femtoframework.util.DataUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -72,7 +70,7 @@ public class UntypedSpecDeserializer extends UntypedObjectDeserializer {
         switch (tokenId) {
             case JsonTokenId.ID_END_OBJECT:
                 Map map = (Map)value;
-                String version = DataUtil.getString(ObjectElement.getValue(map, SpecConstants._VERSION), "v1");
+                String version = ModelElement.getVersion(map);
                 KindSpecFactory factory = CoinUtil.getKindSpecFactory();
                 KindSpec kindSpec = factory.get(version);
                 if (kindSpec == null) {

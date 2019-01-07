@@ -39,6 +39,15 @@ public class CoinUtil {
     }
 
     /**
+     * Coin Control, maintain objects by Yaml or JSON
+     *
+     * @return Coin Control
+     */
+    public static CoinController getController() {
+        return getModule().getController();
+    }
+
+    /**
      * Return KindSpecFactory
      *
      * @return KindSpecFactory

@@ -20,7 +20,7 @@ import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.spec.element.MapElement;
 import org.femtoframework.coin.spec.element.NamespaceElement;
-import org.femtoframework.coin.spec.element.ObjectElement;
+import org.femtoframework.coin.spec.element.ModelElement;
 import org.femtoframework.util.DataUtil;
 import org.femtoframework.util.StringUtil;
 
@@ -60,7 +60,7 @@ public class CoreKindSpec implements KindSpec {
      * @return right spec object
      */
     public <S extends MapSpec> S toSpec(Map map) {
-        String kind = DataUtil.getString(ObjectElement.getValue(map, SpecConstants._KIND), null);
+        String kind = DataUtil.getString(ModelElement.getValue(map, SpecConstants._KIND), null);
         if (SpecConstants.NAMESPACE.equals(kind)) {
             return (S)new NamespaceElement(map);
         }
@@ -68,7 +68,7 @@ public class CoreKindSpec implements KindSpec {
             return (S)new BeanElement(map);
         }
         else if (StringUtil.isInvalid(kind)) {
-            String type = DataUtil.getString(ObjectElement.getValue(map, SpecConstants._TYPE), null);
+            String type = DataUtil.getString(ModelElement.getValue(map, SpecConstants._TYPE), null);
             if (StringUtil.isValid(type)) { //Consider as Bean
                 return (S)new BeanElement(map);
             }

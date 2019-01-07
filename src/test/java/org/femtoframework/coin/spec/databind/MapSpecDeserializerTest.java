@@ -7,14 +7,19 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.KindSpec;
+import org.femtoframework.coin.spec.NamespaceSpec;
 import org.femtoframework.coin.spec.databind.deser.CoinBeanDeserializerModifier;
 import org.femtoframework.coin.spec.element.BeanElement;
+import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.util.DataBindUtil;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +41,10 @@ import java.util.Map;
 public class MapSpecDeserializerTest {
 
     //Object Mapper is thread safe
-    private static ObjectMapper objectMapper = new ObjectMapper();
+
+    private static YAMLFactory yamlFactory = new YAMLFactory();
+
+    private static ObjectMapper objectMapper = new ObjectMapper(yamlFactory);
 
     static {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -47,17 +55,19 @@ public class MapSpecDeserializerTest {
     }
 
 
-    private static YAMLFactory yamlFactory = new YAMLFactory();
-
     @Test
     public void testDes() throws Exception {
         File file = NutletUtil.getResourceAsFile("examples.yaml");
         YAMLParser parser = yamlFactory.createParser(file);
-        Map obj = objectMapper.readValue(parser, LinkedHashMap.class);
-        System.out.println(obj);
+        List<LinkedHashMap> list = objectMapper.readValues(parser, LinkedHashMap.class).readAll();
+        System.out.println(list);
 
         KindSpec kindSpec = CoinUtil.getKindSpecFactory().getCoreKindSpec();
-        BeanSpec spec = kindSpec.toSpec(obj);
-        System.out.println(DataBindUtil.writeValueAsString(spec));
+        BeanSpec spec = kindSpec.toSpec(list.get(1));
+
+        System.out.println(objectMapper.writeValueAsString(spec));
+
+        NamespaceSpec ns = kindSpec.toSpec(list.get(0));
+        System.out.println(objectMapper.writeValueAsString(ns));
     }
 }

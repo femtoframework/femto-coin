@@ -1,3 +1,10 @@
+# Namespace
+_version: v1
+_name: test
+_kind: namespace
+
+---
+# First Bean
 _version: v1
 _namespace: test
 _name: first
@@ -34,10 +41,12 @@ second:
     current: ${second/thirds/0/name}
   thirds:
   - name: third1
+    _type: org.femtoframework.coin.ThirdBean
     integer: 123
     bool: true
     string: "Hello world!"
   - name: third2
+    _type: org.femtoframework.coin.ThirdBean
     integer: 456
     bool: false
     string: "Merry Xmas!"

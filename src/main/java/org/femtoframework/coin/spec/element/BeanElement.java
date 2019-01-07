@@ -17,12 +17,16 @@
 package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.Component;
+import org.femtoframework.coin.ComponentFactory;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.CoreKind;
+import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
+import org.femtoframework.parameters.ParametersMap;
 import org.femtoframework.util.DataUtil;
+import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +37,7 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class BeanElement extends ObjectElement implements BeanSpec, SpecConstants {
+public class BeanElement extends ModelElement implements BeanSpec, SpecConstants {
 
     public BeanElement() {
         super(CoreKind.BEAN);
@@ -46,20 +50,29 @@ public class BeanElement extends ObjectElement implements BeanSpec, SpecConstant
 
     public BeanElement(String namespace, String name, Class<?> implClass) {
         super(CoreKind.BEAN);
+        setNamespace(namespace);
+        setName(name);
+        setTypeClass(implClass);
+    }
+
+    public void setNamespace(String namespace) {
         put(_NAMESPACE, new PrimitiveElement<>(CoreKind.STRING, namespace));
+    }
+
+    public void setName(String name) {
         put(_NAME, new PrimitiveElement<>(CoreKind.STRING, name));
-        put(_TYPE, new PrimitiveElement<>(CoreKind.STRING, implClass.getName()));
+    }
+
+    public void setType(String type) {
+        put(_TYPE, new PrimitiveElement<>(CoreKind.STRING, type));
+    }
+
+    public void setTypeClass(Class<?> implClass) {
+        setType(implClass.getName());
         this.typeClass = implClass;
     }
 
     private transient Class<?> typeClass;
-
-    /**
-     * Version
-     */
-    public String getVersion() {
-        return getString(_VERSION, BeanSpec.super.getVersion());
-    }
 
     /**
      * Return aliases
@@ -97,14 +110,14 @@ public class BeanElement extends ObjectElement implements BeanSpec, SpecConstant
      */
     @Override
     public Class<?> getTypeClass() {
-        String kind = getType();
+        String type = getType();
         if (typeClass == null) {
-            if (kind != null) {
+            if (type != null) {
                 if (typeClass == null) {
                     try {
-                        typeClass = Reflection.getClass(kind);
+                        typeClass = Reflection.getClass(type);
                     } catch (ClassNotFoundException e) {
-                        throw new NoSuchClassException("No such kind:" + kind + " in spec:" + getName());
+                        throw new NoSuchClassException("No such type:" + type + " in spec:" + getName());
                     }
                 }
             }
@@ -116,20 +129,24 @@ public class BeanElement extends ObjectElement implements BeanSpec, SpecConstant
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
-     * @param component    Component
+     * @param parentComponent    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, Component component) {
-//        Map values = new ParametersMap();
-//        for(Map.Entry<String, Element> entry: entrySet()) {
-//            String key = entry.getKey();
-//            if (!key.startsWith("_")) {
-//                values.put(, entry.getValue().getValue(null, context));
-//            }
-//        }
-//
-//        return ConverterUtil.convertToType(values, expectedType);
-//        ComponentFactory factory = component.getCurrentComponentFactory();
+    public <T> T getValue(Class<T> expectedType, Component parentComponent) {
+        Map values = new ParametersMap();
+        for(Map.Entry<String, Element> entry: entrySet()) {
+            String key = entry.getKey();
+            if (!key.startsWith("_")) {
+                values.put(key, entry.getValue().getValue(null, parentComponent));
+            }
+        }
+
+        if (expectedType == null) {
+            expectedType = (Class<T>)getTypeClass();
+        }
+
+        ComponentFactory factory = parentComponent.getCurrentComponentFactory();
+        Component component = factory.create(null, this, parentComponent.getStage());
         return component.getBean(expectedType);
     }
 

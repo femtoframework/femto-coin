@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.NamespaceFactory;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.BeanSpecFactory;
@@ -30,5 +31,15 @@ public class SimpleBeanSpecFactory extends BaseFactory<BeanSpec> implements Bean
 
     public SimpleBeanSpecFactory(NamespaceFactory namespaceFactory, String namespace) {
         super(namespaceFactory, namespace);
+    }
+
+    /**
+     * Add new BeanSpec
+     *
+     * @param spec BeanSpec
+     */
+    @Override
+    public void add(BeanSpec spec) {
+        add((NamedBean)spec);
     }
 }

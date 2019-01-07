@@ -21,6 +21,8 @@ import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.status.BeanStatus;
 
+import java.util.Map;
+
 /**
  * Component
  *
@@ -150,4 +152,25 @@ public interface Component extends NamedBean {
      * @return namespace factory
      */
     NamespaceFactory getNamespaceFactory();
+
+
+    //Children
+    /**
+     * Add Child component, if the child bean is an anonymous Component, it will be put into the parent instead of adding it to ComponentFactory
+     *
+     * @param propertyName Property Name
+     * @param component Child Component
+     */
+    default void addChild(String propertyName, Component component) {
+    }
+
+    /**
+     * Return Component by Formatted property name
+     *
+     * @param name Formatted Property Name,
+     * @return
+     */
+    default Component getChild(String name) {
+        return null;
+    }
 }

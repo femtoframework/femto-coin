@@ -16,11 +16,11 @@
  */
 package org.femtoframework.coin.configurator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.CoreKind;
-import org.femtoframework.coin.spec.Element;
+import org.femtoframework.coin.spec.*;
+import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.text.NamingFormat;
 import org.femtoframework.util.StringUtil;
@@ -32,6 +32,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Auto Inject
@@ -84,7 +86,8 @@ public class AutoConfigurator implements Configurator {
             }
 
             Inject inject = method.getAnnotation(Inject.class);
-            if (inject != null || method.getName().startsWith("set")) {
+            String methodName = method.getName();
+            if (inject != null || methodName.startsWith("set")) { //|| methodName.startsWith("add")
                 autoInject(obj, method.getAnnotation(Named.class), component, method);
             }
         }
@@ -119,31 +122,77 @@ public class AutoConfigurator implements Configurator {
         if (value == null) {
             Class<?> expectedType = method.getParameterTypes()[0];
             BeanSpec spec = component.getSpec();
-            String propertyName = NamingFormat.parse(method.getName().substring(3), false); //PropertyName
+
+            JsonProperty property = method.getAnnotation(JsonProperty.class);
+            String propertyName = null;
+            if (property != null) {
+                propertyName = property.value();
+            }
+            else {
+                propertyName = NamingFormat.parse(method.getName().substring(3), false); //PropertyName
+            }
             Element element = spec.get(propertyName);
+            if (element == null && property == null) {
+                String formatted = NamingFormat.format(propertyName);
+                element = spec.get(formatted);
+            }
 
             //If the bean does not exist, try to match by expectedType in the factory
             boolean beanInjection = (element != null && element.getKind() == CoreKind.BEAN)
-                     || (element == null && expectedType.isInterface());
+                     || (element != null && expectedType.isInterface());
 
             Component childComponent = null;
             if (beanInjection) {
-                if (clazz != null && clazz != Object.class) {
-                    childComponent = ns.getComponentFactory().create(targetName, clazz, component.getStage());
-                } else if (expectedType.isInterface()) {
-                    if (StringUtil.isValid(targetName)) {
-                        childComponent = ns.getComponentFactory().get(targetName);
+                BeanElement childSpec = null;
+                if (element instanceof BeanElement) {
+                    childSpec = (BeanElement)element;
+                }
+                else if (element instanceof MapSpec) {
+                    if (Map.class.isAssignableFrom(expectedType)) {
+                        value = element.getValue(expectedType, component);
                     }
-                    if (childComponent == null) {
-                        clazz = ns.getComponentFactory().getImplement(targetName, expectedType);
-                        if (clazz == null) { //Ignore this
-                            if (log.isInfoEnabled()) {
-                                log.info("No such implementation for interface:" + expectedType);
-                            }
-                            return;
+                    else {
+                        childSpec = new BeanElement((MapSpec) element);
+                        childSpec.setNamespace(targetNamespace);
+                        if (targetName != null) {
+                            childSpec.setName(targetName);
                         }
+                    }
+                }
+                else if (element instanceof ListSpec) {
+                    if (List.class.isAssignableFrom(expectedType)) {
+                        value = element.getValue(expectedType, component);
+                    }
+                }
 
-                        childComponent = ns.getComponentFactory().create(targetName, clazz, component.getStage());
+                Class<?> expectedClass = childSpec != null ? childSpec.getTypeClass() : null;
+                if (clazz != null && clazz != Object.class) {
+                    expectedClass = clazz;
+                }
+                else if (childSpec != null && expectedType.isInterface()) {
+                    clazz = ns.getComponentFactory().getImplement(targetName, expectedType);
+                    if (clazz == null) { //Ignore this
+                        if (log.isInfoEnabled()) {
+                            log.info("No such implementation for interface:" + expectedType);
+                        }
+                        return;
+                    }
+                    expectedClass = clazz;
+                }
+
+                if (childSpec != null) {
+                    childSpec.setTypeClass(expectedClass);
+                }
+
+                if (StringUtil.isValid(targetName)) {
+                    childComponent = ns.getComponentFactory().get(targetName);
+                }
+
+                if (childComponent == null && childSpec != null) {
+                    childComponent = ns.getComponentFactory().create(targetName, childSpec, component.getStage());
+                    if (targetName == null) {
+                        childSpec.setName(propertyName);
+                        component.addChild(propertyName, childComponent);
                     }
                 }
             }

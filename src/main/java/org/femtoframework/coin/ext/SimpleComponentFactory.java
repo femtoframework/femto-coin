@@ -86,9 +86,9 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
                 }
             }
         }
-        else if (StringUtil.isInvalid(name)) {
-            throw new BeanNotExpectedException(name, implClass.getSimpleName());
-        }
+//        else if (StringUtil.isInvalid(name)) {
+//            throw new BeanNotExpectedException(name, implClass.getSimpleName());
+//        }
         return newBeanName;
     }
 
@@ -119,12 +119,46 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
         return doCreate(bean, spec, targetStage);
     }
 
+    /**
+     * Delete the object by given name
+     *
+     * @param name Name
+     * @return Deleted object
+     */
+    @Override
+    public Component delete(String name) {
+        Component component = super.delete(name);
+        if (component != null) {
+            component.setStage(BeanStage.DESTROY);
+
+            BeanStage targetStage = component.getStage();
+            BeanPhase phase = component.getStatus().getPhase();
+            BeanPhase expectedPhase = BeanPhase.expectedPhase(targetStage);
+
+            if (expectedPhase.ordinal() > phase.ordinal()) {
+                if (!phase.isRunning()) { //Some other is running
+                    int stageInt = expectedPhase.ordinal();
+                    if (stageInt >= BeanPhase.STOPPED.ordinal()) {
+                        strategy.stop(component);
+                    }
+                    if (stageInt >= BeanPhase.DESTROYED.ordinal()) {
+                        strategy.destroy(component);
+                    }
+                }
+            }
+        }
+        return component;
+    }
+
+
     protected Component doCreate(Object bean, BeanSpec spec, BeanStage targetStage) {
         SimpleComponent component = new SimpleComponent(getNamespaceFactory(), spec);
         component.setStage(targetStage);
         component.setBean(bean);
         createBean(component);
-        add(component);
+        if (StringUtil.isValid(component.getName())) { //Only named component will be added in this factory, otherwise it will be linked to parent component
+            add(component);
+        }
         return component;
     }
 

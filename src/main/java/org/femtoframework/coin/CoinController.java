@@ -17,6 +17,7 @@
 package org.femtoframework.coin;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -31,14 +32,14 @@ public interface CoinController {
      *
      * @param uri Spec URI
      */
-    void create(URI uri);
+    void create(URI uri) throws IOException;
 
     /**
      * Create beans by specs
      *
      * @param file Spec File
      */
-    default void create(File file) {
+    default void create(File file) throws IOException {
         create(file.toURI());
     }
 
@@ -47,14 +48,14 @@ public interface CoinController {
      *
      * @param uri Spec URI
      */
-    void apply(URI uri);
+    void apply(URI uri)  throws IOException;
 
     /**
      * Apply changes by specs
      *
      * @param file Spec File
      */
-    default void apply(File file) {
+    default void apply(File file)  throws IOException {
         apply(file.toURI());
     }
 
@@ -64,14 +65,14 @@ public interface CoinController {
      *
      * @param uri Spec URI
      */
-    void delete(URI uri);
+    void delete(URI uri)  throws IOException;
 
     /**
      *  Delete beans by specs
      *
      * @param file Spec File
      */
-    default void delete(File file) {
+    default void delete(File file) throws IOException {
         delete(file.toURI());
     }
 }

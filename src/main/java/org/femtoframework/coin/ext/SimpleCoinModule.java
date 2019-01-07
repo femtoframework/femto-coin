@@ -35,6 +35,8 @@ import static org.femtoframework.coin.CoinConstants.*;
 public class SimpleCoinModule implements CoinModule, Initializable {
 
 
+    private SimpleKindSpecFactory kindSpecFactory = new SimpleKindSpecFactory();
+
     private SimpleCoinController coinController = new SimpleCoinController();
 
 
@@ -47,9 +49,12 @@ public class SimpleCoinModule implements CoinModule, Initializable {
     private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory(lifecycleStrategy);
 
 
-    private Namespace namespaceCoin;
+    {
+        coinController.setKindSpecFactory(kindSpecFactory);
+        coinController.setNamespaceFactory(namespaceFactory);
+    }
 
-    private SimpleKindSpecFactory kindSpecFactory = new SimpleKindSpecFactory();
+    private Namespace namespaceCoin;
 
     /**
      * Return namespace factory
@@ -77,7 +82,7 @@ public class SimpleCoinModule implements CoinModule, Initializable {
      * @return Coin Control
      */
     @Override
-    public CoinController getControlller() {
+    public CoinController getController() {
         return coinController;
     }
 
@@ -109,6 +114,9 @@ public class SimpleCoinModule implements CoinModule, Initializable {
         return lifecycleStrategy.getEventListeners();
     }
 
+
+    private boolean initialized = false;
+
     /**
      * Initialize the bean
      *
@@ -116,17 +124,21 @@ public class SimpleCoinModule implements CoinModule, Initializable {
      */
     @Override
     public void initialize() {
-        configuratorFactory.setNamespaceFactory(namespaceFactory);
-        kindSpecFactory.setNamespaceFactory(namespaceFactory);
+        if (!initialized) {
+            configuratorFactory.setNamespaceFactory(namespaceFactory);
+            kindSpecFactory.setNamespaceFactory(namespaceFactory);
 
-        namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
+            namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
 
-        ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
-        componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
-        componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
-        componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
-        componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
-        componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
-        componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
+            ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
+            componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
+            componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
+            componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
+            componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
+            componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
+            componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
+
+            initialized = true;
+        }
     }
 }

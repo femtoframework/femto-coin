@@ -16,31 +16,36 @@
  */
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.spec.Element;
-import org.femtoframework.coin.spec.Kind;
-import org.femtoframework.coin.spec.ObjectSpec;
-import org.femtoframework.coin.spec.SpecConstants;
+import org.femtoframework.coin.spec.*;
 import org.femtoframework.util.DataUtil;
 
 import java.util.Map;
 
 /**
- * Abstract Object Element
+ * Abstract Model Element
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public abstract class ObjectElement extends MapElement<Element> implements ObjectSpec, SpecConstants {
+public abstract class ModelElement extends MapElement<Element> implements ModelSpec, SpecConstants {
 
-    public ObjectElement() {
+    public ModelElement() {
     }
 
-    public ObjectElement(Map map) {
+    public ModelElement(Map map) {
         super(map);
     }
 
-    protected ObjectElement(Kind kind) {
+    protected ModelElement(Kind kind) {
         super(kind);
+    }
+
+
+    /**
+     * Version
+     */
+    public String getVersion() {
+        return getString(_VERSION, ModelSpec.super.getVersion());
     }
 
     /**
@@ -57,6 +62,9 @@ public abstract class ObjectElement extends MapElement<Element> implements Objec
         return name;
     }
 
+    public static String getVersion(Map map) {
+        return DataUtil.getString(ModelElement.getValue(map, SpecConstants._VERSION), SpecConstants.VERSION_CORE_KIND);
+    }
 
     public static Object getValue(Map map, String key) {
         Element element = (Element)map.get(key);
@@ -64,6 +72,10 @@ public abstract class ObjectElement extends MapElement<Element> implements Objec
             return element.getValue(null, null);
         }
         return null;
+    }
+
+    public static String getString(Map map, String key, String defValue) {
+        return DataUtil.getString(getValue(map, key), defValue);
     }
 
     protected Object getValue(String key) {

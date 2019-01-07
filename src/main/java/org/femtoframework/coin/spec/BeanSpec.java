@@ -16,7 +16,7 @@
  */
 package org.femtoframework.coin.spec;
 
-import org.femtoframework.bean.NamedBean;
+import org.femtoframework.coin.CoinConstants;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanSpec extends ObjectSpec {
+public interface BeanSpec extends ModelSpec {
 
     /**
      * Return aliases
@@ -89,7 +89,7 @@ public interface BeanSpec extends ObjectSpec {
      * @return namespace
      */
     default String getNamespace() { //Default is "current" namespace
-        return null;
+        return CoinConstants.DEFAULT_NAMESPACE;
     }
 
     /**

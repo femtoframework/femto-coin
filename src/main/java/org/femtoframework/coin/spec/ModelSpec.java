@@ -19,19 +19,18 @@ package org.femtoframework.coin.spec;
 import org.femtoframework.bean.NamedBean;
 
 /**
- * Spec which has Version and Object structure
+ * Spec which has Version and Model structure
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface ObjectSpec extends MapSpec<Element>, NamedBean {
+public interface ModelSpec extends MapSpec<Element>, NamedBean {
 
     /**
      * Version
      */
     default String getVersion() {
-        return "v1";
+        return SpecConstants.VERSION_CORE_KIND;
     }
-
 
 }

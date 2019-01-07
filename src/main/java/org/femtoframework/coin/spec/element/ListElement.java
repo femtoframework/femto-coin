@@ -66,6 +66,11 @@ public class ListElement<E extends Element> extends ArrayList<E>
         for(Element element : this) {
             values.add(element.getValue(null, component));
         }
-        return ConverterUtil.convertToType(values, expectedType);
+        if (expectedType != null) {
+            return ConverterUtil.convertToType(values, expectedType);
+        }
+        else {
+            return (T)values;
+        }
     }
 }
