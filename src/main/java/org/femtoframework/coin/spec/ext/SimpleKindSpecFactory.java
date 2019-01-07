@@ -14,39 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.ext;
+package org.femtoframework.coin.spec.ext;
 
 import org.femtoframework.bean.Initializable;
-import org.femtoframework.bean.NamedBean;
 import org.femtoframework.bean.exception.InitializeException;
-import org.femtoframework.coin.*;
+import org.femtoframework.coin.CoinConstants;
+import org.femtoframework.coin.ext.BaseFactory;
+import org.femtoframework.coin.spec.KindSpec;
+import org.femtoframework.coin.spec.KindSpecFactory;
+import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.Reflection;
 
 import java.util.Iterator;
 
 /**
- * Simple Configurator Factory
+ * Simple Kind Spec Factory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleConfiguratorFactory extends BaseFactory<Configurator> implements ConfiguratorFactory, Initializable {
+public class SimpleKindSpecFactory extends BaseFactory<KindSpec> implements KindSpecFactory, Initializable {
 
-    protected SimpleConfiguratorFactory() {
+    public SimpleKindSpecFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);
-    }
-
-    /**
-     * Configure the bean
-     *
-     * @param component Component
-     */
-    @Override
-    public void configure(Component component) {
-        for(Configurator configurator: this) {
-            configurator.configure(component);
-        }
     }
 
     /**
@@ -56,16 +47,21 @@ public class SimpleConfiguratorFactory extends BaseFactory<Configurator> impleme
      */
     @Override
     public void initialize() {
-        Iterator<Class<? extends Configurator>> implementations = ImplementUtil.getImplements(Configurator.class);
+        Iterator<Class<? extends KindSpec>> implementations = ImplementUtil.getImplements(KindSpec.class);
         while(implementations.hasNext()) {
-            Class<? extends Configurator> clazz = implementations.next();
-            Configurator configurator = Reflection.newInstance(clazz);
-            if (configurator instanceof NamedBean) {
-                add((NamedBean)configurator);
-            }
-            else {
-                add(clazz.getSimpleName(), configurator);
-            }
+            Class<? extends KindSpec> clazz = implementations.next();
+            KindSpec kindSpec = Reflection.newInstance(clazz);
+            add(kindSpec);
         }
+    }
+
+    /**
+     * Return the core kind spec
+     *
+     * @return Core Kind Spec
+     */
+    @Override
+    public KindSpec getCoreKindSpec() {
+        return get(SpecConstants.VERSION_CORE_KIND);
     }
 }

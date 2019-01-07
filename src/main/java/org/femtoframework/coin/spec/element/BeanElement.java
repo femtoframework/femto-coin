@@ -18,7 +18,6 @@ package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.lang.reflect.NoSuchClassException;
@@ -34,7 +33,7 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class BeanElement extends MapElement<Element> implements BeanSpec, SpecConstants {
+public class BeanElement extends ObjectElement implements BeanSpec, SpecConstants {
 
     public BeanElement() {
         super(CoreKind.BEAN);
@@ -46,6 +45,7 @@ public class BeanElement extends MapElement<Element> implements BeanSpec, SpecCo
     }
 
     public BeanElement(String namespace, String name, Class<?> implClass) {
+        super(CoreKind.BEAN);
         put(_NAMESPACE, new PrimitiveElement<>(CoreKind.STRING, namespace));
         put(_NAME, new PrimitiveElement<>(CoreKind.STRING, name));
         put(_TYPE, new PrimitiveElement<>(CoreKind.STRING, implClass.getName()));
@@ -110,32 +110,6 @@ public class BeanElement extends MapElement<Element> implements BeanSpec, SpecCo
             }
         }
         return typeClass;
-    }
-
-
-    protected Object getValue(String key) {
-        Element element = get(key);
-        if (element != null) {
-            return element.getValue(null, null);
-        }
-        return null;
-    }
-
-    protected String getString(String key, String defaultValue) {
-        return DataUtil.getString(getValue(key), defaultValue);
-    }
-
-    /**
-     * Bean Name
-     *
-     * @return Bean Name
-     */
-    public String getName() {
-        String name = getString(_NAME, null);
-        if (name == null) {
-            name = getString(NAME, null);
-        }
-        return name;
     }
 
     /**

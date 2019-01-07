@@ -27,14 +27,7 @@ import java.util.List;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanSpec extends MapSpec<Element>, NamedBean {
-
-    /**
-     * Version
-     */
-    default String getVersion() {
-        return "v1";
-    }
+public interface BeanSpec extends ObjectSpec {
 
     /**
      * Return aliases

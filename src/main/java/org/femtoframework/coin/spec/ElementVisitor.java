@@ -61,6 +61,15 @@ public interface ElementVisitor {
     }
 
     /**
+     * Visit NamespaceSpec
+     *
+     * @param namespaceSpec NamespaceSpec
+     */
+    default void visitNamespace(NamespaceSpec namespaceSpec) {
+        visitMap(namespaceSpec);
+    }
+
+    /**
      * Visit Variable Spec
      *
      * @param variableSpec VariableSpec

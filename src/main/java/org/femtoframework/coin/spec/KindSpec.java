@@ -16,53 +16,49 @@
  */
 package org.femtoframework.coin.spec;
 
+
+import org.femtoframework.bean.NamedBean;
+
+import java.util.Map;
+
 /**
- * Spec Constants
+ * Kind Spec
  *
- * All attribute names start with "_" are for bean spec only
+ * Kind can be used for extension, users can define their own spec structure, and plug them into COIN
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface SpecConstants {
-
-    String VERSION_CORE_KIND = "v1";
+public interface KindSpec extends NamedBean {
 
     /**
-     * Kind
+     * Name of the object
+     *
+     * @return Name of the object
      */
-    String _KIND = "_kind";
-
-    String BEAN = "bean";
+    default String getName() {
+        return getVersion();
+    }
 
     /**
-     * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
+     * The version this Factory supports
+     *
+     * @return Version
      */
-    String NAME = "name";
+    String getVersion();
 
     /**
-     * If it uses "_name" in the spec, the attribute won't be injected to bean
+     * The Kind Class it uses
+     *
+     * @return The kind Class should be an Enum and Kind implementation
      */
-    String _NAME = "_name";
-
-    String _DEFAULT = "_default";
-
-    String NAMESPACE = "namespace";
-
-    String _NAMESPACE = "_namespace";
-
-    String _ENABLED = "_enabled";
-
-    String _TYPE = "_type";
-
-    String _VERSION = "_version";
-
-    String _ALIASES = "_aliases";
-
-    String _SINGLETON = "_singleton";
+    Class<? extends Kind> getKindClass();
 
     /**
-     * Link the current bean to target beans
+     * Convert Kind to right spec
+     *
+     * @param map Map like data
+     * @return right spec object
      */
-    String _BELONGS_TO = "_belongsTo";
+    <S extends MapSpec> S toSpec(Map map);
 }

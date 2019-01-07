@@ -29,12 +29,11 @@ public interface CoinConstants {
     String NAME_CONFIGURATOR_FACTORY = "configurator_factory";
     String NAME_LIFECYCLE_STRATEGY = "lifecycle_strategy";
     String NAME_NAMESPACE_FACTORY = "namespace_factory";
+    String NAME_KIND_SPEC_FACTORY = "kind_spec_factory";
 
     String NAMESPACE_COIN = "coin";
 
     String NAMESPACE_NAMESPACE = "namespace";
 
     String DEFAULT_NAMESPACE = "default";
-
-    String NAMESPACE_CONFIGURQTOR = "configurator";
 }

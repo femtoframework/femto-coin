@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
+import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.databind.deser.CoinBeanDeserializerModifier;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.util.DataBindUtil;
@@ -54,7 +56,8 @@ public class MapSpecDeserializerTest {
         Map obj = objectMapper.readValue(parser, LinkedHashMap.class);
         System.out.println(obj);
 
-        BeanSpec spec = new BeanElement(obj);
+        KindSpec kindSpec = CoinUtil.getKindSpecFactory().getCoreKindSpec();
+        BeanSpec spec = kindSpec.toSpec(obj);
         System.out.println(DataBindUtil.writeValueAsString(spec));
     }
 }

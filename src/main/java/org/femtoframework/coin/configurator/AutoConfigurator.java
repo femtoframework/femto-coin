@@ -51,10 +51,10 @@ public class AutoConfigurator implements Configurator {
     public void configure(Component component) {
         Object obj = component.getBean();
         Class clazz = obj.getClass();
-        configurate(obj, clazz, component);
+        configure(obj, clazz, component);
     }
 
-    public void configurate(Object obj, Class clazz, Component component) {
+    public void configure(Object obj, Class clazz, Component component) {
         Method[] methods = clazz.getMethods();
 
         for (Method method : methods) {

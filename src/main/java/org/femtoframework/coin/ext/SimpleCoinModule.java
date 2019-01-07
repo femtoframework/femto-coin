@@ -21,6 +21,8 @@ import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
+import org.femtoframework.coin.spec.KindSpecFactory;
+import org.femtoframework.coin.spec.ext.SimpleKindSpecFactory;
 
 import static org.femtoframework.coin.CoinConstants.*;
 
@@ -47,6 +49,8 @@ public class SimpleCoinModule implements CoinModule, Initializable {
 
     private Namespace namespaceCoin;
 
+    private SimpleKindSpecFactory kindSpecFactory = new SimpleKindSpecFactory();
+
     /**
      * Return namespace factory
      *
@@ -55,6 +59,16 @@ public class SimpleCoinModule implements CoinModule, Initializable {
     @Override
     public NamespaceFactory getNamespaceFactory() {
         return namespaceFactory;
+    }
+
+    /**
+     * Return KindSpecFactory
+     *
+     * @return KindSpecFactory
+     */
+    @Override
+    public KindSpecFactory getKindSpecFactory() {
+        return kindSpecFactory;
     }
 
     /**
@@ -103,10 +117,12 @@ public class SimpleCoinModule implements CoinModule, Initializable {
     @Override
     public void initialize() {
         configuratorFactory.setNamespaceFactory(namespaceFactory);
+        kindSpecFactory.setNamespaceFactory(namespaceFactory);
 
         namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
 
         ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
+        componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);

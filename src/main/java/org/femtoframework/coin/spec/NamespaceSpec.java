@@ -1,18 +1,3 @@
-package org.femtoframework.coin;
-
-import org.femtoframework.coin.spec.element.BeanElement;
-import org.femtoframework.parameters.Parameters;
-import org.femtoframework.parameters.ParametersMap;
-import org.femtoframework.util.DataBindUtil;
-import org.femtoframework.util.nutlet.NutletUtil;
-import org.junit.Test;
-import org.junit.runners.Parameterized;
-
-import java.io.File;
-import java.net.URL;
-
-import static org.junit.Assert.*;
-
 /**
  * Licensed to the FemtoFramework under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -29,14 +14,22 @@ import static org.junit.Assert.*;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class FirstBeanTest {
+package org.femtoframework.coin.spec;
 
-    @Test
-    public void getSecond() throws Exception {
+/**
+ * Namespace Spec
+ *
+ * @author Sheldon Shao
+ * @version 1.0
+ */
+public interface NamespaceSpec extends ObjectSpec {
 
-        File file = NutletUtil.getResourceAsFile("examples.yaml");
-        BeanElement parameters = DataBindUtil.readValueFromYaml(file, BeanElement.class);
-        assertNotNull(parameters.get("second"));
-        assertEquals("First", parameters.get("_name"));
+    /**
+     * Start visiting this spec
+     *
+     * @param visitor Visitor
+     */
+    default void accept(ElementVisitor visitor) {
+        visitor.visitNamespace(this);
     }
 }

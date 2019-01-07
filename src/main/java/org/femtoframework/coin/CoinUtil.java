@@ -16,61 +16,34 @@
  */
 package org.femtoframework.coin;
 
-import org.femtoframework.coin.event.BeanEventListeners;
-import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
+import org.femtoframework.implement.ImplementUtil;
 
 /**
- * Coin Module
- *
- * special namespaces
- *
+ * Coin Util
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface CoinModule {
+public class CoinUtil {
 
-    /**
-     * Return namespace factory
-     *
-     * @return Namespace Factory
-     */
-    NamespaceFactory getNamespaceFactory();
+    private static CoinModule module;
 
+    static {
+        module = ImplementUtil.getInstance(CoinModule.class);
+        ImplementUtil.initialize(module);
+    }
+
+    public static CoinModule getModule() {
+        return module;
+    }
 
     /**
      * Return KindSpecFactory
      *
      * @return KindSpecFactory
      */
-    KindSpecFactory getKindSpecFactory();
-
-    /**
-     * Coin Control, maintain objects by Yaml or JSON
-     *
-     * @return Coin Control
-     */
-    CoinController getControlller();
-
-    /**
-     * Remote Generator, for RMI or gRPC extension
-     *
-     * @return Remote Generator
-     */
-    RemoteGenerator getRemoteGenerator();
-
-
-    /**
-     * Return LifecycleStrategy
-     *
-     * @return LifecycleStrategy
-     */
-    LifecycleStrategy getLifecycleStrategy();
-
-
-    /**
-     * Return BeanEventListeners
-     */
-    BeanEventListeners getBeanEventListeners();
+    public static KindSpecFactory getKindSpecFactory() {
+        return getModule().getKindSpecFactory();
+    }
 }
