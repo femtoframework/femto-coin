@@ -24,19 +24,21 @@ import java.util.List;
 /**
  * Bean
  *
+ * Bean means Model with type and other common stuffs
+ *
  * @author Sheldon Shao
  * @version 1.0
  */
 public interface BeanSpec extends ModelSpec {
 
-    /**
-     * Return aliases
-     *
-     * @return aliases
-     */
-    default List<String> getAliases() {
-        return Collections.emptyList();
-    }
+//    /**
+//     * Return aliases
+//     *
+//     * @return aliases
+//     */
+//    default List<String> getAliases() {
+//        return Collections.emptyList();
+//    }
 
     /**
      * Return belongsTo
@@ -105,6 +107,7 @@ public interface BeanSpec extends ModelSpec {
     /**
      * Whether the bean is enabled or not.
      *
+     * TODO check that in component
      * @return
      */
     default boolean isEnabled() {

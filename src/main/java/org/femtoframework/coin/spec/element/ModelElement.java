@@ -22,7 +22,9 @@ import org.femtoframework.util.DataUtil;
 import java.util.Map;
 
 /**
- * Abstract Model Element
+ * Abstract Model Element,
+ *
+ * Model means object with version and name
  *
  * @author Sheldon Shao
  * @version 1.0

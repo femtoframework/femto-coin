@@ -16,7 +16,7 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.BeanPhase;
+import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.event.BeanEvent;
 import org.femtoframework.coin.event.BeanEventListener;

@@ -17,7 +17,7 @@
 package org.femtoframework.coin.event;
 
 import org.femtoframework.coin.BeanFactory;
-import org.femtoframework.coin.BeanPhase;
+import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.Component;
 
 import java.util.EventObject;

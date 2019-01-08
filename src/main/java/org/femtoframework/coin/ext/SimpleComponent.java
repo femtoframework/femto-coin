@@ -17,7 +17,7 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.Nameable;
-import org.femtoframework.coin.BeanStage;
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Namespace;
 import org.femtoframework.coin.NamespaceFactory;

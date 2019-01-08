@@ -26,7 +26,6 @@ import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.parameters.ParametersMap;
 import org.femtoframework.util.DataUtil;
-import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -74,14 +73,14 @@ public class BeanElement extends ModelElement implements BeanSpec, SpecConstants
 
     private transient Class<?> typeClass;
 
-    /**
-     * Return aliases
-     *
-     * @return aliases
-     */
-    public List<String> getAliases() {
-        return DataUtil.getStringList(getValue(_ALIASES), BeanSpec.super.getAliases());
-    }
+//    /**
+//     * Return aliases
+//     *
+//     * @return aliases
+//     */
+//    public List<String> getAliases() {
+//        return DataUtil.getStringList(getValue(_ALIASES), BeanSpec.super.getAliases());
+//    }
 
     /**
      * Return belongsTo

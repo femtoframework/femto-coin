@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.spec.BeanSpec;
 
 /**

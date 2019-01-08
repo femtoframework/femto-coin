@@ -17,7 +17,7 @@
 package org.femtoframework.coin.ext;
 
 
-import org.femtoframework.coin.BeanPhase;
+import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.status.BeanCondition;
 import org.femtoframework.coin.status.BeanStatus;
 

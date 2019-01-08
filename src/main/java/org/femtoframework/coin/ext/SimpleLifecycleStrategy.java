@@ -17,7 +17,6 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.*;
-import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.configurator.AutoConfigurator;
 import org.femtoframework.coin.event.BeanEventListeners;
@@ -43,7 +42,7 @@ import java.lang.reflect.Modifier;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable {
+public class SimpleLifecycleStrategy implements LifecycleStrategy, InitializableMBean {
 
     private Logger log = LoggerFactory.getLogger(SimpleLifecycleStrategy.class);
 
@@ -243,13 +242,33 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         eventSupport.fireEvent(BeanPhase.DESTROYED, component);
     }
 
+    private boolean initialized = false;
+
     /**
-     * Initialize the bean
+     * Return whether it is initialized
      *
-     * @throws InitializeException
+     * @return whether it is initialized
      */
     @Override
-    public void initialize() {
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * Initialized setter for internal
+     *
+     * @param initialized BeanPhase
+     */
+    @Override
+    public void _doSetInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    /**
+     * Initiliaze internally
+     */
+    @Override
+    public void _doInitialize() {
         eventSupport.initialize();
     }
 }

@@ -88,7 +88,7 @@ public class AutoConfigurator implements Configurator {
 
             Inject inject = method.getAnnotation(Inject.class);
             String methodName = method.getName();
-            if (inject != null || methodName.startsWith("set")) { //|| methodName.startsWith("add")
+            if (inject != null || methodName.startsWith("set")) { // || methodName.startsWith("add")
                 autoInject(obj, method.getAnnotation(Named.class), component, method);
             }
         }

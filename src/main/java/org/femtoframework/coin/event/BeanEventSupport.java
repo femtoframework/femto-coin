@@ -17,8 +17,9 @@
 package org.femtoframework.coin.event;
 
 import org.femtoframework.bean.Initializable;
+import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.BeanFactory;
-import org.femtoframework.coin.BeanPhase;
+import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.Component;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.Reflection;
@@ -33,7 +34,7 @@ import java.util.List;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class BeanEventSupport implements BeanEventListeners, BeanEventListener, Initializable {
+public class BeanEventSupport implements BeanEventListeners, BeanEventListener, InitializableMBean {
     
     private List<BeanEventListener> listeners = new ArrayList<>(2);
     
@@ -128,18 +129,35 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener, 
     private boolean initialized = false;
 
     /**
-     * Initialize the bean
+     * Return whether it is initialized
+     *
+     * @return whether it is initialized
      */
     @Override
-    public void initialize() {
-        if (!initialized) {
-            Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
-            while(it.hasNext()) {
-                Class<? extends BeanEventListener> clazz = it.next();
-                BeanEventListener listener = Reflection.newInstance(clazz);
-                listeners.add(listener);
-            }
-            initialized = true;
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * Initialized setter for internal
+     *
+     * @param initialized BeanPhase
+     */
+    @Override
+    public void _doSetInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    /**
+     * Initiliaze internally
+     */
+    @Override
+    public void _doInitialize() {
+        Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
+        while(it.hasNext()) {
+            Class<? extends BeanEventListener> clazz = it.next();
+            BeanEventListener listener = Reflection.newInstance(clazz);
+            listeners.add(listener);
         }
     }
 }

@@ -16,9 +16,8 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.bean.Initializable;
+import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.bean.NamedBean;
-import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.*;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.Reflection;
@@ -31,7 +30,7 @@ import java.util.Iterator;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleConfiguratorFactory extends BaseFactory<Configurator> implements ConfiguratorFactory, Initializable {
+public class SimpleConfiguratorFactory extends BaseFactory<Configurator> implements ConfiguratorFactory, InitializableMBean {
 
     protected SimpleConfiguratorFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);
@@ -52,24 +51,39 @@ public class SimpleConfiguratorFactory extends BaseFactory<Configurator> impleme
     private boolean initialized = false;
 
     /**
-     * Initialize the bean
+     * Return whether it is initialized
      *
-     * @throws InitializeException
+     * @return whether it is initialized
      */
     @Override
-    public void initialize() {
-        if (!initialized) {
-            Iterator<Class<? extends Configurator>> implementations = ImplementUtil.getImplements(Configurator.class);
-            while (implementations.hasNext()) {
-                Class<? extends Configurator> clazz = implementations.next();
-                Configurator configurator = Reflection.newInstance(clazz);
-                if (configurator instanceof NamedBean) {
-                    add((NamedBean) configurator);
-                } else {
-                    add(clazz.getSimpleName(), configurator);
-                }
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * Initialized setter for internal
+     *
+     * @param initialized BeanPhase
+     */
+    @Override
+    public void _doSetInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    /**
+     * Initiliaze internally
+     */
+    @Override
+    public void _doInitialize() {
+        Iterator<Class<? extends Configurator>> implementations = ImplementUtil.getImplements(Configurator.class);
+        while (implementations.hasNext()) {
+            Class<? extends Configurator> clazz = implementations.next();
+            Configurator configurator = Reflection.newInstance(clazz);
+            if (configurator instanceof NamedBean) {
+                add((NamedBean) configurator);
+            } else {
+                add(clazz.getSimpleName(), configurator);
             }
-            initialized = true;
         }
     }
 }

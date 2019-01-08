@@ -16,6 +16,8 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.BeanPhase;
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.exception.BeanCreationException;
 import org.femtoframework.coin.exception.BeanNotExpectedException;

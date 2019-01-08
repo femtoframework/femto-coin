@@ -16,7 +16,7 @@
  */
 package org.femtoframework.coin.status;
 
-import org.femtoframework.coin.BeanPhase;
+import org.femtoframework.bean.BeanPhase;
 
 import java.util.Collections;
 import java.util.List;
