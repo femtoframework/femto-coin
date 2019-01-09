@@ -27,6 +27,7 @@ package org.femtoframework.coin.spec;
  * long, LONG
  * double, Any Float or Double
  * boolean, True of False
+ * bytes BINARY
  *
  * in yaml
  *
@@ -73,6 +74,16 @@ public enum CoreKind implements Kind {
     BOOLEAN(true),
 
     /**
+     * Binary, byte[]
+     */
+    BYTES(true),
+
+    /**
+     * Timestamp, "java.util.Date"
+     */
+    TIMESTAMP(true),
+
+    /**
      * Basic object in yaml
      */
     MAP(false),
@@ -81,6 +92,11 @@ public enum CoreKind implements Kind {
      * multiple components, "seq" in yaml
      */
     LIST(false),
+
+    /**
+     * multiple components, "set" in yaml
+     */
+    SET(false),
 
     /**
      * An extension of MAP
@@ -99,12 +115,7 @@ public enum CoreKind implements Kind {
     /**
      * NameSpace
      */
-    NAMESPACE(false),
-
-    /**
-     * Custom
-     */
-    CUSTOM(false);
+    NAMESPACE(false);
 
     private boolean primitive;
 

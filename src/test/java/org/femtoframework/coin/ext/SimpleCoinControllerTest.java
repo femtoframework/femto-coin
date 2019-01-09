@@ -1,9 +1,9 @@
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.ext.SimpleKindSpecFactory;
-import org.femtoframework.util.DataBindUtil;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
 
@@ -31,6 +31,11 @@ public class SimpleCoinControllerTest {
 
     @Test
     public void create() throws Exception {
+        long start = System.currentTimeMillis();
+
+        File file = NutletUtil.getResourceAsFile("examples.yaml");
+
+
         ConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
 
         LifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(configuratorFactory);
@@ -45,10 +50,8 @@ public class SimpleCoinControllerTest {
         controller.setKindSpecFactory(kindSpecFactory);
         controller.setNamespaceFactory(namespaceFactory);
 
-        File file = NutletUtil.getResourceAsFile("examples.yaml");
 
         controller.create(file);
-
 
         Namespace ns = namespaceFactory.get("test");
         assertNotNull(ns);
@@ -56,10 +59,12 @@ public class SimpleCoinControllerTest {
         BeanSpec spec = ns.getBeanSpecFactory().get("first");
         assertNotNull(spec.get("second"));
 
-        System.out.println(DataBindUtil.writeValueAsString(spec));
+//        System.out.println(DataBindUtil.writeValueAsString(spec));
 
         Component component = ns.getComponentFactory().create(spec.getName(), spec, BeanStage.INITIALIZE);
         assertNotNull(component);
         assertNotNull(((FirstInterface)component.getBean()).getSecond());
+
+        System.out.println("TimeElapsed:" + (System.currentTimeMillis() - start));
     }
 }

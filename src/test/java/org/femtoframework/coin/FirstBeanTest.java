@@ -1,18 +1,15 @@
 package org.femtoframework.coin;
 
-import org.femtoframework.coin.spec.element.BeanElement;
-import org.femtoframework.parameters.Parameters;
-import org.femtoframework.parameters.ParametersMap;
-import org.femtoframework.util.DataBindUtil;
+
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
-import org.junit.runners.Parameterized;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.net.URL;
-import java.util.HashMap;
-
-import static org.junit.Assert.*;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.Iterator;
 
 /**
  * Licensed to the FemtoFramework under one or more
@@ -34,10 +31,28 @@ public class FirstBeanTest {
 
     @Test
     public void getSecond() throws Exception {
-
+        long start = System.currentTimeMillis();
         File file = NutletUtil.getResourceAsFile("examples.yaml");
-//        ParametersMap parameters = DataBindUtil.readValueFromYaml(file, ParametersMap.class);
+//        ParametersMap parameters = JsonIterator.readValueFromYaml(file, ParametersMap.class);
+        System.out.println("TimeElapsed:" + (System.currentTimeMillis() - start));
+
 //        assertNotNull(parameters.get("second"));
 //        assertEquals("First", parameters.get("_name"));
+    }
+
+    @Test
+    public void getNamespace() throws Exception {
+//        long start = System.currentTimeMillis();
+        File file = NutletUtil.getResourceAsFile("examples.yaml");
+//        ParametersMap parameters = DataBindUtil.readValueFromYaml(file, ParametersMap.class);
+
+        long start = System.currentTimeMillis();
+        Yaml yaml = new Yaml();
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        Iterable<Object> objs = yaml.loadAll(inputStream);
+        Iterator<Object> it = objs.iterator();
+        System.out.println(it.next());
+        System.out.println(it.next());
+        System.out.println("TimeElapsed:" + (System.currentTimeMillis() - start));
     }
 }

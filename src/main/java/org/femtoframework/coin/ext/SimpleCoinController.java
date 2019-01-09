@@ -16,18 +16,11 @@
  */
 package org.femtoframework.coin.ext;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.*;
-import org.femtoframework.coin.spec.databind.deser.CoinBeanDeserializerModifier;
 import org.femtoframework.coin.spec.element.ModelElement;
+import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.util.StringUtil;
 
 import java.io.IOException;
@@ -44,30 +37,59 @@ import java.util.List;
  */
 public class SimpleCoinController implements CoinController {
 
-
     //Object Mapper is thread safe
-
     private KindSpecFactory kindSpecFactory;
 
     private NamespaceFactory namespaceFactory;
 
-    private JsonFactory jsonFactory = new JsonFactory();
-    private ObjectMapper jsonMapper = new ObjectMapper(jsonFactory);
+//    private SimpleModule moduleMap = new SimpleModule();
+//
+//    {
+//        moduleMap.setDeserializerModifier(new CoinBeanDeserializerModifier());
+//    }
+//
+//    private JsonFactory jsonFactory;
+//    private ObjectMapper jsonMapper;
+//
+//    private YAMLFactory yamlFactory;
+//    private ObjectMapper yamlMapper;
+//
+//    protected YAMLFactory getYAMLFactory() {
+//        if (yamlFactory == null) {
+//            yamlFactory = new YAMLFactory();
+//        }
+//        return yamlFactory;
+//    }
+//
+//
+//    protected ObjectMapper getYamlMapper() {
+//        if (yamlMapper == null) {
+//            yamlMapper = new ObjectMapper(getYAMLFactory());
+//
+//            yamlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//            yamlMapper.registerModule(moduleMap);
+//        }
+//        return yamlMapper;
+//    }
+//
+//    protected JsonFactory getJsonFactory() {
+//        if (jsonFactory == null) {
+//            jsonFactory = new JsonFactory();
+//        }
+//        return jsonFactory;
+//    }
+//
+//    protected ObjectMapper getJsonMapper() {
+//        if (jsonMapper == null) {
+//            jsonMapper = new ObjectMapper(getJsonFactory());
+//
+//            jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//            jsonMapper.registerModule(moduleMap);
+//        }
+//        return jsonMapper;
+//    }
 
-    private YAMLFactory yamlFactory = new YAMLFactory();
-    private ObjectMapper yamlMapper = new ObjectMapper(yamlFactory);
-
-    {
-        SimpleModule moduleMap = new SimpleModule();
-        moduleMap.setDeserializerModifier(new CoinBeanDeserializerModifier());
-
-        jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        jsonMapper.registerModule(moduleMap);
-
-        yamlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        yamlMapper.registerModule(moduleMap);
-    }
-
+    private SpecParser specParser;
 
     /**
      * Create beans by specs
@@ -123,21 +145,7 @@ public class SimpleCoinController implements CoinController {
 
 
     protected List<LinkedHashMap> toMaps(URI uri) throws IOException {
-        String path = uri.getPath();
-        String lowerCase = path.toLowerCase();
-        if (lowerCase.endsWith(".yaml") || lowerCase.endsWith(".yml")) { //Yaml
-            try (YAMLParser parser = yamlFactory.createParser(uri.toURL())) {
-                return yamlMapper.readValues(parser, LinkedHashMap.class).readAll();
-            }
-        }
-        else if (lowerCase.endsWith(".json")) {
-            try (JsonParser parser = jsonFactory.createParser(uri.toURL())) {
-                return jsonMapper.readValues(parser, LinkedHashMap.class).readAll();
-            }
-        }
-        else {
-            throw new IllegalArgumentException("Unrecognized file type:" + path);
-        }
+        return getSpecParser().parseSpec(uri);
     }
 
     /**
@@ -263,5 +271,16 @@ public class SimpleCoinController implements CoinController {
 
     public void setNamespaceFactory(NamespaceFactory namespaceFactory) {
         this.namespaceFactory = namespaceFactory;
+    }
+
+    public SpecParser getSpecParser() {
+        if (specParser == null) {
+            specParser = ImplementUtil.getInstance(SpecParser.class);
+        }
+        return specParser;
+    }
+
+    public void setSpecParser(SpecParser specParser) {
+        this.specParser = specParser;
     }
 }

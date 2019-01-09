@@ -52,6 +52,15 @@ public interface ElementVisitor {
     }
 
     /**
+     * Visit Set Spec
+     *
+     * @param setSpec Set Spec
+     */
+    default void visitSet(SetSpec setSpec) {
+
+    }
+
+    /**
      * Visit Bean Spec
      *
      * @param beanSpec BeanSpec
