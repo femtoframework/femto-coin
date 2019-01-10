@@ -19,6 +19,7 @@ package org.femtoframework.coin;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 
 /**
  * Coin Control
@@ -28,51 +29,51 @@ import java.net.URI;
  */
 public interface CoinController {
     /**
-     * Create beans by specs
+     * Create beans by specs;
      *
-     * @param uri Spec URI
+     * @param uris Spec URI
      */
-    void create(URI uri) throws IOException;
+    void create(URI... uris) throws IOException;
 
     /**
-     * Create beans by specs
+     * Create beans by specs;
      *
-     * @param file Spec File
+     * @param files Spec File
      */
-    default void create(File file) throws IOException {
-        create(file.toURI());
+    default void create(File... files) throws IOException {
+        create(Arrays.stream(files).map(f -> f.toURI()).toArray(URI[]::new));
     }
 
     /**
-     * Apply changes by specs
+     * Apply changes on specs and beans
      *
-     * @param uri Spec URI
+     * @param uris Spec URI
      */
-    void apply(URI uri)  throws IOException;
+    void apply(URI... uris)  throws IOException;
 
     /**
-     * Apply changes by specs
+     * Apply changes on specs and beans
      *
-     * @param file Spec File
+     * @param files Spec File
      */
-    default void apply(File file)  throws IOException {
-        apply(file.toURI());
+    default void apply(File... files)  throws IOException {
+        create(Arrays.stream(files).map(f -> f.toURI()).toArray(URI[]::new));
     }
 
 
     /**
      * Delete beans by specs
      *
-     * @param uri Spec URI
+     * @param uris Spec URI
      */
-    void delete(URI uri)  throws IOException;
+    void delete(URI... uris)  throws IOException;
 
     /**
      *  Delete beans by specs
      *
-     * @param file Spec File
+     * @param files Spec File
      */
-    default void delete(File file) throws IOException {
-        delete(file.toURI());
+    default void delete(File... files) throws IOException {
+        create(Arrays.stream(files).map(f -> f.toURI()).toArray(URI[]::new));
     }
 }

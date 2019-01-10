@@ -24,6 +24,7 @@ import org.femtoframework.coin.exception.BeanNotExpectedException;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.BeanSpecFactory;
 import org.femtoframework.coin.spec.element.BeanElement;
+import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.NoSuchClassException;
@@ -122,6 +123,47 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
     }
 
     /**
+     * Keep component in the given stage
+     *
+     * @param component   Component
+     * @param targetStage Target Stage
+     * @return Current stage of component
+     */
+    @Override
+    public BeanPhase keep(Component component, BeanStage targetStage) {
+        BeanPhase expectedPhase = BeanPhase.expectedPhase(targetStage);
+        BeanStatus status = component.getStatus();
+
+        int expectedPhaseId = expectedPhase.ordinal();
+        if (expectedPhaseId > status.getPhase().ordinal()) {
+            if (!status.getPhase().isRunning()) { //Some other is running
+                int currentPhaseId = status.getPhase().ordinal();
+                if (currentPhaseId < expectedPhaseId  && currentPhaseId < BeanPhase.CONFIGURED.ordinal()) {
+                    strategy.configure(component);
+                }
+                currentPhaseId = status.getPhase().ordinal();
+                if (currentPhaseId < expectedPhaseId && currentPhaseId < BeanPhase.INITIALIZED.ordinal()) {
+                    strategy.initialize(component);
+                }
+                currentPhaseId = status.getPhase().ordinal();
+                if (currentPhaseId < expectedPhaseId && currentPhaseId < BeanPhase.STARTED.ordinal()) {
+                    strategy.start(component);
+                }
+                currentPhaseId = status.getPhase().ordinal();
+                if (currentPhaseId < expectedPhaseId && currentPhaseId < BeanPhase.STOPPED.ordinal()) {
+                    strategy.stop(component);
+                }
+                currentPhaseId = status.getPhase().ordinal();
+                if (currentPhaseId < expectedPhaseId && currentPhaseId < BeanPhase.DESTROYED.ordinal()) {
+                    strategy.destroy(component);
+                }
+            }
+        }
+        return status.getPhase();
+    }
+
+
+    /**
      * Delete the object by given name
      *
      * @param name Name
@@ -132,22 +174,23 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
         Component component = super.delete(name);
         if (component != null) {
             component.setStage(BeanStage.DESTROY);
+            keep(component, BeanStage.DESTROY);
 
-            BeanStage targetStage = component.getStage();
-            BeanPhase phase = component.getStatus().getPhase();
-            BeanPhase expectedPhase = BeanPhase.expectedPhase(targetStage);
-
-            if (expectedPhase.ordinal() > phase.ordinal()) {
-                if (!phase.isRunning()) { //Some other is running
-                    int stageInt = expectedPhase.ordinal();
-                    if (stageInt >= BeanPhase.STOPPED.ordinal()) {
-                        strategy.stop(component);
-                    }
-                    if (stageInt >= BeanPhase.DESTROYED.ordinal()) {
-                        strategy.destroy(component);
-                    }
-                }
-            }
+//            BeanStage targetStage = component.getStage();
+//            BeanPhase phase = component.getStatus().getPhase();
+//            BeanPhase expectedPhase = BeanPhase.expectedPhase(targetStage);
+//
+//            if (expectedPhase.ordinal() > phase.ordinal()) {
+//                if (!phase.isRunning()) { //Some other is running
+//                    int stageInt = expectedPhase.ordinal();
+//                    if (stageInt >= BeanPhase.STOPPED.ordinal()) {
+//                        strategy.stop(component);
+//                    }
+//                    if (stageInt >= BeanPhase.DESTROYED.ordinal()) {
+//                        strategy.destroy(component);
+//                    }
+//                }
+//            }
         }
         return component;
     }
@@ -178,29 +221,7 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
             throw new BeanCreationException("Can not create the bean, namespace:" + getNamespace() + " bean name:" + component.getName());
         }
         component.setBean(bean);
-
-        BeanStage targetStage = component.getStage();
-        BeanPhase phase = component.getStatus().getPhase();
-        BeanPhase expectedPhase = BeanPhase.expectedPhase(targetStage);
-
-        if (expectedPhase.ordinal() > phase.ordinal()) {
-            if (phase.isRunning()) { //Some other is running
-                return bean;
-            }
-            else {
-                int stageInt = expectedPhase.ordinal();
-                if (stageInt >= BeanPhase.CONFIGURED.ordinal()) {
-                    strategy.configure(component);
-                }
-                if (stageInt >= BeanPhase.INITIALIZED.ordinal()) {
-                    strategy.initialize(component);
-                }
-                if (stageInt >= BeanPhase.STARTED.ordinal()) {
-                    strategy.start(component);
-                }
-            }
-        }
-
+        keep(component, component.getStage());
         return bean;
     }
 

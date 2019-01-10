@@ -16,6 +16,8 @@
  */
 package org.femtoframework.coin.status;
 
+import java.util.List;
+
 /**
  * Bean Condition
  *
@@ -28,7 +30,7 @@ public interface BeanCondition {
         return ConditionState.UNKNOWN;
     }
 
-    String getType();
+    List<String> getTypes();
 
     long getTimestamp();
 

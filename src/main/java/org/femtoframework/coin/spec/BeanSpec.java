@@ -45,9 +45,13 @@ public interface BeanSpec extends ModelSpec {
      *
      * belongsTo syntax
      *
+     * [NAMESPACE:]&lt;NAME&gt;#&lt;METHOD_NAME&gt;
+     * 1. The method must be declared on an interface
+     * 2. The method must have only one argument
+     * 3. The method argument should be an interface which the current bean implements
+     * 4. NAMESPACE is optional, if it doesn't specify, use the bean's namespace
      *
-     * TODO
-     * @return
+     * @return A list of belongsTo
      */
     default List<String> getBelongsTo() {
         return Collections.emptyList();
@@ -92,6 +96,15 @@ public interface BeanSpec extends ModelSpec {
      */
     default String getNamespace() { //Default is "current" namespace
         return CoinConstants.DEFAULT_NAMESPACE;
+    }
+
+    /**
+     * Qualified Name
+     *
+     * @return Qualified Name
+     */
+    default String getQualifiedName() {
+        return getNamespace() + ":" + getName();
     }
 
     /**

@@ -31,11 +31,11 @@ public class SimpleCoinControllerTest {
 
     @Test
     public void create() throws Exception {
-        long start = System.currentTimeMillis();
 
         File file = NutletUtil.getResourceAsFile("examples.yaml");
 
 
+        long start = System.currentTimeMillis();
         ConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
 
         LifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(configuratorFactory);
@@ -59,9 +59,7 @@ public class SimpleCoinControllerTest {
         BeanSpec spec = ns.getBeanSpecFactory().get("first");
         assertNotNull(spec.get("second"));
 
-//        System.out.println(DataBindUtil.writeValueAsString(spec));
-
-        Component component = ns.getComponentFactory().create(spec.getName(), spec, BeanStage.INITIALIZE);
+        Component component = ns.getComponentFactory().get(spec.getName());
         assertNotNull(component);
         assertNotNull(((FirstInterface)component.getBean()).getSecond());
 

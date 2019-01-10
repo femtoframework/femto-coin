@@ -35,6 +35,7 @@ import javax.annotation.PreDestroy;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Map;
 
 /**
  * Simple Lifecycle Strategy
@@ -144,6 +145,15 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
         configuratorFactory.configure(component);
 
+        //Configure children
+        Map<String, Component> children = component.getChildren();
+        if (children != null) {//Keep the sequences of keys, since the map is linked hash map
+            for(String key: children.keySet()) {
+                Component child = children.get(key);
+                configure(child);
+            }
+        }
+
         eventSupport.fireEvent(BeanPhase.CONFIGURED, component);
     }
 
@@ -152,16 +162,56 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
      */
     @Override
     public void initialize(Component component) {
+        doInitialize(component, false);
+    }
+
+    protected void doInitialize(Component component, boolean isChild) {
         eventSupport.fireEvent(BeanPhase.INITIALIZING,component);
 
         Object bean = component.getBean();
-        if (bean instanceof Initializable) {
-            ((Initializable)bean).initialize();
+        if (!isChild) {
+            if (bean instanceof InitializableMBean) {
+                InitializableMBean mBean = (InitializableMBean) bean;
+                if (!mBean.isInitialized()) {
+                    mBean.initialize();
+                }
+            } else if (bean instanceof Initializable) {
+                ((Initializable) bean).initialize();
+            } else {
+                Class<?> clazz = bean.getClass();
+                invokeByAnnotation(clazz, bean, PostConstruct.class);
+            }
         }
         else {
-            Class<?> clazz = bean.getClass();
-            invokeByAnnotation(clazz, bean, PostConstruct.class);
+            // The parent bean needs to control the lifecycle of the child,
+            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // But in some cases parent bean doesn't want to take care about the lifecycle of child
+            // As the container, we can not use the single rule to fit both of the use cases.
+            // Our strategy is the following
+            // 1. If the child has PostConstruct, that means container takes care the initialization state
+            // 2. If the child implements InitializableMBean which has the state, we can check whether it has been initialized or not, then takes action.
+            // 3. If the child bean is a pure Initializable or other stuff, then we don't take any action
+            Class<?> childClass = bean.getClass();
+            if (!invokeByAnnotation(childClass, bean, PostConstruct.class)) {
+                if (bean instanceof InitializableMBean) {
+                    InitializableMBean mBean = (InitializableMBean)bean;
+                    if (!mBean.isInitialized()) {
+                        mBean.initialize();
+                    }
+                }
+            }
         }
+
+        //Initialize children
+        Map<String, Component> children = component.getChildren();
+        if (children != null) {
+            //Keep the sequences of keys, since the map is linked hash map
+            for(String key: children.keySet()) {
+                Component child = children.get(key);
+                doInitialize(child, true);
+            }
+        }
+
         eventSupport.fireEvent(BeanPhase.INITIALIZED,component);
     }
 
@@ -173,12 +223,49 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
      */
     @Override
     public void start(Component component) {
+        doStart(component, false);
+    }
+
+    protected void doStart(Component component, boolean isChild) {
         eventSupport.fireEvent(BeanPhase.STARTING,component);
 
-        Object obj = component.getBean();
-        if (obj instanceof Startable) {
-            ((Startable)obj).start();
+        Object bean = component.getBean();
+        if (!isChild) {
+            if (bean instanceof LifecycleMBean) {
+                LifecycleMBean mBean = (LifecycleMBean) bean;
+                if (mBean.getBeanPhase().ordinal() < BeanPhase.STARTING.ordinal()) {
+                    mBean.start();
+                }
+            } else if (bean instanceof Startable) {
+                ((Startable) bean).start();
+            }
         }
+        else {
+            // The parent bean needs to control the lifecycle of the child,
+            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // But in some cases parent bean doesn't want to take care about the lifecycle of child
+            // As the container, we can not use the single rule to fit both of the use cases.
+            // Our strategy is the following
+            // 1. If the child implements LifecycleMBean which has the state, we can check whether it has been started or not, then takes action.
+            // 2. If the child bean is a pure Startable or other stuff, then we don't take any action
+            if (bean instanceof LifecycleMBean) {
+                LifecycleMBean mBean = (LifecycleMBean) bean;
+                if (mBean.getBeanPhase().ordinal() < BeanPhase.STARTING.ordinal()) {
+                    mBean.start();
+                }
+            }
+        }
+
+        //Initialize children
+        Map<String, Component> children = component.getChildren();
+        if (children != null) {
+            //Keep the sequences of keys, since the map is linked hash map
+            for(String key: children.keySet()) {
+                Component child = children.get(key);
+                doStart(child, true);
+            }
+        }
+
         eventSupport.fireEvent(BeanPhase.STARTED,component);
     }
 
@@ -190,20 +277,66 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
      */
     @Override
     public void stop(Component component) {
-        eventSupport.fireEvent(BeanPhase.STOPPING,component);
-
-        Object obj = component.getBean();
-        if (obj instanceof Stoppable) {
-            ((Stoppable)obj).stop();
-        }
-        eventSupport.fireEvent(BeanPhase.STOPPED, component);
+        doStop(component, false);
     }
 
-    protected void invokeByAnnotation(Class<?> clazz, Object bean, Class<? extends Annotation> annotationClass) {
+    protected void doStop(Component component, boolean isChild) {
+        eventSupport.fireEvent(BeanPhase.STOPPING,component);
+
+        Object bean = component.getBean();
+        if (!isChild) {
+            if (bean instanceof LifecycleMBean) {
+                LifecycleMBean mBean = (LifecycleMBean) bean;
+                if (mBean.getBeanPhase().ordinal() < BeanPhase.STOPPING.ordinal()) {
+                    mBean.stop();
+                }
+            } else if (bean instanceof Stoppable) {
+                ((Stoppable) bean).stop();
+            }
+        }
+        else {
+            // The parent bean needs to control the lifecycle of the child,
+            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // But in some cases parent bean doesn't want to take care about the lifecycle of child
+            // As the container, we can not use the single rule to fit both of the use cases.
+            // Our strategy is the following
+            // 1. If the child implements LifecycleMBean which has the state, we can check whether it has been started or not, then takes action.
+            // 2. If the child bean is a pure Startable or other stuff, then we don't take any action
+            if (bean instanceof LifecycleMBean) {
+                LifecycleMBean mBean = (LifecycleMBean) bean;
+                if (mBean.getBeanPhase().ordinal() < BeanPhase.STOPPING.ordinal()) {
+                    mBean.stop();
+                }
+            }
+        }
+
+        //Initialize children
+        Map<String, Component> children = component.getChildren();
+        if (children != null) {
+            //Keep the sequences of keys, since the map is linked hash map
+            for(String key: children.keySet()) {
+                Component child = children.get(key);
+                doStop(child, true);
+            }
+        }
+
+        eventSupport.fireEvent(BeanPhase.STOPPED,component);
+    }
+
+    /**
+     * Check whether the bean has such Annotation and invoke if has any
+     *
+     * @param clazz Class
+     * @param bean Bean
+     * @param annotationClass Annotation
+     * @return whether the bean or its parent has any annotation
+     */
+    protected boolean invokeByAnnotation(Class<?> clazz, Object bean, Class<? extends Annotation> annotationClass) {
         if (clazz == Object.class) {
-            return;
+            return false;
         }
         Method[] methods = clazz.getDeclaredMethods();
+        boolean hasAnnotation = false;
         for(Method method: methods) {
             if (Modifier.isStatic(method.getModifiers())) {
                 continue;
@@ -216,9 +349,11 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
                 }
                 method.setAccessible(true);
                 Reflection.invoke(bean, method);
+                hasAnnotation = true;
             }
         }
-        invokeByAnnotation(clazz.getSuperclass(), bean, annotationClass);
+        //Invoke parent first and merge the result
+        return invokeByAnnotation(clazz.getSuperclass(), bean, annotationClass) || hasAnnotation;
     }
 
     /**
@@ -229,17 +364,57 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
      */
     @Override
     public void destroy(Component component) {
-        eventSupport.fireEvent(BeanPhase.DESTROYING, component);
+        doDestroy(component, false);
+    }
+
+    protected void doDestroy(Component component, boolean isChild) {
+        eventSupport.fireEvent(BeanPhase.DESTROYING,component);
 
         Object bean = component.getBean();
-        if (bean instanceof Destroyable) {
-            ((Destroyable)bean).destroy();
+        if (!isChild) {
+            if (bean instanceof LifecycleMBean) {
+                LifecycleMBean mBean = (LifecycleMBean) bean;
+                if (mBean.getBeanPhase().ordinal() < BeanPhase.DESTROYING.ordinal()) {
+                    mBean.destroy();
+                }
+            } else if (bean instanceof Destroyable) {
+                ((Destroyable) bean).destroy();
+            } else {
+                Class<?> clazz = bean.getClass();
+                invokeByAnnotation(clazz, bean, PreDestroy.class);
+            }
         }
         else {
-            Class clazz = bean.getClass();
-            invokeByAnnotation(clazz, bean, PreDestroy.class);
+            // The parent bean needs to control the lifecycle of the child,
+            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // But in some cases parent bean doesn't want to take care about the lifecycle of child
+            // As the container, we can not use the single rule to fit both of the use cases.
+            // Our strategy is the following
+            // 1. If the child has PostConstruct, that means container takes care the initialization state
+            // 2. If the child implements InitializableMBean which has the state, we can check whether it has been initialized or not, then takes action.
+            // 3. If the child bean is a pure Initializable or other stuff, then we don't take any action
+            Class<?> childClass = bean.getClass();
+            if (!invokeByAnnotation(childClass, bean, PreDestroy.class)) {
+                if (bean instanceof LifecycleMBean) {
+                    LifecycleMBean mBean = (LifecycleMBean) bean;
+                    if (mBean.getBeanPhase().ordinal() < BeanPhase.DESTROYING.ordinal()) {
+                        mBean.destroy();
+                    }
+                }
+            }
         }
-        eventSupport.fireEvent(BeanPhase.DESTROYED, component);
+
+        //Initialize children
+        Map<String, Component> children = component.getChildren();
+        if (children != null) {
+            //Keep the sequences of keys, since the map is linked hash map
+            for(String key: children.keySet()) {
+                Component child = children.get(key);
+                doDestroy(child, true);
+            }
+        }
+
+        eventSupport.fireEvent(BeanPhase.DESTROYED,component);
     }
 
     private boolean initialized = false;

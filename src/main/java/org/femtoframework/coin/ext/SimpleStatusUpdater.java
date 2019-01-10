@@ -40,10 +40,7 @@ public class SimpleStatusUpdater implements BeanEventListener {
         Component component = event.getComponent();
         BeanStatus status = component.getStatus();
         BeanPhase phase = event.getPhase();
-        if (status instanceof SimpleBeanStatus) {
-            SimpleBeanStatus simpleBeanStatus = (SimpleBeanStatus)status;
-            simpleBeanStatus.setPhase(phase);
-            simpleBeanStatus.getConditions().add(new SimpleBeanCondition(phase));
-        }
+        status.setPhase(phase);
+        status.addCondition(new SimpleBeanCondition(phase));
     }
 }

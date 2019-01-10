@@ -17,6 +17,7 @@
 package org.femtoframework.coin.spec.ext;
 
 import org.femtoframework.bean.Initializable;
+import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.CoinConstants;
 import org.femtoframework.coin.ext.BaseFactory;
@@ -34,19 +35,39 @@ import java.util.Iterator;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleKindSpecFactory extends BaseFactory<KindSpec> implements KindSpecFactory, Initializable {
+public class SimpleKindSpecFactory extends BaseFactory<KindSpec> implements KindSpecFactory, InitializableMBean {
 
     public SimpleKindSpecFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);
     }
 
+    private boolean initialized = false;
+
     /**
-     * Initialize the bean
+     * Return whether it is initialized
      *
-     * @throws InitializeException
+     * @return whether it is initialized
      */
     @Override
-    public void initialize() {
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * Initialized setter for internal
+     *
+     * @param initialized BeanPhase
+     */
+    @Override
+    public void _doSetInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    /**
+     * Initiliaze internally
+     */
+    @Override
+    public void _doInitialize() {
         Iterator<Class<? extends KindSpec>> implementations = ImplementUtil.getImplements(KindSpec.class);
         while(implementations.hasNext()) {
             Class<? extends KindSpec> clazz = implementations.next();

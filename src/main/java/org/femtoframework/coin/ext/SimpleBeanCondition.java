@@ -19,6 +19,9 @@ package org.femtoframework.coin.ext;
 import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.status.BeanCondition;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Simple Bean Condition
  *
@@ -28,7 +31,7 @@ import org.femtoframework.coin.status.BeanCondition;
 public class SimpleBeanCondition implements BeanCondition {
 
     private long timestamp;
-    private String type;
+    private List<String> types;
     private ConditionState state = ConditionState.UNKNOWN;
 
     public SimpleBeanCondition(BeanPhase phase) {
@@ -36,7 +39,8 @@ public class SimpleBeanCondition implements BeanCondition {
     }
 
     public SimpleBeanCondition(String type, ConditionState state) {
-        this.type = type;
+        this.types = new ArrayList<>(2);
+        this.types.add(type);
         this.state = state;
         this.timestamp = System.currentTimeMillis();
     }
@@ -47,8 +51,8 @@ public class SimpleBeanCondition implements BeanCondition {
     }
 
     @Override
-    public String getType() {
-        return type;
+    public List<String> getTypes() {
+        return types;
     }
 
     @Override

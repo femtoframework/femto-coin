@@ -1,7 +1,5 @@
 package org.femtoframework.coin;
 
-import org.femtoframework.bean.Nameable;
-
 /**
  * 第一个对象
  *

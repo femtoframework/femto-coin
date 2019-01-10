@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.spec.BeanSpec;
 
@@ -54,6 +55,16 @@ public interface ComponentFactory extends Factory<Component> {
      * @param targetStage BeanStage
      */
     Component create(String name, Object bean, BeanStage targetStage);
+
+
+    /**
+     * Keep component in the given stage
+     *
+     * @param component Component
+     * @param targetStage Target Stage
+     * @return Current BeanPhase of component
+     */
+    BeanPhase keep(Component component, BeanStage targetStage);
 
     /**
      * Get the default implementation by interface class

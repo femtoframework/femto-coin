@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.configurator;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
@@ -68,6 +69,10 @@ public class AutoConfigurator implements Configurator {
                 continue;
             }
 
+            if (method.isAnnotationPresent(JsonIgnore.class)) { //Ignore
+                continue;
+            }
+
             if (method.getParameterTypes().length != 1) {
                 continue;
             }
@@ -88,6 +93,7 @@ public class AutoConfigurator implements Configurator {
 
             Inject inject = method.getAnnotation(Inject.class);
             String methodName = method.getName();
+            //Only the method declared on an interface will be injected if there is no any annotation associated
             if (inject != null || methodName.startsWith("set")) { // || methodName.startsWith("add")
                 autoInject(obj, method.getAnnotation(Named.class), component, method);
             }
@@ -139,14 +145,19 @@ public class AutoConfigurator implements Configurator {
             }
 
             //If the bean does not exist, try to match by expectedType in the factory
-            boolean beanInjection = (element != null && element.getKind() == CoreKind.BEAN)
-                     || (element != null && expectedType.isInterface());
+            boolean beanInjection = ((element != null && element.getKind() == CoreKind.BEAN)
+                     || (element != null && expectedType.isInterface()));
 
             Component childComponent = null;
             if (beanInjection) {
                 BeanElement childSpec = null;
                 if (element instanceof BeanElement) {
                     childSpec = (BeanElement)element;
+                }
+                else if (element instanceof SetSpec) {
+                    if (Set.class.isAssignableFrom(expectedType)) {
+                        value = element.getValue(expectedType, component);
+                    }
                 }
                 else if (element instanceof MapSpec) {
                     if (Map.class.isAssignableFrom(expectedType)) {

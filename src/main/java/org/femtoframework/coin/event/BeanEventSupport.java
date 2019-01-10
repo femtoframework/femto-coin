@@ -21,6 +21,7 @@ import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.BeanFactory;
 import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.Component;
+import org.femtoframework.coin.ext.SimpleStatusUpdater;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.Reflection;
 
@@ -153,6 +154,7 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener, 
      */
     @Override
     public void _doInitialize() {
+//        addListener(new SimpleStatusUpdater());
         Iterator<Class<? extends BeanEventListener>> it = ImplementUtil.getImplements(BeanEventListener.class);
         while(it.hasNext()) {
             Class<? extends BeanEventListener> clazz = it.next();

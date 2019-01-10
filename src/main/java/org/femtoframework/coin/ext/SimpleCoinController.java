@@ -16,15 +16,19 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.ModelElement;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.util.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -42,66 +46,32 @@ public class SimpleCoinController implements CoinController {
 
     private NamespaceFactory namespaceFactory;
 
-//    private SimpleModule moduleMap = new SimpleModule();
-//
-//    {
-//        moduleMap.setDeserializerModifier(new CoinBeanDeserializerModifier());
-//    }
-//
-//    private JsonFactory jsonFactory;
-//    private ObjectMapper jsonMapper;
-//
-//    private YAMLFactory yamlFactory;
-//    private ObjectMapper yamlMapper;
-//
-//    protected YAMLFactory getYAMLFactory() {
-//        if (yamlFactory == null) {
-//            yamlFactory = new YAMLFactory();
-//        }
-//        return yamlFactory;
-//    }
-//
-//
-//    protected ObjectMapper getYamlMapper() {
-//        if (yamlMapper == null) {
-//            yamlMapper = new ObjectMapper(getYAMLFactory());
-//
-//            yamlMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//            yamlMapper.registerModule(moduleMap);
-//        }
-//        return yamlMapper;
-//    }
-//
-//    protected JsonFactory getJsonFactory() {
-//        if (jsonFactory == null) {
-//            jsonFactory = new JsonFactory();
-//        }
-//        return jsonFactory;
-//    }
-//
-//    protected ObjectMapper getJsonMapper() {
-//        if (jsonMapper == null) {
-//            jsonMapper = new ObjectMapper(getJsonFactory());
-//
-//            jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//            jsonMapper.registerModule(moduleMap);
-//        }
-//        return jsonMapper;
-//    }
-
     private SpecParser specParser;
+
+    /**
+     * Logger
+     */
+    private Logger log = LoggerFactory.getLogger(SimpleCoinController.class);
 
     /**
      * Create beans by specs
      *
-     * @param uri Spec URI
+     * @param uris Spec URI
      */
     @Override
-    public void create(URI uri) throws IOException {
-        List<LinkedHashMap> maps = toMaps(uri);
+    public void create(URI... uris) throws IOException {
+        List<LinkedHashMap> maps = toMaps(uris);
+        List<BeanSpec> beanSpecs = createSpecs(maps);
+        createBeans(beanSpecs);
+        keepStage(beanSpecs, BeanStage.CONFIGURE);
+        keepStage(beanSpecs, BeanStage.INITIALIZE);
+        keepStage(beanSpecs, BeanStage.START);
+    }
 
+    protected List<BeanSpec> createSpecs(List<LinkedHashMap> specs) throws IOException {
         int index = 1;
-        for(LinkedHashMap map: maps) {
+        List<BeanSpec> beanSpecs = new ArrayList<>();
+        for(LinkedHashMap map: specs) {
             String version = ModelElement.getVersion(map);
             KindSpec kindSpec = kindSpecFactory.get(version);
             if (kindSpec == null) {
@@ -131,32 +101,65 @@ public class SimpleCoinController implements CoinController {
                 }
                 String name = beanSpec.getName();
                 BeanSpec oldSpec = ns.getBeanSpecFactory().get(name);
-                if (oldSpec != null) {
-                    throw new IOException("BeanSpec " + namespace + ":" + name + " existing already");
+                if (log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
+                    log.warn("A new BeanSpec with same namespace and name has been found, replacing with new one, "
+                            + oldSpec.getQualifiedName());
                 }
+//                if (oldSpec != null) {
+//                    throw new IOException("BeanSpec " + namespace + ":" + name + " existing already");
+//                }
                 ns.getBeanSpecFactory().add(beanSpec);
+                beanSpecs.add(beanSpec);
             }
             else {
                 //TODO CUSTOM Spec
                 throw new IOException("Unsupported kind yet:" + kind);
             }
         }
+        return beanSpecs;
+    }
+
+    protected void createBeans( List<BeanSpec> specs) {
+        for(BeanSpec spec: specs) { //Create all components
+            if (spec.isEnabled()) {
+                String namespace = spec.getNamespace();
+                Namespace ns = namespaceFactory.get(namespace);
+                ns.getComponentFactory().create(spec.getName(), spec, BeanStage.CREATE);
+            }
+        }
+    }
+
+    protected void keepStage(List<BeanSpec> specs, BeanStage stage) {
+        for(BeanSpec spec: specs) { //Configure all beans
+            if (spec.isEnabled()) {
+                String namespace = spec.getNamespace();
+                Namespace ns = namespaceFactory.get(namespace);
+                ComponentFactory cf = ns.getComponentFactory();
+                Component component = cf.get(spec.getName());
+                component.setStage(stage);
+                cf.keep(component, stage);
+            }
+        }
     }
 
 
-    protected List<LinkedHashMap> toMaps(URI uri) throws IOException {
-        return getSpecParser().parseSpec(uri);
+    protected List<LinkedHashMap> toMaps(URI... uris) throws IOException {
+        List<LinkedHashMap> all = new ArrayList<>();
+        for(URI u: uris) {
+            all.addAll(getSpecParser().parseSpec(u));
+        }
+        return all;
     }
 
     /**
      * Apply changes by specs
      *
-     * @param uri Spec URI
+     * @param uris Spec URI
      */
     @Override
-    public void apply(URI uri) throws IOException {
+    public void apply(URI... uris) throws IOException {
         int index = 1;
-        List<LinkedHashMap> maps = toMaps(uri);
+        List<LinkedHashMap> maps = toMaps(uris);
         for(LinkedHashMap map: maps) {
             String version = ModelElement.getVersion(map);
             KindSpec kindSpec = kindSpecFactory.get(version);
@@ -207,12 +210,12 @@ public class SimpleCoinController implements CoinController {
     /**
      * Delete beans by specs
      *
-     * @param uri Spec URI
+     * @param uris Spec URI
      */
     @Override
-    public void delete(URI uri) throws IOException {
+    public void delete(URI... uris) throws IOException {
         int index = 1;
-        List<LinkedHashMap> maps = toMaps(uri);
+        List<LinkedHashMap> maps = toMaps(uris);
         for(LinkedHashMap map: maps) {
             String version = ModelElement.getVersion(map);
             KindSpec kindSpec = kindSpecFactory.get(version);

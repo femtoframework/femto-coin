@@ -45,6 +45,28 @@ public class SimpleBeanStatus implements BeanStatus {
     }
 
     /**
+     * Add bean condition
+     *
+     * @param condition BeanCondition
+     */
+    @Override
+    public void addCondition(BeanCondition condition) {
+        if (conditions.isEmpty()) {
+            conditions.add(condition);
+        }
+        else {
+            BeanCondition last = conditions.get(conditions.size()-1);
+            if (condition.getState() == last.getState() && condition.getTimestamp() - last.getTimestamp() < 10) {
+                last.getTypes().addAll(condition.getTypes());
+            }
+            else {
+                conditions.add(condition);
+            }
+        }
+    }
+
+
+    /**
      * Bean Phase
      *
      * @return Phase

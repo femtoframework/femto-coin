@@ -28,6 +28,7 @@ import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.femtoframework.coin.spec.SpecConstants.NAME;
@@ -153,6 +154,15 @@ public class SimpleComponent implements Component, Nameable {
     private Map<String, Component> children = null;
 
     /**
+     * Return all children
+     *
+     * @return all Children
+     */
+    public Map<String, Component> getChildren() {
+        return children;
+    }
+
+    /**
      * Add Child component, if the child bean is an anonymous Component, it will be put into the parent instead of adding it to ComponentFactory
      *
      * @param propertyName Property Name
@@ -160,7 +170,7 @@ public class SimpleComponent implements Component, Nameable {
      */
     public void addChild(String propertyName, Component component) {
         if (children == null) {
-            children = new HashMap<>(4);
+            children = new LinkedHashMap<>(4);
         }
         children.put(propertyName, component);
     }
@@ -172,6 +182,6 @@ public class SimpleComponent implements Component, Nameable {
      * @return
      */
     public Component getChild(String name) {
-        return children.get(name);
+        return children != null ? children.get(name) : null;
     }
 }

@@ -66,7 +66,7 @@ public interface Component extends NamedBean {
      * @return Qualified Name
      */
     default String getQualifiedName() {
-        return getNamespace() + ":" + getName();
+        return getSpec().getQualifiedName();
     }
 
     /**
@@ -156,6 +156,16 @@ public interface Component extends NamedBean {
 
 
     //Children
+
+    /**
+     * Return all children
+     *
+     * @return all Children
+     */
+    default Map<String, Component> getChildren() {
+        return null;
+    }
+
     /**
      * Add Child component, if the child bean is an anonymous Component, it will be put into the parent instead of adding it to ComponentFactory
      *

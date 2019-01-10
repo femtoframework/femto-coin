@@ -38,6 +38,14 @@ public interface BeanStatus {
         return Collections.emptyList();
     }
 
+
+    /**
+     * Add bean condition, it should merge the similar condition together
+     *
+     * @param condition BeanCondition
+     */
+    void addCondition(BeanCondition condition);
+
     /**
      * Bean Phase
      *
@@ -46,4 +54,11 @@ public interface BeanStatus {
     default BeanPhase getPhase() {
         return BeanPhase.DISABLED;
     }
+
+    /**
+     * Set current phase
+     *
+     * @param phase Current phase
+     */
+    void setPhase(BeanPhase phase);
 }
