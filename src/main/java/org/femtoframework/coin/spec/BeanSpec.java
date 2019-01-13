@@ -30,16 +30,6 @@ import java.util.List;
  * @version 1.0
  */
 public interface BeanSpec extends ModelSpec {
-
-//    /**
-//     * Return aliases
-//     *
-//     * @return aliases
-//     */
-//    default List<String> getAliases() {
-//        return Collections.emptyList();
-//    }
-
     /**
      * Return belongsTo
      *

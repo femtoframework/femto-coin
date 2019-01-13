@@ -163,7 +163,7 @@ public class SpecConstructor extends SafeConstructor {
                     if (kindSpec == null) {
                         throw new IllegalStateException("Version:" + version + " doesn't support, please make sure " +
                                 "your KindSpec implementation has been put in your jar " +
-                                "file /META-INF/spec/org.femtoframework.coin.spec.KindSpec.impl");
+                                "file /META-INF/spec/implements.properties");
                     }
                     return kindSpec.toSpec(map);
                 case LIST:

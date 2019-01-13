@@ -16,18 +16,14 @@
  */
 package org.femtoframework.coin.spec.ext;
 
-import org.femtoframework.bean.Initializable;
 import org.femtoframework.bean.InitializableMBean;
-import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.CoinConstants;
 import org.femtoframework.coin.ext.BaseFactory;
 import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.implement.ImplementUtil;
-import org.femtoframework.lang.reflect.Reflection;
-
-import java.util.Iterator;
+import org.femtoframework.implement.InstancesFunction;
 
 /**
  * Simple Kind Spec Factory
@@ -68,12 +64,7 @@ public class SimpleKindSpecFactory extends BaseFactory<KindSpec> implements Kind
      */
     @Override
     public void _doInitialize() {
-        Iterator<Class<? extends KindSpec>> implementations = ImplementUtil.getImplements(KindSpec.class);
-        while(implementations.hasNext()) {
-            Class<? extends KindSpec> clazz = implementations.next();
-            KindSpec kindSpec = Reflection.newInstance(clazz);
-            add(kindSpec);
-        }
+        ImplementUtil.applyInstances(KindSpec.class, (InstancesFunction<String, KindSpec>) this::add);
     }
 
     /**

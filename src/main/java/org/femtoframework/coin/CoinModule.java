@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin;
 
+import org.femtoframework.annotation.ImplementedBy;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
@@ -29,6 +30,7 @@ import org.femtoframework.coin.spec.KindSpecFactory;
  * @author Sheldon Shao
  * @version 1.0
  */
+@ImplementedBy("org.femtoframework.coin.ext.SimpleCoinModule")
 public interface CoinModule {
 
     /**

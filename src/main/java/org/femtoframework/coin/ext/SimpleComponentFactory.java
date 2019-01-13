@@ -26,16 +26,15 @@ import org.femtoframework.coin.spec.BeanSpecFactory;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.coin.util.CoinNameUtil;
+import org.femtoframework.implement.ImplementConfig;
 import org.femtoframework.implement.ImplementUtil;
-import org.femtoframework.lang.reflect.NoSuchClassException;
-import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.ManagedBean;
 import java.util.Iterator;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Simple Component Factory
@@ -252,22 +251,9 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
 
         implClass = ImplementUtil.getImplement(interfaceClass);
         if (implClass == null && StringUtil.isValid(name)) {
-            Properties properties = ImplementUtil.getImplementProperties(interfaceClass);
-            String className = properties.getProperty(name);
-            if (className != null) {
-                try {
-                    return Reflection.getClass(className, interfaceClass.getClassLoader());
-                }
-                catch (ClassNotFoundException e) {
-                    if (log.isWarnEnabled()) {
-                        log.warn("The implementation " + className + " of interface " +
-                                interfaceClass.getName() + " is not found. " + name, e);
-                    }
-                    throw new NoSuchClassException("The implementation " + className + " of interface " +
-                            interfaceClass.getName() + " is not found. " + name, e);
-                }
-            }
-            //TODO create BeanSpec automatically to make it faster for next time?
+            Map<String, ImplementConfig<?>> map = ImplementUtil.getImplementManager().getMultipleImplements(interfaceClass);
+            ImplementConfig config = map.get(name);
+            return config != null ? config.getImplementationClass() : null;
         }
 
         Iterator<BeanSpec> it = specFactory.iterator();

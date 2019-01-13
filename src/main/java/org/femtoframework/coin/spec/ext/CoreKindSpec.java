@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.spec.ext;
 
+import org.femtoframework.coin.exception.BeanSpecSyntaxException;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.spec.element.MapElement;
@@ -77,7 +78,7 @@ public class CoreKindSpec implements KindSpec {
             }
         }
         else {
-            throw new IllegalArgumentException("No such kind:" + kind + " in version(" + getVersion() + ") ");
+            throw new BeanSpecSyntaxException("No such kind:" + kind + " in version(" + getVersion() + ") ");
         }
     }
 }

@@ -110,22 +110,18 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         eventSupport.fireEvent(BeanPhase.CREATING, component);
 
         Object bean;
-        if (spec.isSingleton()) {
-            bean = Reflection.newSingleton(clazz);
+        try {
+            bean = Reflection.newInstance(clazz);
         }
-        else {
-            try {
-                bean = Reflection.newInstance(clazz);
+        catch (ReflectionException re) {
+            throw new ObjectCreationException("Create object exception:" + clazz.getName(), re);
+
+        }
+        catch (Throwable t) {
+            if (log.isErrorEnabled()) {
+                log.error("Create new instance error:", t);
             }
-            catch (ReflectionException re) {
-                bean = Reflection.newSingleton(clazz);
-            }
-            catch (Throwable t) {
-                if (log.isErrorEnabled()) {
-                    log.error("Create new instance error:", t);
-                }
-                throw new ObjectCreationException("Create object exception:" + clazz.getName(), t);
-            }
+            throw new ObjectCreationException("Create object exception:" + clazz.getName(), t);
         }
 
         eventSupport.fireEvent(BeanPhase.CREATED, component);
@@ -145,14 +141,14 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
         configuratorFactory.configure(component);
 
-        //Configure children
-        Map<String, Component> children = component.getChildren();
-        if (children != null) {//Keep the sequences of keys, since the map is linked hash map
-            for(String key: children.keySet()) {
-                Component child = children.get(key);
-                configure(child);
-            }
-        }
+        //Configure children Configuration is triggered by AutoConfigurator, so we don't need to do it again here
+//        Map<String, Component> children = component.getChildren();
+//        if (children != null) {//Keep the sequences of keys, since the map is linked hash map
+//            for(String key: children.keySet()) {
+//                Component child = children.get(key);
+//                configure(child);
+//            }
+//        }
 
         eventSupport.fireEvent(BeanPhase.CONFIGURED, component);
     }
@@ -256,7 +252,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             }
         }
 
-        //Initialize children
+        //Start children
         Map<String, Component> children = component.getChildren();
         if (children != null) {
             //Keep the sequences of keys, since the map is linked hash map
@@ -310,7 +306,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             }
         }
 
-        //Initialize children
+        //Stop children
         Map<String, Component> children = component.getChildren();
         if (children != null) {
             //Keep the sequences of keys, since the map is linked hash map
@@ -404,7 +400,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             }
         }
 
-        //Initialize children
+        //Destroy children
         Map<String, Component> children = component.getChildren();
         if (children != null) {
             //Keep the sequences of keys, since the map is linked hash map
