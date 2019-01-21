@@ -1,5 +1,7 @@
 package org.femtoframework.coin;
 
+import org.femtoframework.parameters.Parameters;
+
 /**
  * 第一个接口
  *
@@ -9,4 +11,6 @@ package org.femtoframework.coin;
 public interface FirstInterface
 {
     SecondInterface getSecond();
+
+    Parameters getParameters();
 }

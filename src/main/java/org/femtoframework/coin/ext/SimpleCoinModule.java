@@ -17,9 +17,7 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.BeanStage;
-import org.femtoframework.bean.Initializable;
 import org.femtoframework.bean.InitializableMBean;
-import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
@@ -56,6 +54,9 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
     {
         coinController.setKindSpecFactory(kindSpecFactory);
         coinController.setNamespaceFactory(namespaceFactory);
+
+        configuratorFactory.setNamespaceFactory(namespaceFactory);
+        kindSpecFactory.setNamespaceFactory(namespaceFactory);
     }
 
     private Namespace namespaceCoin;
@@ -171,19 +172,16 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
      */
     @Override
     public void _doInitialize() {
-        configuratorFactory.setNamespaceFactory(namespaceFactory);
-        kindSpecFactory.setNamespaceFactory(namespaceFactory);
-
         namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
 
         ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
         componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_VARIABLE_RESOLVER_FACTORY, variableResolverFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
         componentFactory.create(NAME_LOOKUP, lookup, BeanStage.INITIALIZE);
-        componentFactory.create(NAME_VARIABLE_RESOLVER_FACTORY, variableResolverFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
     }
 }

@@ -141,15 +141,6 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
         configuratorFactory.configure(component);
 
-        //Configure children Configuration is triggered by AutoConfigurator, so we don't need to do it again here
-//        Map<String, Component> children = component.getChildren();
-//        if (children != null) {//Keep the sequences of keys, since the map is linked hash map
-//            for(String key: children.keySet()) {
-//                Component child = children.get(key);
-//                configure(child);
-//            }
-//        }
-
         eventSupport.fireEvent(BeanPhase.CONFIGURED, component);
     }
 

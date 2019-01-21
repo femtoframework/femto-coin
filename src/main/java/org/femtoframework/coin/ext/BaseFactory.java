@@ -16,15 +16,14 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.NamedBean;
-import org.femtoframework.coin.Factory;
-import org.femtoframework.coin.Namespace;
-import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.*;
 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Base Factory
@@ -36,7 +35,7 @@ public class BaseFactory<B> implements Factory<B> {
 
 
     private String namespace;
-    protected Map<String, B> map = new ConcurrentHashMap<>();
+    protected Map<String, B> map = new LinkedHashMap<>();
 
     protected void add(String name, B object) {
         map.put(name, object);
@@ -116,6 +115,23 @@ public class BaseFactory<B> implements Factory<B> {
 
     public NamespaceFactory getNamespaceFactory() {
         return namespaceFactory;
+    }
+
+
+    /**
+     * Apply stage to all its children
+     *
+     * @param namePrefix Prefix to put them in namespace, for example, configurator "auto" will be use name "configurator_auto" in namespace "coin"
+     * @param stage Target Stage
+     */
+    protected void applyStageToChildren(String namePrefix, BeanStage stage) {
+        NamespaceFactory namespaceFactory = getNamespaceFactory();
+        Namespace namespace = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
+        ComponentFactory componentFactory = namespace.getComponentFactory();
+        for(String name: getNames()) {
+            B bean = get(name);
+            componentFactory.create(namePrefix + name , bean, stage);
+        }
     }
 
 }

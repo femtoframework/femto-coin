@@ -4,8 +4,10 @@ import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.ext.SimpleKindSpecFactory;
+import org.femtoframework.parameters.Parameters;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
+import org.junit.runners.parameterized.ParametersRunnerFactory;
 
 import java.io.File;
 
@@ -54,6 +56,16 @@ public class SimpleCoinControllerTest {
         Component component = ns.getComponentFactory().get(spec.getName());
         assertNotNull(component);
         assertNotNull(((FirstInterface)component.getBean()).getSecond());
+
+
+        FirstInterface firstInterface = component.getBean(FirstInterface.class);
+        Parameters parameters = firstInterface.getParameters();
+        assertNotNull(parameters);
+
+        //Test varirable
+        assertEquals(firstInterface, parameters.get("var"));
+        assertEquals(firstInterface.getSecond(), parameters.get("current"));
+        assertEquals(firstInterface.getSecond().getThirds().get(0), parameters.get("ref"));
 
         System.out.println("TimeElapsed:" + (System.currentTimeMillis() - start));
     }

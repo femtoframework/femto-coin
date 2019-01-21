@@ -16,19 +16,11 @@
  */
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.InitializableMBean;
-import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.configurator.GenericConfigurator;
-import org.femtoframework.coin.spec.KindSpec;
-import org.femtoframework.implement.ImplementConfig;
-import org.femtoframework.implement.ImplementManager;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.implement.InstancesFunction;
-import org.femtoframework.lang.reflect.Reflection;
-
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Simple Configurator Factory
@@ -40,6 +32,7 @@ public class SimpleConfiguratorFactory extends BaseFactory<Configurator> impleme
 
     protected SimpleConfiguratorFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);
+
     }
 
     /**
@@ -82,5 +75,6 @@ public class SimpleConfiguratorFactory extends BaseFactory<Configurator> impleme
     @Override
     public void _doInitialize() {
         ImplementUtil.applyInstances(Configurator.class, (InstancesFunction<String, Configurator>) this::add);
+        applyStageToChildren("configurator_", BeanStage.INITIALIZE);
     }
 }

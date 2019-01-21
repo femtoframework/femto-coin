@@ -33,9 +33,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Auto Inject
@@ -61,6 +59,7 @@ public class AutoConfigurator implements Configurator {
     public void configure(Object obj, Class clazz, Component component) {
         Method[] methods = clazz.getMethods();
 
+        Map<String, Injection> injections = new LinkedHashMap<>();
         for (Method method : methods) {
             if (Modifier.isStatic(method.getModifiers()) || !Modifier.isPublic(method.getModifiers())) {
                 continue;
@@ -79,14 +78,14 @@ public class AutoConfigurator implements Configurator {
 
             Resource injection = method.getAnnotation(Resource.class);
             if (injection != null) {
-                autoInject(obj, injection, component, method);
+                findInjection(obj, injection, component, method, injections);
                 continue;
             }
 
             Resources resources = method.getAnnotation(Resources.class);
             if (resources != null) {
                 for (Resource resource : resources.value()) {
-                    autoInject(obj, resource, component, method);
+                    findInjection(obj, resource, component, method, injections);
                 }
                 continue;
             }
@@ -95,8 +94,46 @@ public class AutoConfigurator implements Configurator {
             String methodName = method.getName();
             //Only the method declared on an interface will be injected if there is no any annotation associated
             if (inject != null || methodName.startsWith("set")) { // || methodName.startsWith("add")
-                autoInject(obj, method.getAnnotation(Named.class), component, method);
+                findInjection(obj, method.getAnnotation(Named.class), component, method, injections);
             }
+        }
+        
+        //Inject by element's sequence
+        BeanSpec spec = component.getSpec();
+        for(String key: spec.keySet()) {
+            Injection injection = injections.remove(key);
+            if (injection != null) {
+                injection.inject(obj, component);
+            }
+        }
+
+        //Inject rest
+        for(String key: injections.keySet()) {
+            Injection injection = injections.get(key);
+            injection.inject(obj, component);
+        }
+    }
+
+
+    private class Injection {
+        Element element;
+        String targetName;
+        Method method;
+        Class<?> expectedType;
+        Component childComponent;
+
+        public Injection(Element element, String name, Method method, Class<?> expectedType, Component childComponent) {
+            this.element = element;
+            this.targetName = name;
+            this.method = method;
+            this.expectedType = expectedType;
+            this.childComponent = childComponent;
+        }
+
+        public void inject(Object parent, Component parentComponent) {
+            Object value = childComponent != null ? childComponent.getBean(expectedType) :
+                    element.getValue(expectedType, parentComponent);
+            AutoConfigurator.this.invoke(value, parent, targetName, parentComponent, method);
         }
     }
 
@@ -107,18 +144,18 @@ public class AutoConfigurator implements Configurator {
      * @param component
      * @param method
      */
-    private void autoInject(Object parent, Named named, Component component, Method method) {
+    private void findInjection(Object parent, Named named, Component component, Method method, Map<String, Injection> injections) {
         String namespace = null;
         String[] names = CoinNameUtil.splitName(named != null ? named.value() : null);
         if (names == null || StringUtil.isInvalid(names[0])) {
             namespace = component.getNamespace();
         }
-        autoInject(parent, namespace, names[1], null, component, method);
+        findInjection(namespace, names[1], null, component, method, injections);
     }
 
 
-    private void autoInject(Object parent, String targetNamespace, String targetName, Class<?> clazz, Component component,
-                            Method method) {
+    private void findInjection(String targetNamespace, String targetName, Class<?> clazz, Component component,
+                               Method method, Map<String, Injection> injections) {
         Object value = null;
         Namespace ns = component.getNamespaceByName(targetNamespace);
 
@@ -126,12 +163,13 @@ public class AutoConfigurator implements Configurator {
         if (StringUtil.isValid(targetName)) {
             value = ns.getBeanFactory().get(targetName);
         }
+
+        String propertyName = null;
         if (value == null) {
             Class<?> expectedType = method.getParameterTypes()[0];
             BeanSpec spec = component.getSpec();
 
             JsonProperty property = method.getAnnotation(JsonProperty.class);
-            String propertyName = null;
             if (property != null) {
                 propertyName = property.value();
             }
@@ -149,6 +187,7 @@ public class AutoConfigurator implements Configurator {
                      || (element != null && expectedType.isInterface()));
 
             Component childComponent = null;
+            Injection injection = null;
             if (beanInjection) {
                 BeanElement childSpec = null;
                 if (element instanceof BeanElement) {
@@ -156,15 +195,15 @@ public class AutoConfigurator implements Configurator {
                 }
                 else if (element instanceof SetSpec) {
                     if (Set.class.isAssignableFrom(expectedType)) {
-                        value = element.getValue(expectedType, component);
+                        injection = new Injection(element, targetName, method, expectedType, null);
                     }
                 }
                 else if (element instanceof MapSpec) {
                     if (Map.class.isAssignableFrom(expectedType)) {
-                        value = element.getValue(expectedType, component);
+                        injection = new Injection(element, targetName, method, expectedType, null);
                     }
                     else if (Set.class.isAssignableFrom(expectedType)) {
-                        value = element.getValue(expectedType, component);
+                        injection = new Injection(element, targetName, method, expectedType, null);
                     }
                     else {
                         childSpec = new BeanElement((MapSpec) element);
@@ -176,7 +215,7 @@ public class AutoConfigurator implements Configurator {
                 }
                 else if (element instanceof ListSpec) {
                     if (List.class.isAssignableFrom(expectedType)) {
-                        value = element.getValue(expectedType, component);
+                        injection = new Injection(element, targetName, method, expectedType, null);
                     }
                 }
 
@@ -206,17 +245,18 @@ public class AutoConfigurator implements Configurator {
                 if (childComponent == null && childSpec != null) {
                     childComponent = ns.getComponentFactory().create(targetName, childSpec, component.getStage());
                     if (targetName == null) {
+                        targetName = propertyName;
                         childSpec.setName(propertyName);
                         component.addChild(propertyName, childComponent);
                     }
                 }
             }
             else if (element != null) { //Primitive value
-                value = element.getValue(expectedType, component);
+                injection = new Injection(element, targetName, method, expectedType, null);
             }
 
             if (childComponent != null) {
-                value = childComponent.getBean(expectedType);
+                injection = new Injection(element, targetName, method, expectedType, childComponent);
             }
             else {
                 if (log.isWarnEnabled()) {
@@ -224,16 +264,15 @@ public class AutoConfigurator implements Configurator {
                 }
             }
 
-            if (value == null) {
-                return;
+            if (injection != null) {
+                injections.put(targetName != null? targetName : propertyName, injection);
             }
         }
-        invoke(value, parent, targetName, component, method);
     }
 
 
 
-    private void autoInject(Object parent, Resource injection, Component component, Method method) {
+    private void findInjection(Object parent, Resource injection, Component component, Method method, Map<String, Injection> injections) {
         Class<?> clazz = injection.type();
 
         String namespace = null;
@@ -241,20 +280,13 @@ public class AutoConfigurator implements Configurator {
         if (names == null || StringUtil.isInvalid(names[0])) {
             namespace = component.getNamespace();
         }
-        autoInject(parent, namespace, names[1], clazz, component, method);
+        findInjection(namespace, names[1], clazz, component, method, injections);
     }
 
 
     private void invoke(Object value, Object parent, String name, Component component, Method method) {
-        Class[] paramTypes = method.getParameterTypes();
-        int argCount = paramTypes.length;
         try {
-            if (argCount == 1) {
-                method.invoke(parent, value);
-            }
-            else if (argCount == 2) {
-                method.invoke(parent, name, value);
-            }
+            method.invoke(parent, value);
         }
         catch (Exception ex) {
             String qName = component.getNamespace() + ":" + component.getName();
@@ -264,33 +296,4 @@ public class AutoConfigurator implements Configurator {
                     name, ex);
         }
     }
-
-//    private Object createComponent(Class<?> clazz, String name, String namespace, BeanContext context,
-//                                   Method method) {
-//        try {
-//            Namespace ns = context.getNamespaceByName(namespace);
-//            ComponentFactory factory = ns.getComponentFactory();
-//            Component comp = factory.create(name, clazz, BeanStage.CREATE);
-//            Object bean = comp.getBean(null)
-//            if (name != null && !name.isEmpty() && bean instanceof Nameable) {
-//                ((Nameable)bean).setName(name);
-//            }
-//
-//            //Run into INITIALIZE --> START
-//            comp.setStage(BeanStage.START);
-//
-////            factory.deployObject(obj, ObjectStage.START);
-//
-////            if (StringUtil.isValid(namespace) && StringUtil.isValid(name)) { //只有名字空间和名称都存在的时候才自动绑定
-////                factory.addObject(name, obj);
-////            }
-//            return obj;
-//        }
-//        catch (Exception ex) {
-//            String qName = context.getNamespace() + ":" + context.getObjectName();
-//            log.warn("Create object of the Injection exception:  objectName=" + qName + " function=" +
-//                    method.getName() + " name=" + name + " class=" + clazz.getName(), ex);
-//            return null;
-//        }
-//    }
 }

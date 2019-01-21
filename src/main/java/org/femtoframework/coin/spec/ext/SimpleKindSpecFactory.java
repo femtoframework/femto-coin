@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.spec.ext;
 
+import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.CoinConstants;
 import org.femtoframework.coin.ext.BaseFactory;
@@ -65,6 +66,7 @@ public class SimpleKindSpecFactory extends BaseFactory<KindSpec> implements Kind
     @Override
     public void _doInitialize() {
         ImplementUtil.applyInstances(KindSpec.class, (InstancesFunction<String, KindSpec>) this::add);
+        applyStageToChildren("kind_spec_", BeanStage.INITIALIZE);
     }
 
     /**

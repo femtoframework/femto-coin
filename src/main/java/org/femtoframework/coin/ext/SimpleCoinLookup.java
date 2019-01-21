@@ -92,7 +92,6 @@ public class SimpleCoinLookup implements CoinLookup {
             if (ns == null) {
                 throw new IllegalArgumentException("No such namespace:" + n);
             }
-            Object obj;
             if (size == 1) {
                 return ns;
             }

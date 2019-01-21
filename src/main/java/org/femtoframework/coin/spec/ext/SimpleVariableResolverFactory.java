@@ -72,13 +72,7 @@ public class SimpleVariableResolverFactory extends BaseFactory<VariableResolver>
     public void _doInitialize() {
         ImplementUtil.applyInstances(VariableResolver.class, (InstancesFunction<String, VariableResolver>) this::add);
 
-        NamespaceFactory namespaceFactory = coinModule.getNamespaceFactory();
-        Namespace namespace = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
-        ComponentFactory componentFactory = namespace.getComponentFactory();
-        for(String name: getNames()) {
-            VariableResolver vr = get(name);
-            componentFactory.create("vr_" + name , vr, BeanStage.INITIALIZE);
-        }
+        applyStageToChildren("vr_", BeanStage.INITIALIZE);
     }
 
     /**
