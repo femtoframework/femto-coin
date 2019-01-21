@@ -112,12 +112,10 @@ public class BeanElement extends ModelElement implements BeanSpec, SpecConstants
         String type = getType();
         if (typeClass == null) {
             if (type != null) {
-                if (typeClass == null) {
-                    try {
-                        typeClass = Reflection.getClass(type);
-                    } catch (ClassNotFoundException e) {
-                        throw new NoSuchClassException("No such type:" + type + " in spec:" + getName());
-                    }
+                try {
+                    typeClass = Reflection.getClass(type);
+                } catch (ClassNotFoundException e) {
+                    throw new NoSuchClassException("No such type:" + type + " in spec:" + getName());
                 }
             }
         }
