@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="GBK" ?>
+<xc:xml-config xmlns:xc="http://bolango.org/xml/config" xmlns="http://bolango.org/cube">
+    <xc:config>
+        <xc:property name="home" value="/bolango/air"/>
+        <xc:property name="tomcat" value="/bolango/air/tomcat"/>
+        <xc:property name="tomcat_order" value="/bolango/air/tomcat_order"/>
+        <xc:property name="tomcat_nexus" value="/bolango/air/tomcat_nexus"/>
+        <xc:property name="tomcat_mon" value="/bolango/air/tomcat_mon"/>
+        <xc:property name="httpd" value="/bolango/httpd"/>
+
+        <xc:property name="bolango" value="/data"/>
+        <xc:property name="nova_version" value="6.1.0"/>
+        <xc:property name="galaxy_version" value="6.1.2"/>
+        <xc:property name="repo" value="${home}/repo"/>
+        <xc:property name="nova" value="${home}/repo/org/bolango/nova"/>
+        <xc:property name="galaxy" value="${home}/repo/org/bolango/galaxy"/>
+    </xc:config>
+    <cube>
+        <repositories>
+            <repository dir="/bolango/air/repo"/>
+        </repositories>
+        <default>
+            <boot>
+        <env name="ADF_SCRIPT_NAME" value="air"/>
+        <env name="BACKUP_HOME" value="/data/backup/air"/>
+        <env name="JAVA_LOG_HOME" value="/bolango/air/log"/>
+        <env name="JAVA_PID_HOME" value="/bolango/air/var/pid"/>
+        <env name="JAVA_HOME" value="/bolango/jdk"/>
+
+        <java>
+          <supervisor base="${home}/lib/native/${osid}" name="jdaemon"/>
+          <user name="ares"/>
+          <rotatelogs pattern="$JAVA_LOG_HOME/%Y-%m-%d/%n.log"/>
+          <vm-mode mode="server"/>
+          <memory min="256m" max="512m"/>
+          <logger priority="DEBUG"/>
+          <launcher class="org.bolango.launcher.Launcher"/>
+          <property name="java.awt.headless" value="true"/>
+          <property name="product_home" value="${home}"/>
+          <property name="file.encoding" value="UTF8"/>
+          <property name="cube.system.env" value="prod"/>
+          <property name="java.library.path" value="${lib}/native/${osid}"/>
+
+          <classpath file="${nova}/util/${nova_version}/util-${nova_version}.jar"/>
+          <classpath file="${nova}/coin/${nova_version}/coin-${nova_version}.jar"/>
+          <classpath file="${nova}/cube/${nova_version}/cube-${nova_version}.jar"/>
+          <classpath file="${nova}/text-handle/${nova_version}/text-handle-${nova_version}.jar"/>
+          <classpath file="${nova}/conf/${nova_version}/conf-${nova_version}.jar"/>
+          <classpath file="${nova}/jeton/${nova_version}/jeton-${nova_version}.jar"/>
+          <classpath file="${nova}/filestore/${nova_version}/filestore-${nova_version}.jar"/>
+          <classpath file="${nova}/log/6.1.1/log-6.1.1.jar"/>
+          <classpath file="${nova}/jade/${nova_version}/jade-${nova_version}.jar"/>
+          <classpath file="${nova}/launcher/${nova_version}/launcher-${nova_version}.jar"/>
+          <classpath file="${nova}/naming/${nova_version}/naming-${nova_version}.jar"/>
+          <classpath file="${nova}/net-server/${nova_version}/net-server-${nova_version}.jar"/>
+          <classpath file="${nova}/bean/${nova_version}/bean-${nova_version}.jar"/>
+          <classpath file="${nova}/text-matcher/${nova_version}/text-matcher-${nova_version}.jar"/>
+          <classpath file="${nova}/text-handle/${nova_version}/text-handle-${nova_version}.jar"/>
+          <classpath file="${nova}/journal/6.1.1/journal-6.1.1.jar"/>
+          <classpath file="${nova}/paging/${nova_version}/paging-${nova_version}.jar"/>
+          <classpath file="${nova}/concurrent/${nova_version}/concurrent-${nova_version}.jar"/>
+          <classpath file="${galaxy}/comm/${galaxy_version}/comm-${galaxy_version}-FIX1.jar"/>
+          <classpath file="${galaxy}/gmpp/${galaxy_version}/gmpp-${galaxy_version}.jar"/>
+          <classpath file="${galaxy}/niep/${galaxy_version}/niep-${galaxy_version}.jar"/>
+          <classpath file="${galaxy}/htcp/${galaxy_version}/htcp-${galaxy_version}-FIX3.jar"/>
+          <classpath file="${galaxy}/frame/${galaxy_version}/frame-${galaxy_version}.jar"/>
+          <classpath file="${galaxy}/apsis/${galaxy_version}/apsis-${galaxy_version}.jar"/>
+          <classpath file="${galaxy}/depot/${galaxy_version}/depot-${galaxy_version}.jar"/>
+          <classpath file="${galaxy}/uranus/6.1.3/uranus-6.1.3-FIX6.jar"/>
+          <classpath file="${galaxy}/task/${galaxy_version}/task-${galaxy_version}.jar"/>
+          <classpath file="${repo}/javax/inject/javax.inject/1/javax.inject-1.jar"/>
+          <classpath file="${repo}/commons-logging/commons-logging/1.1.3/commons-logging-1.1.3.jar"/>
+          <classpath file="${repo}/javax/annotation/javax.annotation-api/1.2/javax.annotation-api-1.2.jar"/>
+          <classpath file="${home}/lib/bsh.jar"/>
+          <classpath file="${home}/lib/mysql-connector-java-5.1.29.jar"/>
+          <classpath file="${repo}/org/postgresql/42.1.4/postgresql-42.1.4.jar"/>
+
+                <classpath file="${repo}/com/fasterxml/jackson/core/jackson-core/2.4.2/jackson-core-2.4.2.jar"/>
+                <classpath file="${repo}/com/fasterxml/jackson/core/jackson-annotations/2.4.0/jackson-annotations-2.4.0.jar"/>
+                <classpath file="${repo}/com/fasterxml/jackson/core/jackson-databind/2.4.2/jackson-databind-2.4.2.jar"/>
+
+                <classpath file="${repo}/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar"/>
+                <classpath file="${repo}/net/sf/ehcache/ehcache/2.10.0/ehcache-2.10.0.jar"/>
+
+               <classpath file="${repo}/com/airproce/air/proxy/1.2.1-SNAPSHOT/proxy-1.2.1-FIX2.jar"/>
+
+                <classpath file="${repo}/com/airproce/ip2city/ip2city/1.2.1-SNAPSHOT/ip2city-1.2.1-SNAPSHOT.jar"/>
+                <classpath file="${repo}/com/airproce/common/2.1.1-SNAPSHOT/common-2.1.1-SNAPSHOT.jar"/>
+                <classpath file="${repo}/com/airproce/air/outdoor/1.4.3-SNAPSHOT/outdoor-1.4.3-FIX7.jar"/>
+                <classpath file="${repo}/org/bolango/device/server/2.1.6-SNAPSHOT/server-2.1.6-SNAPSHOT.jar"/>
+              </java>
+            </boot>
+        </default>
+        <servers>
+      <server type="httpd">
+        <boot>
+          <shell command="${httpd}/bin/apachectl"/>
+        </boot>
+      </server>
+      <server type="nexus3">
+        <boot>
+          <shell command="sudo -u ares /bolango/nexus3/bin/launcher.sh"/>
+        </boot>
+      </server>
+      <server type="elk">
+        <boot>
+          <shell command="sudo -u elk /data/elk/elasticsearch-5.5.2/bin/elasticsearch -d"/>
+        </boot>
+      </server>
+            <server type="ds" port="13168">
+              <boot>
+              <java>
+                <memory min="1024m" max="2048m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+                    <property name="file.encoding" value="8859_1"/>
+              </java>
+              </boot>
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+<!--
+                <config file="${home}/conf/apsis_ds.xml"/>
+                <config file="${home}/conf/ds.xml"/>
+                <config file="${home}/conf/ds_no_slb.xml"/>
+-->
+                <config file="${home}/conf/apsis_slb.xml"/>
+                <config file="${home}/conf/slb.xml"/>
+                <config file="${home}/conf/ds.inj"/>
+
+                <connection host="*" server="as"/>
+                <connection host="*" server="js"/>
+            </server>
+           <server type="ds2" port="13268">
+              <boot>
+              <java>
+                <memory min="1024m" max="3192m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+                    <property name="auto_ack" value="true"/>
+                    <property name="no_checksum_verification" value="false"/>
+              </java>
+              </boot>
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                <config file="${home}/conf/bridge.xml"/>
+                <config file="${home}/conf/apsis_bridge.xml"/>
+
+                <config file="${home}/conf/ds2.inj"/>
+
+                <connection host="*" server="as"/>
+                <connection host="*" server="js"/>
+            </server>
+            <server type="ds3" port="13368">
+              <boot>
+              <java>
+                <memory min="1024m" max="2048m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+                    <property name="auto_ack" value="true"/>
+                    <property name="no_checksum_verification" value="false"/>
+              </java>
+              </boot>
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                <config file="${home}/conf/bridge.xml"/>
+                <config file="${home}/conf/apsis_bridge.xml"/>
+
+                <config file="${home}/conf/ds3.inj"/>
+
+                <connection host="*" server="as"/>
+                <connection host="*" server="js"/>
+            </server>
+            <server type="as" port="14368">
+                <boot>
+                    <java>
+                      <memory min="512m" max="2048m"/>
+                     <property name="cube.system.env" value="prod"/>
+                       <property name="file.encoding" value="8859_1"/>
+                    </java>
+                </boot>
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                <config file="${home}/conf/apsis_as.xml"/>
+                <config file="${home}/conf/as.xml"/>
+                <config file="${home}/conf/jeton_as.xml"/>
+                <config file="${home}/conf/jeton_as.inj"/>
+
+                <connection host="*" server="js"/>
+            </server>
+            <server type="mg" port="13372">
+                <boot>
+                    <java>
+                      <memory min="256m" max="512m"/>
+                     <property name="cube.system.env" value="prod"/>
+                       <property name="file.encoding" value="8859_1"/>
+                    </java>
+                </boot>
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                <config file="${home}/conf/jeton_mg.xml"/>
+                <config file="${home}/conf/jeton_mg.inj"/>
+                <config file="${home}/conf/mg.xml"/>
+            </server>
+            <server type="cron" port="13373">
+                <boot>
+                    <java>
+                      <memory min="256m" max="512m"/>
+                     <property name="cube.system.env" value="prod"/>
+                       <property name="file.encoding" value="8859_1"/>
+                    </java>
+                </boot>
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                <config file="${home}/conf/jeton_cron.xml"/>
+                <config file="${home}/conf/jeton_cron.inj"/>
+                <config file="${home}/conf/cron_mg.xml"/>
+                <config file="${home}/conf/cron.xml"/>
+                <config file="${home}/conf/apsis.xml"/>
+                <config file="${home}/conf/crontab.xml"/>
+            </server>
+            <server type="shell" port="19168">
+              <boot>
+              <java>
+                <launcher class="com.airproce.air.shell.AirShell"/>
+                <memory min="64m" max="128m"/>
+              </java>
+              </boot>
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+                <classpath file="${repo}/com/airproce/air-shell/air-shell-1.0.0-SNAPSHOT.jar"/>
+                <classpath file="${repo}/org/codehaus/groovy/groovy-all/2.2.1/groovy-all-2.2.1.jar"/>
+                <classpath file="${repo}/org/codehaus/groovy/modules/http-builder/http-builder/http-builder-0.7.jar"/>
+            </server>
+
+            <server type="wx" port="13178">
+	        <boot>
+                    <java>
+                    <memory min="256m" max="512m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+                    </java>
+                </boot>
+                  <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                   <property name="java.naming.factory.initial" value="org.bolango.naming.JndiContextFactory"/>
+                   <property name="user.language" value="zh"/>
+                   <property name="user.region" value="CN"/>
+                   <property name="disable.auto.recompile" value="true"/>
+                
+
+                   <classpath file="${repo}/org/bolango/nebula/tomcat/6.0.0-SNAPSHOT/tomcat-6.0.0-SNAPSHOT.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-juli.jar"/>
+                   <classpath file="${tomcat}/lib/annotations-api.jar"/>
+                   <classpath file="${tomcat}/lib/catalina.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-ha.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-tribes.jar"/>
+                   <classpath file="${tomcat}/lib/jasper.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-el.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-jdt.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat.jar"/>
+                   <classpath file="${tomcat}/lib/websocket-api.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-websocket.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-util.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-coyote.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-dbcp.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-i18n-es.jar"/>
+
+
+                   <config file="${tomcat}/conf/launcher.xml"/>
+                   <config file="${home}/conf/apsis.xml"/>
+                   <config file="${home}/conf/wx.xml"/>
+                
+                  <connection host="*" server="js"/>
+                   <connection host="*" server="as"/>
+                   <connection host="*" server="ds"/>
+                   <connection host="*" server="ds2"/>
+                   <connection host="*" server="ds3"/>
+                   <connection host="*" server="bridge"/>
+            </server>
+            <server type="order" port="13468">
+                <boot>
+                    <java>
+                    <memory min="256m" max="512m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+                    </java>
+                </boot>
+                  <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                   <property name="java.naming.factory.initial" value="org.bolango.naming.JndiContextFactory"/>
+                   <property name="user.language" value="zh"/>
+                   <property name="user.region" value="CN"/>
+                   <property name="disable.auto.recompile" value="true"/>
+
+                   <classpath file="${repo}/org/bolango/nebula/tomcat/6.0.0-SNAPSHOT/tomcat-6.0.0-SNAPSHOT.jar"/>
+
+                   <classpath file="${tomcat}/lib/tomcat-juli.jar"/>
+                   <classpath file="${tomcat}/lib/annotations-api.jar"/>
+                   <classpath file="${tomcat}/lib/catalina.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-ha.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-tribes.jar"/>
+                   <classpath file="${tomcat}/lib/jasper.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-el.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-jdt.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat.jar"/>
+                   <classpath file="${tomcat}/lib/websocket-api.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-websocket.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-util.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-coyote.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-dbcp.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-i18n-es.jar"/>
+
+                   <config file="${tomcat_order}/conf/launcher.xml"/>
+            </server>
+            <server type="mon" port="13568">
+                <boot>
+                    <java>
+                    <memory min="256m" max="512m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+                    </java>
+                </boot>
+                  <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                   <property name="java.naming.factory.initial" value="org.bolango.naming.JndiContextFactory"/>
+                   <property name="user.language" value="zh"/>
+                   <property name="user.region" value="CN"/>
+                   <property name="disable.auto.recompile" value="true"/>
+
+                   <classpath file="${repo}/org/bolango/nebula/tomcat/6.0.0-SNAPSHOT/tomcat-6.0.0-SNAPSHOT.jar"/>
+
+                   <classpath file="${tomcat}/lib/tomcat-juli.jar"/>
+                   <classpath file="${tomcat}/lib/annotations-api.jar"/>
+                   <classpath file="${tomcat}/lib/catalina.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-ha.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-tribes.jar"/>
+                   <classpath file="${tomcat}/lib/jasper.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-el.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-jdt.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat.jar"/>
+                   <classpath file="${tomcat}/lib/websocket-api.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-websocket.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-util.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-coyote.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-dbcp.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-i18n-es.jar"/>
+
+                   <config file="${tomcat_mon}/conf/launcher.xml"/>
+                   <config file="${home}/conf/apsis.xml"/>
+
+                   <connection host="*" server="ds"/>
+                   <connection host="*" server="ds2"/>
+                   <connection host="*" server="ds3"/>
+                   <connection host="*" server="bridge"/>
+            </server>
+
+          <server type="js" port="13668">
+                <boot>
+                    <java>
+                    <property name="cube.system.uid" value="1818"/>
+                    <user name="ares"/>
+                    <memory min="256m" max="512m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=256M"/>
+                    <extend option="X:PermSize=64M"/>
+                      <property name="java.charset" value="UTF8"/>
+                      <property name="uranus.home" value="/bak/log"/>
+                    </java>
+                </boot>
+
+        <!-- Apsis -->
+        <config file="${home}/conf/journal_tables.xml"/>
+        <config file="${home}/conf/journal_server.xml"/>
+        <config file="${home}/conf/apsis_js.xml"/>
+      </server>
+
+           <server type="nexus" port="13481">
+                <boot>
+                    <java>
+                    <memory min="256m" max="512m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+                    </java>
+                </boot>
+                  <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                   <property name="java.naming.factory.initial" value="org.bolango.naming.JndiContextFactory"/>
+                   <property name="user.language" value="zh"/>
+                   <property name="user.region" value="CN"/>
+                   <property name="disable.auto.recompile" value="true"/>
+
+                   <classpath file="${repo}/org/bolango/nebula/tomcat/6.0.0-SNAPSHOT/tomcat-6.0.0-SNAPSHOT.jar"/>
+
+                   <classpath file="${tomcat}/lib/tomcat-juli.jar"/>
+                   <classpath file="${tomcat}/lib/annotations-api.jar"/>
+                   <classpath file="${tomcat}/lib/catalina.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-ha.jar"/>
+                   <classpath file="${tomcat}/lib/catalina-tribes.jar"/>
+                   <classpath file="${tomcat}/lib/jasper.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-el.jar"/>
+                   <classpath file="${tomcat}/lib/jasper-jdt.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat.jar"/>
+                   <classpath file="${tomcat}/lib/websocket-api.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-websocket.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-util.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-coyote.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-dbcp.jar"/>
+                   <classpath file="${tomcat}/lib/tomcat-i18n-es.jar"/>
+
+                   <config file="${tomcat_nexus}/conf/launcher.xml"/>
+               </server>
+
+            <server type="bridge" port="14168">
+                <bundle name="org.bolango.nova:cube" version="6.0.2"/>
+
+                <config file="${home}/conf/bridge.xml"/>
+                <config file="${home}/conf/apsis_bridge.xml"/>
+
+                <connection host="*" server="as"/>
+                <connection host="*" server="js"/>
+            </server>
+            <server type="slb" port="18178">
+              <boot>
+              <java>
+                <memory min="512m" max="1024m"/>
+                    <extend option="X:+CMSClassUnloadingEnabled"/>
+                    <extend option="X:+CMSPermGenSweepingEnabled"/>
+                    <extend option="X:MaxPermSize=1024M"/>
+                    <extend option="X:PermSize=512M"/>
+              </java>
+              </boot>
+                <config file="${home}/conf/apsis_slb.xml"/>
+                <config file="${home}/conf/slb.xml"/>
+            </server>
+        </servers>
+        <hosts>
+            <host name="c2" address="192.168.1.7">
+                <server type="mon"/>
+                <server type="wx">
+                  <boot>
+                    <java>
+                      <property name="cube.system.env" value="qa"/>
+                      <property name="notification_jobs" value="false"/>
+                    </java>
+                  </boot>
+                </server>
+                <server type="ds"/>
+                <server type="js"/>
+                <server type="bridge"/>
+                <server type="slb"/>
+                <server type="order"/>
+                <server type="ds2"/>
+                <server type="as"/>
+                <server type="httpd"/>
+                <server type="nexus"/>
+                <server type="nexus3"/>
+            </host>
+            <host name="c1" address="192.168.1.8">
+                <server type="httpd"/>
+                <server type="cron"/>
+                <server type="as"/>
+                <server type="ds"/>
+                <server type="ds2"/>
+                <server type="ds3"/>
+                <server type="bridge"/>
+                <server type="slb"/>
+
+                <server type="wx">
+                  <boot>
+                    <java>
+                      <property name="notification_jobs" value="false"/>
+                      <property name="sms_channel" value="zhutong"/>
+                    </java>
+                  </boot>
+                </server>
+            </host>
+            <host name="c3" address="192.168.1.10">
+                <server type="httpd"/>
+<!--
+                <server type="mg"/>
+-->
+                <server type="wx">
+                  <boot>
+                    <java>
+                      <property name="notification_jobs" value="true"/>
+                      <property name="sms_channel" value="zhutong"/>
+                    </java>
+                  </boot>
+                </server>
+                <server type="as"/>
+                <server type="ds"/>
+                <server type="ds2"/>
+                <server type="ds3"/>
+                <server type="bridge"/>
+                <server type="slb"/>
+            </host>
+        </hosts>
+    </cube>
+</xc:xml-config>

@@ -50,8 +50,11 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
 
     private LifecycleStrategy strategy;
 
-    public SimpleComponentFactory(NamespaceFactory namespaceFactory, BeanSpecFactory specFactory, LifecycleStrategy strategy) {
-        super(namespaceFactory, specFactory.getNamespace());
+    private CoinModule module;
+
+    public SimpleComponentFactory(CoinModule module, BeanSpecFactory specFactory, LifecycleStrategy strategy) {
+        super(module.getNamespaceFactory(), specFactory.getNamespace());
+        this.module = module;
         this.specFactory = specFactory;
         this.strategy = strategy;
     }
@@ -196,7 +199,7 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
 
 
     protected Component doCreate(Object bean, BeanSpec spec, BeanStage targetStage) {
-        SimpleComponent component = new SimpleComponent(getNamespaceFactory(), spec);
+        SimpleComponent component = new SimpleComponent(module, spec);
         component.setStage(targetStage);
         component.setBean(bean);
         createBean(component);

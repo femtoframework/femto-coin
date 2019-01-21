@@ -14,23 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.naming;
+package org.femtoframework.coin.spi;
 
-import javax.naming.Name;
-import javax.naming.NameParser;
+import org.femtoframework.coin.CoinModule;
 
 /**
- * Naming Parser
+ * CoinModule Aware
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class CoinNamingParser implements NameParser
-{
+public interface CoinModuleAware {
 
-    public Name parse(String name)
-    {
-        return new CoinName(name);
-    }
-
+    void setCoinModule(CoinModule module);
 }

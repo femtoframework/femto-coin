@@ -20,10 +20,7 @@ import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.KindSpecFactory;
-import org.femtoframework.coin.spec.element.ListElement;
-import org.femtoframework.coin.spec.element.ModelElement;
-import org.femtoframework.coin.spec.element.PrimitiveElement;
-import org.femtoframework.coin.spec.element.SetElement;
+import org.femtoframework.coin.spec.element.*;
 import org.yaml.snakeyaml.constructor.Construct;
 import org.yaml.snakeyaml.constructor.ConstructorException;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -135,7 +132,15 @@ public class SpecConstructor extends SafeConstructor {
             Object value = construct.construct(node);
             switch (kind) {
                 case STRING:
-                    return new PrimitiveElement(CoreKind.STRING, value);
+                    String v = (String)value;
+                    String trimmedV = v.trim();
+                    if (trimmedV.startsWith("${") && trimmedV.endsWith("}")) {
+                        String var = trimmedV.substring(2, trimmedV.length()-1);
+                        return new VariableElement(CoreKind.VAR, var, v);
+                    }
+                    else {
+                        return new PrimitiveElement(CoreKind.STRING, value);
+                    }
                 case INT:
                 case LONG:
                     if (value instanceof Long) {

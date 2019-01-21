@@ -14,23 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.naming;
+package org.femtoframework.coin.spi;
 
-import javax.naming.Name;
-import javax.naming.NameParser;
+import org.femtoframework.coin.Namespace;
 
 /**
- * Naming Parser
+ * Namespace Aware. Allow bean to get current namespace
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class CoinNamingParser implements NameParser
-{
+public interface NamespaceAware {
 
-    public Name parse(String name)
-    {
-        return new CoinName(name);
-    }
-
+    /**
+     * Current Namespace
+     *
+     * @param namespace Current Namespace
+     */
+    void setNamespace(Namespace namespace);
 }

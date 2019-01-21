@@ -33,10 +33,11 @@ public class SimpleNamespace implements Namespace {
     private SimpleComponentFactory componentFactory;
     private BeanFactory beanFactory;
 
-    public SimpleNamespace(String name, NamespaceFactory namespaceFactory, LifecycleStrategy strategy) {
+    public SimpleNamespace(String name, CoinModule module, LifecycleStrategy strategy) {
         this.name = name;
+        NamespaceFactory namespaceFactory = module.getNamespaceFactory();
         this.specFactory = new SimpleBeanSpecFactory(namespaceFactory, name);
-        this.componentFactory = new SimpleComponentFactory(namespaceFactory, specFactory, strategy);
+        this.componentFactory = new SimpleComponentFactory(module, specFactory, strategy);
         this.beanFactory = new SimpleBeanFactory(namespaceFactory, componentFactory);
     }
 

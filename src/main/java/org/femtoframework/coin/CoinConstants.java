@@ -26,6 +26,8 @@ public interface CoinConstants {
 
     String NAME_MODULE = "module";
     String NAME_CONTROLLER = "controller";
+    String NAME_LOOKUP = "lookup";
+    String NAME_VARIABLE_RESOLVER_FACTORY = "variable_resolver_factory";
     String NAME_CONFIGURATOR_FACTORY = "configurator_factory";
     String NAME_LIFECYCLE_STRATEGY = "lifecycle_strategy";
     String NAME_NAMESPACE_FACTORY = "namespace_factory";

@@ -10,8 +10,6 @@ _namespace: test
 _name: first
 _kind: bean
 _type: org.femtoframework.coin.FirstBean
-_aliases:
-  - first_bean
 second:
   ints: [1,2,3]
   stringList:
@@ -39,19 +37,6 @@ second:
     ? Oct
     ? Nov
     ? Dec
-  parameters:
-    abc: value1
-    bcd: value2
-    cfg: 3
-    timestamp: 1545620324000
-    float: 0.1
-    double: 0.1545620324000
-    boolean: true
-    var: ${abc} #In current map
-    ref: ${b:third1} #
-    env: ${e:JAVA_HOME}
-    prop: ${p:file.separator}
-    current: ${second/thirds/0/name}
   thirds:
   - name: third1
     _type: org.femtoframework.coin.ThirdBean
@@ -63,6 +48,17 @@ second:
     integer: 456
     bool: false
     string: "Merry Xmas!"
-
-
+parameters:
+  abc: value1
+  bcd: value2
+  cfg: 3
+  timestamp: 1545620324000
+  float: 0.1
+  double: 0.1545620324000
+  boolean: true
+  var: ${first} #In current map
+  env: ${e:JAVA_HOME}
+  prop: ${p:file.separator}
+  current: ${first/second}
+  ref: ${b:third1}
 

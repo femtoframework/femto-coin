@@ -14,23 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.naming;
+package org.femtoframework.coin.spec.var;
 
-import javax.naming.Name;
-import javax.naming.NameParser;
+import org.femtoframework.coin.Component;
+import org.femtoframework.coin.spec.VariableResolver;
+import org.femtoframework.coin.spec.VariableSpec;
 
 /**
- * Naming Parser
+ * Env Resolver
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class CoinNamingParser implements NameParser
-{
-
-    public Name parse(String name)
-    {
-        return new CoinName(name);
+public class EnvResolver implements VariableResolver {
+    /**
+     * Resolve variable by spec
+     *
+     * @param var VariableSpec
+     * @param expectedType
+     * @param component
+     * @return
+     */
+    @Override
+    public <T> T resolve(VariableSpec var, Class<T> expectedType, Component component) {
+        return (T)System.getenv(var.getSuffix());
     }
-
 }

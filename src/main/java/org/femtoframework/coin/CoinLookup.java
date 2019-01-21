@@ -14,23 +14,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.naming;
+package org.femtoframework.coin;
+
+import org.femtoframework.coin.naming.CoinName;
 
 import javax.naming.Name;
-import javax.naming.NameParser;
+import javax.naming.NamingException;
 
 /**
- * Naming Parser
+ * Coin Lookup
+ * <p>
+ *
+ * 1. Name follows this syntax 'namespace:name', it can point to a bean
+ * 2. 'namespace:name/child_name' can indicate a child of a bean if the bean has a child component with name 'child_name'
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class CoinNamingParser implements NameParser
-{
+public interface CoinLookup {
 
-    public Name parse(String name)
-    {
-        return new CoinName(name);
+    /**
+     * Resolve object by Name
+     *
+     * @param name Name
+     * @return Object
+     */
+    Object lookup(Name name);
+
+
+    /**
+     * Resolve object by Name in string
+     *
+     * @param name Name
+     * @return Object
+     */
+    default Object lookup(String name) throws NamingException {
+        return lookup(new CoinName(name));
     }
-
 }

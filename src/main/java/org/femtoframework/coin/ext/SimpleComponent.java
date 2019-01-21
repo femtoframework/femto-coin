@@ -18,6 +18,7 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.Nameable;
 import org.femtoframework.bean.BeanStage;
+import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Namespace;
 import org.femtoframework.coin.NamespaceFactory;
@@ -46,13 +47,13 @@ public class SimpleComponent implements Component, Nameable {
     private BeanStage stage = BeanStage.CREATE;
     private Object bean;
 
-    private transient NamespaceFactory namespaceFactory;
+    private transient CoinModule module;
     private transient Namespace currentNamespace;
 
-    public SimpleComponent(NamespaceFactory namespaceFactory, BeanSpec spec) {
-        this.namespaceFactory = namespaceFactory;
+    public SimpleComponent(CoinModule module, BeanSpec spec) {
+        this.module = module;
         this.spec = spec;
-        this.currentNamespace = namespaceFactory.get(spec.getNamespace());
+        this.currentNamespace = module.getNamespaceFactory().get(spec.getNamespace());
     }
 
     /**
@@ -112,13 +113,13 @@ public class SimpleComponent implements Component, Nameable {
     }
 
     /**
-     * Return namespace factory
+     * Return coin module
      *
-     * @return namespace factory
+     * @return module;
      */
     @Override
-    public NamespaceFactory getNamespaceFactory() {
-        return namespaceFactory;
+    public CoinModule getModule() {
+        return module;
     }
 
     /**

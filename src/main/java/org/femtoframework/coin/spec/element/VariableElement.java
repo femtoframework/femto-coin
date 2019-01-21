@@ -2,7 +2,8 @@ package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.CoreKind;
-import org.femtoframework.coin.spec.ElementVisitor;
+import org.femtoframework.coin.spec.VariableResolverFactory;
+import org.femtoframework.coin.spec.VariableSpec;
 
 /**
  * Variable Element
@@ -10,17 +11,27 @@ import org.femtoframework.coin.spec.ElementVisitor;
  * @author fengyun
  * @version 1.00 2011-04-28 13:18
  */
-public class VariableElement extends PrimitiveElement<Object>
+public class VariableElement extends PrimitiveElement<Object> implements VariableSpec
 {
-
+    private String prefix;
+    private String suffix;
     private String name;
 
-    public VariableElement(CoreKind type, Object value) {
-        super(type, value);
+    public VariableElement(CoreKind type, String name, String orig) {
+        super(type, orig);
+        this.name = name;
+        int index = name.indexOf(':');
+        if (index > 0) {
+            prefix = name.substring(0, index);
+            suffix = name.substring(index+1);
+        }
+        else {
+            suffix = name;
+        }
     }
 
     /**
-     * 返回变量名
+     * Variable Name
      *
      * @return
      */
@@ -30,14 +41,25 @@ public class VariableElement extends PrimitiveElement<Object>
     }
 
     /**
-     * 设置变量名
+     * Prefix, the part in front of ":", it could be null
      *
-     * @param name 变量名
+     * @return null, if there is no ':' in the name
      */
-    public void setName(String name)
-    {
-        this.name = name;
+    @Override
+    public String getPrefix() {
+        return prefix;
     }
+
+    /**
+     * Suffix
+     */
+    @Override
+    public String getSuffix() {
+        return suffix;
+    }
+
+
+
 
     /**
      * Return the value of this element definition
@@ -48,32 +70,7 @@ public class VariableElement extends PrimitiveElement<Object>
      */
     public <T> T getValue(Class<T> expectedType, Component component)
     {
-//        if ("namespace".equals(name)) {
-//            return context.getNamespace();
-//        }
-//        else if ("factory".equals(name)) {
-//            return context.getObjectFactory();
-//        }
-//        else if ("object".equals(name)) {
-//            return context.getObject();
-//        }
-//        else if ("name".equals(name)) {
-//            return context.getObjectName();
-//        }
-//        else if ("object_meta".equals(name)) {
-//            return context.getObjectMeta();
-//        }
-//        else if ("namespace_meta".equals(name)) {
-//            return context.getNamespaceMeta();
-//        }
-//        else {
-//            throw new IllegalArgumentException("Unsupported variable:" + name);
-//        }
-        return null;
-    }
-
-    @Override
-    public void accept(ElementVisitor visitor) {
-
+        VariableResolverFactory vr = component.getModule().getVariableResolverFactory();
+        return vr.resolve(this, expectedType, component);
     }
 }

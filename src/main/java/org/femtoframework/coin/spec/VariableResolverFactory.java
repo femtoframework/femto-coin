@@ -14,23 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.naming;
+package org.femtoframework.coin.spec;
 
-import javax.naming.Name;
-import javax.naming.NameParser;
+import org.femtoframework.coin.Factory;
 
 /**
- * Naming Parser
+ * VariableResolver Factory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class CoinNamingParser implements NameParser
-{
-
-    public Name parse(String name)
-    {
-        return new CoinName(name);
-    }
-
+public interface VariableResolverFactory extends Factory<VariableResolver>, VariableResolver {
 }

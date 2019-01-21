@@ -48,16 +48,6 @@ public class SecondBean implements SecondInterface
         this.stringMap = stringMap;
     }
 
-    private Parameters parameters;
-
-    public Parameters getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Parameters parameters) {
-        this.parameters = parameters;
-    }
-
     private int[] ints;
 
     public int[] getInts() {

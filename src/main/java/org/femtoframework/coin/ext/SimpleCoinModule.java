@@ -18,12 +18,15 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.Initializable;
+import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.bean.exception.InitializeException;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
+import org.femtoframework.coin.spec.VariableResolverFactory;
 import org.femtoframework.coin.spec.ext.SimpleKindSpecFactory;
+import org.femtoframework.coin.spec.ext.SimpleVariableResolverFactory;
 
 import static org.femtoframework.coin.CoinConstants.*;
 
@@ -33,7 +36,7 @@ import static org.femtoframework.coin.CoinConstants.*;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleCoinModule implements CoinModule, Initializable {
+public class SimpleCoinModule implements CoinModule, InitializableMBean {
 
 
     private SimpleKindSpecFactory kindSpecFactory = new SimpleKindSpecFactory();
@@ -47,7 +50,7 @@ public class SimpleCoinModule implements CoinModule, Initializable {
     private SimpleLifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(configuratorFactory);
 
 
-    private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory(lifecycleStrategy);
+    private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory(this, lifecycleStrategy);
 
 
     {
@@ -57,10 +60,15 @@ public class SimpleCoinModule implements CoinModule, Initializable {
 
     private Namespace namespaceCoin;
 
+    private CoinLookup lookup = new SimpleCoinLookup(namespaceFactory);
+
+    private VariableResolverFactory variableResolverFactory = new SimpleVariableResolverFactory(this, namespaceFactory);
+
     /**
      * Return namespace factory
      *
      * @return Namespace Factory
+     *
      */
     @Override
     public NamespaceFactory getNamespaceFactory() {
@@ -78,6 +86,16 @@ public class SimpleCoinModule implements CoinModule, Initializable {
     }
 
     /**
+     * VariableResolver Factory
+     *
+     * @return VariableResolver Factory
+     */
+    @Override
+    public VariableResolverFactory getVariableResolverFactory() {
+        return variableResolverFactory;
+    }
+
+    /**
      * Coin Control, maintain objects by Yaml or JSON
      *
      * @return Coin Control
@@ -85,6 +103,16 @@ public class SimpleCoinModule implements CoinModule, Initializable {
     @Override
     public CoinController getController() {
         return coinController;
+    }
+
+    /**
+     * Coin Lookup
+     *
+     * @return CoinLookup
+     */
+    @Override
+    public CoinLookup getLookup() {
+        return lookup;
     }
 
     /**
@@ -119,27 +147,43 @@ public class SimpleCoinModule implements CoinModule, Initializable {
     private boolean initialized = false;
 
     /**
-     * Initialize the bean
+     * Return whether it is initialized
      *
-     * @throws InitializeException
+     * @return whether it is initialized
      */
     @Override
-    public void initialize() {
-        if (!initialized) {
-            configuratorFactory.setNamespaceFactory(namespaceFactory);
-            kindSpecFactory.setNamespaceFactory(namespaceFactory);
+    public boolean isInitialized() {
+        return initialized;
+    }
 
-            namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
+    /**
+     * Initialized setter for internal
+     *
+     * @param initialized BeanPhase
+     */
+    @Override
+    public void _doSetInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
 
-            ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
-            componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
-            componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
-            componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
-            componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
-            componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
-            componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
+    /**
+     * Initiliaze internally
+     */
+    @Override
+    public void _doInitialize() {
+        configuratorFactory.setNamespaceFactory(namespaceFactory);
+        kindSpecFactory.setNamespaceFactory(namespaceFactory);
 
-            initialized = true;
-        }
+        namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
+
+        ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
+        componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_LOOKUP, lookup, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_VARIABLE_RESOLVER_FACTORY, variableResolverFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
     }
 }

@@ -14,23 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin.naming;
+package org.femtoframework.coin.spi;
 
-import javax.naming.Name;
-import javax.naming.NameParser;
+import org.femtoframework.coin.BeanFactory;
 
 /**
- * Naming Parser
+ * Set BeanFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class CoinNamingParser implements NameParser
-{
-
-    public Name parse(String name)
-    {
-        return new CoinName(name);
-    }
-
+public interface BeanFactoryAware {
+    /**
+     * Set BeanFactory
+     *
+     * @param factory BeanFactory
+     */
+    void setBeanFactory(BeanFactory factory);
 }

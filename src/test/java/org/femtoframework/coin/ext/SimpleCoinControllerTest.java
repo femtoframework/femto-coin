@@ -36,24 +36,16 @@ public class SimpleCoinControllerTest {
 
 
         long start = System.currentTimeMillis();
-        ConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
 
-        LifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(configuratorFactory);
 
-        SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory(lifecycleStrategy);
+        SimpleCoinModule coinModule = new SimpleCoinModule();
+        coinModule.initialize();
 
-        SimpleCoinController controller = new SimpleCoinController();
-
-        SimpleKindSpecFactory kindSpecFactory = new SimpleKindSpecFactory();
-        kindSpecFactory.initialize();
-
-        controller.setKindSpecFactory(kindSpecFactory);
-        controller.setNamespaceFactory(namespaceFactory);
-
+        CoinController controller = coinModule.getController();
 
         controller.create(file);
 
-        Namespace ns = namespaceFactory.get("test");
+        Namespace ns = coinModule.getNamespaceFactory().get("test");
         assertNotNull(ns);
 
         BeanSpec spec = ns.getBeanSpecFactory().get("first");

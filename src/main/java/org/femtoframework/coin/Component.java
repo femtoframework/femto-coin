@@ -152,8 +152,17 @@ public interface Component extends NamedBean {
      *
      * @return namespace factory
      */
-    NamespaceFactory getNamespaceFactory();
+    default NamespaceFactory getNamespaceFactory() {
+        return getModule().getNamespaceFactory();
+    }
 
+
+    /**
+     * Return coin module
+     *
+     * @return module;
+     */
+    CoinModule getModule();
 
     //Children
 

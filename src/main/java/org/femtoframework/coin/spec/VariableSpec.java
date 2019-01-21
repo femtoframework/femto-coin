@@ -18,11 +18,19 @@ package org.femtoframework.coin.spec;
 
 /**
  * Variable Element
+ * Samples:
+ *
+ * ${abc} #In current BeanFactory
+ * ${b:third1} # Same as "${third1}
+ * ${e:JAVA_HOME} # Env
+ * ${p:file.separator} #System Properties
+ *
+ * ${second/thirds/0/name}  # Coin Name to access object in the tree
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface VariableSpec extends Element{
+public interface VariableSpec extends PrimitiveSpec<Object> {
     /**
      * Variable Name
      *
@@ -30,6 +38,18 @@ public interface VariableSpec extends Element{
      */
     String getName();
 
+    /**
+     * Prefix, the part in front of ":", it could be null
+     *
+     * @return null, if there is no ':' in the name
+     */
+    String getPrefix();
+
+
+    /**
+     * Suffix
+     */
+    String getSuffix();
 
     /**
      * Start visiting this spec

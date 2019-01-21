@@ -1,5 +1,7 @@
 package org.femtoframework.coin;
 
+import org.femtoframework.parameters.Parameters;
+
 /**
  * 第一个对象
  *
@@ -20,5 +22,15 @@ public class FirstBean
     public void setSecond(SecondInterface second)
     {
         this.second = second;
+    }
+
+    private Parameters parameters;
+
+    public Parameters getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Parameters parameters) {
+        this.parameters = parameters;
     }
 }

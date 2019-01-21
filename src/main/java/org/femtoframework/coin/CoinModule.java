@@ -20,6 +20,7 @@ import org.femtoframework.annotation.ImplementedBy;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
+import org.femtoframework.coin.spec.VariableResolverFactory;
 
 /**
  * Coin Module
@@ -46,7 +47,19 @@ public interface CoinModule {
      *
      * @return KindSpecFactory
      */
-    KindSpecFactory getKindSpecFactory();
+    default KindSpecFactory getKindSpecFactory() {
+        return null;
+    }
+
+
+    /**
+     * VariableResolver Factory
+     *
+     * @return VariableResolver Factory
+     */
+    default VariableResolverFactory getVariableResolverFactory() {
+        return null;
+    }
 
     /**
      * Coin Control, maintain objects by Yaml or JSON
@@ -56,11 +69,22 @@ public interface CoinModule {
     CoinController getController();
 
     /**
+     * Coin Lookup
+     *
+     * @return CoinLookup
+     */
+    default CoinLookup getLookup() {
+        return null;
+    }
+
+    /**
      * Remote Generator, for RMI or gRPC extension
      *
      * @return Remote Generator
      */
-    RemoteGenerator getRemoteGenerator();
+    default RemoteGenerator getRemoteGenerator() {
+        return null;
+    }
 
 
     /**
@@ -74,5 +98,7 @@ public interface CoinModule {
     /**
      * Return BeanEventListeners
      */
-    BeanEventListeners getBeanEventListeners();
+    default BeanEventListeners getBeanEventListeners() {
+        return null;
+    }
 }
