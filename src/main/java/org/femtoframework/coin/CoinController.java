@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Coin Control
@@ -28,6 +29,25 @@ import java.util.Arrays;
  * @version 1.0
  */
 public interface CoinController {
+
+    /**
+     * Get all component yaml files in given class loader
+     *
+     * @param classLoader Class Loader
+     * @return All "META-INF/spec/component.yaml" in classpaths
+     * @throws IOException
+     */
+    List<URI> getComponentYamls(ClassLoader classLoader) throws IOException;
+
+    /**
+     * Get application yaml files in given class loader
+     *
+     * @param classLoader Class Loader
+     * @return All "META-INF/spec/application.yaml" in classpaths
+     * @throws IOException
+     */
+    URI getApplicationYaml(ClassLoader classLoader) throws IOException;
+
     /**
      * Create beans by specs;
      *

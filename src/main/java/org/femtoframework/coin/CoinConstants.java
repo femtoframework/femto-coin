@@ -38,4 +38,8 @@ public interface CoinConstants {
     String NAMESPACE_NAMESPACE = "namespace";
 
     String DEFAULT_NAMESPACE = "default";
+
+
+    String COMPONENT_YAML = "META-INF/spec/component.yaml";
+    String APPLICATION_YAML = "META-INF/spec/application.yaml";
 }

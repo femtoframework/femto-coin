@@ -28,9 +28,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import static org.femtoframework.coin.CoinConstants.APPLICATION_YAML;
+import static org.femtoframework.coin.CoinConstants.COMPONENT_YAML;
 
 
 /**
@@ -52,6 +58,49 @@ public class SimpleCoinController implements CoinController {
      * Logger
      */
     private Logger log = LoggerFactory.getLogger(SimpleCoinController.class);
+
+    /**
+     * Get all component yaml files in given class loader
+     *
+     * @param classLoader Class Loader
+     * @return All "META-INF/spec/component.yaml" in classpaths
+     * @throws IOException
+     */
+    @Override
+    public List<URI> getComponentYamls(ClassLoader classLoader) throws IOException {
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
+        List<URI> uris = new ArrayList<>();
+        Enumeration<URL> en = classLoader.getResources(COMPONENT_YAML);
+        while(en.hasMoreElements()) {
+            try {
+                uris.add(en.nextElement().toURI());
+            } catch (URISyntaxException e) {
+                throw new IOException("URI syntax error", e);
+            }
+        }
+        return uris;
+    }
+
+    /**
+     * Get application yaml files in given class loader
+     *
+     * @param classLoader Class Loader
+     * @return All "META-INF/spec/application.yaml" in classpaths
+     * @throws IOException
+     */
+    @Override
+    public URI getApplicationYaml(ClassLoader classLoader) throws IOException {
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
+        try {
+            return classLoader.getResource(APPLICATION_YAML).toURI();
+        } catch (URISyntaxException e) {
+            throw new IOException("URI syntax error", e);
+        }
+    }
 
     /**
      * Create beans by specs
@@ -77,7 +126,7 @@ public class SimpleCoinController implements CoinController {
             if (kindSpec == null) {
                 throw new IOException("Version:" + version + " doesn't support, please make sure " +
                         "your KindSpec implementation has been put in your jar " +
-                        "file /META-INF/spec/org.femtoframework.coin.spec.KindSpec.impl");
+                        "file /META-INF/spec/implements.properties");
             }
             MapSpec spec = kindSpec.toSpec(map);
             Kind kind = spec.getKind();
@@ -105,9 +154,6 @@ public class SimpleCoinController implements CoinController {
                     log.warn("A new BeanSpec with same namespace and name has been found, replacing with new one, "
                             + oldSpec.getQualifiedName());
                 }
-//                if (oldSpec != null) {
-//                    throw new IOException("BeanSpec " + namespace + ":" + name + " existing already");
-//                }
                 ns.getBeanSpecFactory().add(beanSpec);
                 beanSpecs.add(beanSpec);
             }
@@ -166,7 +212,7 @@ public class SimpleCoinController implements CoinController {
             if (kindSpec == null) {
                 throw new IOException("Version:" + version + " doesn't support, please make sure " +
                         "your KindSpec implementation has been put in your jar " +
-                        "file /META-INF/spec/org.femtoframework.coin.spec.KindSpec.impl");
+                        "file /META-INF/spec/implements.properties");
             }
             MapSpec spec = kindSpec.toSpec(map);
             Kind kind = spec.getKind();
@@ -222,7 +268,7 @@ public class SimpleCoinController implements CoinController {
             if (kindSpec == null) {
                 throw new IOException("Version:" + version + " doesn't support, please make sure " +
                         "your KindSpec implementation has been put in your jar " +
-                        "file /META-INF/spec/org.femtoframework.coin.spec.KindSpec.impl");
+                        "file /META-INF/spec/implements.properties");
             }
             MapSpec spec = kindSpec.toSpec(map);
             Kind kind = spec.getKind();
