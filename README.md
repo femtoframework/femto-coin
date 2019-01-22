@@ -25,14 +25,12 @@ A tiny JSR330 standard Inversion Of Control container.  COIN stands for "New Inv
 ### PreDestroy
 
 ## com/fasterxml/jackson/annotation
-### @JsonAlias
 ### @JsonProperty
 ### @JsonSetter
 ### @JsonGetter
-### @JsonCreator
 ### @JsonIgnore
 ### @JsonIgnoreProperties
 
-## Doesn't support
+## Does not support
 ### @Qualifier
 
