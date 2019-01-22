@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.naming;
 
+import org.femtoframework.coin.CoinConstants;
 import org.femtoframework.util.StringUtil;
 
 import javax.naming.InvalidNameException;
@@ -38,9 +39,6 @@ import java.util.List;
 public class CoinName implements Name, Externalizable {
 
     public static final CoinName EMPTY = new CoinName("");
-
-    private static final char SLASH = '/';
-    private static final char COLON = ':';
 
     private int off = 0;
 
@@ -81,16 +79,16 @@ public class CoinName implements Name, Externalizable {
             int s = 0;
             for (int i = 0; i < l; i++) {
                 ch = name.charAt(i);
-                if (ch == COLON) {
+                if (ch == CoinConstants.CHAR_COLON) {
                     //COLON
                     components.add(name.substring(s, i));
-                    separators.add(COLON);
+                    separators.add(CoinConstants.CHAR_COLON);
                     s = i + 1;
                 }
-                else if (ch == SLASH) {
-                    //SLASH
+                else if (ch == CoinConstants.CHAR_DELIM) {
+                    //SEP
                     components.add(name.substring(s, i));
-                    separators.add(SLASH);
+                    separators.add(CoinConstants.CHAR_DELIM);
                     s = i + 1;
                 }
             }
@@ -406,7 +404,7 @@ public class CoinName implements Name, Externalizable {
             separators = new ArrayList<>();
         }
         components.add(comp);
-        separators.add(SLASH);
+        separators.add(CoinConstants.CHAR_DELIM);
         size++;
         name = null;
         return this;
@@ -463,7 +461,7 @@ public class CoinName implements Name, Externalizable {
         int s = suffix.size();
         for (int i = 0; i < s; i++) {
             components.add(suffix.get(i));
-            separators.add(SLASH);
+            separators.add(CoinConstants.CHAR_DELIM);
         }
         size += s;
         name = null;
@@ -503,7 +501,7 @@ public class CoinName implements Name, Externalizable {
             answer = answer.append(comp);
         }
         if (compsAllEmpty && (size >= 1)) {
-            answer = answer.append(SLASH);
+            answer = answer.append(CoinConstants.CHAR_DELIM);
         }
         name = (answer.toString());
         return name;

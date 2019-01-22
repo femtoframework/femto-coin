@@ -61,6 +61,13 @@
       <artifactId>femto-util</artifactId>
       <version>${femto-util-version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.jolokia</groupId>
+      <artifactId>jolokia-core</artifactId>
+      <version>1.6.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
   <build>
     <resources>

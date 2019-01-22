@@ -26,7 +26,7 @@ import javax.naming.NamingException;
  * <p>
  *
  * 1. Name follows this syntax 'namespace:name', it can point to a bean
- * 2. 'namespace:name/child_name' can indicate a child of a bean if the bean has a child component with name 'child_name'
+ * 2. 'namespace:name.childName' can indicate a child of a bean if the bean has a child component with name 'child_name'
  *
  * @author Sheldon Shao
  * @version 1.0

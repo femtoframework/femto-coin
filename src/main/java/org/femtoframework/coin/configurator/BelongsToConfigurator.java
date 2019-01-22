@@ -16,6 +16,7 @@
  */
 package org.femtoframework.coin.configurator;
 
+import org.femtoframework.coin.CoinConstants;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Configurator;
 import org.femtoframework.coin.Namespace;
@@ -115,7 +116,7 @@ public class BelongsToConfigurator implements Configurator {
 
 
     private BelongsTo parse(String str, BeanSpec spec) {
-        int colonIndex = str.indexOf(':');
+        int colonIndex = str.indexOf(CoinConstants.CHAR_COLON);
         BelongsTo belongsTo = new BelongsTo();
         belongsTo.setNamespace(spec.getNamespace());
         int start =  0;

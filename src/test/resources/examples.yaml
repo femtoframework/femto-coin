@@ -1,14 +1,14 @@
 # Namespace
-_version: v1
-_name: test
-_kind: namespace
+_version: v1 #optional
+_name: test #optional, default is "default"
+_kind: namespace #required
 
 ---
 # First Bean
-_version: v1
-_namespace: test
-_name: first
-_kind: bean
+_version: v1 #optional
+_namespace: test #optional, default is "default"
+_name: first #required
+_kind: bean #required
 _type: org.femtoframework.coin.FirstBean
 second:
   ints: [1,2,3]
@@ -59,6 +59,6 @@ parameters:
   var: ${first} #In current map
   env: ${e:JAVA_HOME}
   prop: ${p:file.separator}
-  current: ${first/second}
+  current: ${first.second}
   ref: ${b:third1}
 

@@ -16,10 +16,7 @@
  */
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.coin.CoinLookup;
-import org.femtoframework.coin.Component;
-import org.femtoframework.coin.Namespace;
-import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.*;
 import org.femtoframework.coin.naming.CoinNamingParser;
 
 import javax.naming.Name;
@@ -50,10 +47,10 @@ public class SimpleCoinLookup implements CoinLookup {
      * @return Object
      */
     public Object lookup(String name) throws NamingException {
-        int index = name.indexOf('/');
+        int index = name.indexOf(CoinConstants.CHAR_DELIM);
         if (index == -1) {
             //Simple Name
-            index = name.indexOf(':');
+            index = name.indexOf(CoinConstants.CHAR_COLON);
             if (index == -1) {
                 return namespaceFactory.get(name);
             }

@@ -42,4 +42,7 @@ public interface CoinConstants {
 
     String COMPONENT_YAML = "META-INF/spec/component.yaml";
     String APPLICATION_YAML = "META-INF/spec/application.yaml";
+
+    char CHAR_DELIM = '.';
+    char CHAR_COLON = ':';
 }

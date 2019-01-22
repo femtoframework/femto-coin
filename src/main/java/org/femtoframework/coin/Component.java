@@ -19,9 +19,11 @@ package org.femtoframework.coin;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
+import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.status.BeanStatus;
 
+import javax.naming.Name;
 import java.util.Map;
 
 /**
@@ -54,6 +56,20 @@ public interface Component extends NamedBean {
     }
 
     /**
+     * Absolute name in coin container, it doesn't include namespace
+     *
+     * 1. Level 1 components,
+     * name
+     * 2. Level 2 components,
+     * name.childName
+     *
+     * @return
+     */
+    default String getAbsoluteName() {
+        return getName();
+    }
+
+    /**
      * Bean Spec
      *
      * @return BeanSpec
@@ -66,7 +82,7 @@ public interface Component extends NamedBean {
      * @return Qualified Name
      */
     default String getQualifiedName() {
-        return getSpec().getQualifiedName();
+        return getNamespace() + CoinConstants.CHAR_COLON + getAbsoluteName();
     }
 
     /**

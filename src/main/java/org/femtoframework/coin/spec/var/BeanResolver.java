@@ -16,10 +16,7 @@
  */
 package org.femtoframework.coin.spec.var;
 
-import org.femtoframework.coin.CoinModule;
-import org.femtoframework.coin.Component;
-import org.femtoframework.coin.Namespace;
-import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.*;
 import org.femtoframework.coin.exception.BeanSpecSyntaxException;
 import org.femtoframework.coin.spec.VariableResolver;
 import org.femtoframework.coin.spec.VariableSpec;
@@ -65,9 +62,9 @@ public class BeanResolver implements VariableResolver, CoinModuleAware {
         if (suffix == null) {
             return (T)namespace;
         }
-        if (suffix.indexOf('/') > 0) {
+        if (suffix.indexOf(CoinConstants.CHAR_DELIM) > 0) {
             try {
-                return (T)coinModule.getLookup().lookup(namespace.getName() + ":" + var.getSuffix());
+                return (T)coinModule.getLookup().lookup(namespace.getName() + CoinConstants.CHAR_COLON + var.getSuffix());
             } catch (NamingException e) {
                 throw new BeanSpecSyntaxException("Bean name syntax exception:" + var.getName(), e);
             }

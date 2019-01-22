@@ -19,6 +19,7 @@ package org.femtoframework.coin.configurator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.femtoframework.annotation.Resources;
+import org.femtoframework.bean.Nameable;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;

@@ -22,12 +22,14 @@ import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Namespace;
 import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.util.convert.ConverterUtil;
 
+import javax.naming.Name;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -54,6 +56,30 @@ public class SimpleComponent implements Component, Nameable {
         this.module = module;
         this.spec = spec;
         this.currentNamespace = module.getNamespaceFactory().get(spec.getNamespace());
+    }
+
+
+    /**
+     * Absolute Name
+     */
+    private String absoluteName = null;
+
+    /**
+     * Absolute name in coin container
+     * <p>
+     * 1. Level 1 components,
+     * name
+     * 2. Level 2 components,
+     * name.childName
+     *
+     * @return
+     */
+    @Override
+    public String getAbsoluteName() {
+        if (absoluteName == null) {
+            absoluteName = getName();
+        }
+        return absoluteName;
     }
 
     /**
@@ -172,6 +198,14 @@ public class SimpleComponent implements Component, Nameable {
     public void addChild(String propertyName, Component component) {
         if (children == null) {
             children = new LinkedHashMap<>(4);
+        }
+        String name = component.getName();
+        if (name == null && component instanceof Nameable) {
+            ((Nameable)component).setName(propertyName);
+        }
+        if (component instanceof SimpleComponent) {
+            SimpleComponent simpleComponent = (SimpleComponent)component;
+            simpleComponent.absoluteName = getAbsoluteName() + "." + propertyName;
         }
         children.put(propertyName, component);
     }
