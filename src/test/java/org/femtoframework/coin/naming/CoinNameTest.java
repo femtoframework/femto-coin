@@ -11,10 +11,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * 测试CoinName
+ * Test CoinName
  *
  * @author fengyun
- * @version 1.00 2005-6-11 18:45:06
+ * @version 1.00 2010-6-11 18:45:06
  */
 
 public class CoinNameTest

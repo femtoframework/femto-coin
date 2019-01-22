@@ -9,16 +9,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * 测试CoinNamingParser
+ * Test CoinNamingParser
  *
  * @author fengyun
- * @version 1.00 2005-6-11 17:32:49
+ * @version 1.00 2010-6-11 17:32:49
  */
 public class CoinNamingParserTest
 {
-    /**
-     * 测试parse
-     */
     @Test
     public void testParse() throws Exception
     {
