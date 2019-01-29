@@ -19,12 +19,11 @@ package org.femtoframework.coin.configurator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.femtoframework.annotation.Resources;
-import org.femtoframework.bean.Nameable;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.util.CoinNameUtil;
-import org.femtoframework.text.NamingFormat;
+import org.femtoframework.text.NamingConvention;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -175,11 +174,11 @@ public class AutoConfigurator implements Configurator {
                 propertyName = property.value();
             }
             else {
-                propertyName = NamingFormat.parse(method.getName().substring(3), false); //PropertyName
+                propertyName = NamingConvention.parse(method.getName().substring(3), false); //PropertyName
             }
             Element element = spec.get(propertyName);
             if (element == null && property == null) {
-                String formatted = NamingFormat.format(propertyName);
+                String formatted = NamingConvention.format(propertyName);
                 element = spec.get(formatted);
             }
 

@@ -14,13 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.femtoframework.coin;
+package org.femtoframework.coin.api;
 
 /**
- * Bean factory
- * 
- * @author fengyun
- * @version 1.00 2005-1-27 14:12:22
+ * API Response
+ *
+ * @author Sheldon Shao
+ * @version 1.0
  */
-public interface BeanFactory extends Factory<Object> {
+public class APIResponse {
+    private int code;
+    private String message;
+    private String content;
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }
