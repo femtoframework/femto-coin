@@ -37,6 +37,8 @@ public @interface Property {
      * to other properties specified for the Object). This index
      * is typically used by binary formats, but may also be useful
      * for schema languages, ProtoBuff or other tools.
+     *
+     * Please start with 1
      */
     int index() default INDEX_UNKNOWN;
 

@@ -81,19 +81,19 @@ public class SimpleBeanInfo implements BeanInfo {
             description = beanInfo.getDescription();
         }
 
-        //TODO
-//        SimpleBeanInfo simple = (SimpleBeanInfo)beanInfo;
-//        Map<String, PropertyInfo> map = simple.properties;
-//        if (map != null && !map.isEmpty()) {
-//            map = CollectionUtil.clone(map);
-//            if (properties == null) {
-//                properties = map;
-//            }
-//            else {
-//                map.putAll(properties);
-//                properties = map;
-//            }
-//        }
+        //TODO Reorder
+        SimpleBeanInfo simple = (SimpleBeanInfo)beanInfo;
+        LinkedHashMap<String, PropertyInfo> map = simple.infos;
+        if (map != null && !map.isEmpty()) {
+            map = new LinkedHashMap<>(map);
+            if (infos == null) {
+                infos = map;
+            }
+            else {
+                map.putAll(infos);
+                infos = map;
+            }
+        }
     }
 
     /**

@@ -18,6 +18,7 @@ package org.femtoframework.coin;
 
 import org.femtoframework.annotation.ImplementedBy;
 import org.femtoframework.coin.event.BeanEventListeners;
+import org.femtoframework.coin.info.BeanInfoFactory;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.coin.spec.VariableResolverFactory;
@@ -94,11 +95,22 @@ public interface CoinModule {
      */
     LifecycleStrategy getLifecycleStrategy();
 
-
     /**
      * Return BeanEventListeners
      */
     default BeanEventListeners getBeanEventListeners() {
         return null;
     }
+
+    /**
+     * Bean Info factory
+     *
+     * BeanInfo makes the following things very easy
+     * 1. JMX MBean, BeanInfo can help BusinessObject to generate JMX MBean automatically.
+     * 2. POJO, BeanInfo helps it to ignore some properties or have different getters or setters.
+     * 3. DTO, BeanInfo can use it as decoding specification.
+     *
+     * @return BeanInfoFactory
+     */
+    BeanInfoFactory getBeanInfoFactory();
 }

@@ -26,13 +26,20 @@ public @interface Coined {
      *
      * @return IgnoreUnknown Properties
      */
-    boolean ignoreUnknownProperties() default false;
+    boolean ignoreUnknownProperties() default true;
 
     /**
      * Property that defines what to do regarding ordering of properties
      * not explicitly included in annotation instance. If set to true,
-     * they will be alphabetically ordered; if false, order is
-     * undefined (default setting)
+     * they will be alphabetically ordered(default settings); if false, order is
+     * undefined
      */
-    boolean alphabeticOrder() default false;
+    boolean alphabeticOrder() default true;
+
+    /**
+     * Specify the order or properties, it is used to generate the ProtoBuf encoder or other serialization which needs to keep order
+     *
+     * @return Property Order
+     */
+    String[] propertyOrder() default {};
 }

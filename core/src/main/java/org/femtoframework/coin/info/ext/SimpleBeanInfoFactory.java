@@ -185,8 +185,8 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
             beanInfo.setIgnoreUnknownProperties(coined.ignoreUnknownProperties());
         }
 
-
-            //Order by index
+        //TODO order by index
+        //Order by index
         beanInfo.setInfos(propInfos);
         return beanInfo;
     }

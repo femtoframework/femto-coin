@@ -20,6 +20,8 @@ import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.event.BeanEventListeners;
+import org.femtoframework.coin.info.BeanInfoFactory;
+import org.femtoframework.coin.info.ext.SimpleBeanInfoFactory;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.coin.spec.VariableResolverFactory;
@@ -64,6 +66,12 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
     private CoinLookup lookup = new SimpleCoinLookup(namespaceFactory);
 
     private VariableResolverFactory variableResolverFactory = new SimpleVariableResolverFactory(this, namespaceFactory);
+
+
+    /**
+     * Bean Info Factory
+     */
+    private SimpleBeanInfoFactory beanInfoFactory = new SimpleBeanInfoFactory(namespaceFactory, NAMESPACE_COIN);
 
     /**
      * Return namespace factory
@@ -142,6 +150,11 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
     @Override
     public BeanEventListeners getBeanEventListeners() {
         return lifecycleStrategy.getEventListeners();
+    }
+
+    @Override
+    public BeanInfoFactory getBeanInfoFactory() {
+        return beanInfoFactory;
     }
 
 
