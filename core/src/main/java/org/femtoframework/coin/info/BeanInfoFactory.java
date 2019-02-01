@@ -10,7 +10,7 @@ public interface BeanInfoFactory {
      * Retrieve BeanInfo by class
      */
     default BeanInfo getBeanInfo(Class clazz) {
-        return getBeanInfo(clazz, false);
+        return getBeanInfo(clazz, true);
     }
 
     /**

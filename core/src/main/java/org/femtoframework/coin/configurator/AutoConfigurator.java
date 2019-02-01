@@ -16,10 +16,10 @@
  */
 package org.femtoframework.coin.configurator;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.util.CoinNameUtil;
@@ -68,7 +68,7 @@ public class AutoConfigurator implements Configurator {
                 continue;
             }
 
-            if (method.isAnnotationPresent(JsonIgnore.class)) { //Ignore
+            if (method.isAnnotationPresent(Ignore.class)) { //Ignore
                 continue;
             }
 
@@ -169,7 +169,7 @@ public class AutoConfigurator implements Configurator {
             Class<?> expectedType = method.getParameterTypes()[0];
             BeanSpec spec = component.getSpec();
 
-            JsonProperty property = method.getAnnotation(JsonProperty.class);
+            Property property = method.getAnnotation(Property.class);
             if (property != null) {
                 propertyName = property.value();
             }

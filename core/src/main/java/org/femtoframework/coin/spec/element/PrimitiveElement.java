@@ -16,8 +16,8 @@
  */
 package org.femtoframework.coin.spec.element;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import org.femtoframework.coin.Component;
+import org.femtoframework.coin.annotation.AsValue;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.PrimitiveSpec;
 import org.femtoframework.util.convert.ConverterUtil;
@@ -28,7 +28,6 @@ import org.femtoframework.util.convert.ConverterUtil;
  * @author Sheldon Shao
  * @version 1.0
  */
-
 public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpec<E> {
 
     private E primitiveValue;
@@ -64,7 +63,7 @@ public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpe
         return String.valueOf(primitiveValue);
     }
 
-    @JsonValue
+    @AsValue
     public E getPrimitiveValue() {
         return primitiveValue;
     }

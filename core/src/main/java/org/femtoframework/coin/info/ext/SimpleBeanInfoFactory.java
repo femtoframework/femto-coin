@@ -16,6 +16,10 @@ import java.util.*;
 
 public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements BeanInfoFactory {
 
+    //For testing
+    public SimpleBeanInfoFactory() {
+    }
+
     public SimpleBeanInfoFactory(NamespaceFactory namespaceFactory, String namespace) {
         super(namespaceFactory, namespace);
     }

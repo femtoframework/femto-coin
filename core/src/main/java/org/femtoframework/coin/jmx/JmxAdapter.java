@@ -20,6 +20,8 @@ import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.event.BeanEvent;
 import org.femtoframework.coin.event.BeanEventListener;
+import org.femtoframework.coin.info.BeanInfo;
+import org.femtoframework.coin.info.BeanInfoFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,22 +69,24 @@ public class JmxAdapter implements BeanEventListener {
                 }
 
                 Class<?> typeClass = event.getComponent().getSpec().getTypeClass();
-                if (typeClass.isAnnotationPresent(MXBean.class) || typeClass.getName().endsWith("MXBean")) {
-                    Component component = event.getComponent();
-                    String aboluteName = component.getAbsoluteName();
-                    String namespace = component.getNamespace();
-                    String objectName = namespace + ":name=" + aboluteName;
-                    try {
-                        mBeanServer.registerMBean(event.getComponent().getBean(), new ObjectName(objectName));
-                    } catch (InstanceAlreadyExistsException e) {
-                        log.warn("Instance already exists, " +  component.getQualifiedName(), e);
-                    } catch (MBeanRegistrationException e) {
-                        log.warn("MBean registering exception, " + component.getQualifiedName(), e);
-                    } catch (NotCompliantMBeanException e) {
-                        log.warn("NotCompliantMBeanException, " + component.getQualifiedName(), e);
-                    } catch (MalformedObjectNameException e) {
-                        log.warn("Malformed ObjectName Exception, " + objectName, e);
-                    }
+
+                Component component = event.getComponent();
+                BeanInfoFactory beanInfoFactory = component.getModule().getBeanInfoFactory();
+                BeanInfo beanInfo = beanInfoFactory.getBeanInfo(typeClass);
+
+                String aboluteName = component.getAbsoluteName();
+                String namespace = component.getNamespace();
+                String objectName = namespace + ":name=" + aboluteName;
+                try {
+                    mBeanServer.registerMBean(event.getComponent().getBean(), new ObjectName(objectName));
+                } catch (InstanceAlreadyExistsException e) {
+                    log.warn("Instance already exists, " +  component.getQualifiedName(), e);
+                } catch (MBeanRegistrationException e) {
+                    log.warn("MBean registering exception, " + component.getQualifiedName(), e);
+                } catch (NotCompliantMBeanException e) {
+                    log.warn("NotCompliantMBeanException, " + component.getQualifiedName(), e);
+                } catch (MalformedObjectNameException e) {
+                    log.warn("Malformed ObjectName Exception, " + objectName, e);
                 }
             }
         }

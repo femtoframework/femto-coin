@@ -47,6 +47,9 @@ public class BaseFactory<B> implements Factory<B> {
 
     private NamespaceFactory namespaceFactory;
 
+    protected BaseFactory() {
+    }
+
     protected BaseFactory(NamespaceFactory namespaceFactory, String namespace) {
         setNamespace(namespace);
         setNamespaceFactory(namespaceFactory);
