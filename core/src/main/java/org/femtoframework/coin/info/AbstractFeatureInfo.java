@@ -26,6 +26,14 @@ public abstract class AbstractFeatureInfo implements FeatureInfo {
     private String name;
     private String description;
 
+    public AbstractFeatureInfo() {
+    }
+
+    public AbstractFeatureInfo(String name, String description) {
+        setName(name);
+        setDescription(description);
+    }
+
     @Override
     public String getName() {
         return name;

@@ -1,17 +1,18 @@
 package org.femtoframework.coin.info.ext;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.annotation.*;
 import org.femtoframework.coin.ext.BaseFactory;
 import org.femtoframework.coin.info.BeanInfo;
 import org.femtoframework.coin.info.BeanInfoFactory;
 import org.femtoframework.coin.info.PropertyInfo;
+import org.femtoframework.text.NamingConvention;
+import org.femtoframework.util.StringUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements BeanInfoFactory {
 
@@ -37,7 +38,7 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                     if (superClass != null && superClass != Object.class) {
                         superBeanInfo = getBeanInfo(superClass, generate);
                     }
-                    if (beanInfo == null && generate) {
+                    if (generate) {
                         beanInfo = generate(clazz);
                     }
                     if (beanInfo != null) {
@@ -67,10 +68,45 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
      */
     protected BeanInfo generate(Class<?> clazz) {
 
+        LinkedHashMap<String, PropertyInfo> propInfos = new LinkedHashMap<>(4);
+
+        Coined coined = clazz.getAnnotation(Coined.class);
+
+        SimpleBeanInfo beanInfo = new SimpleBeanInfo();
+
+        Description classDescription = clazz.getAnnotation(Description.class);
+        if (classDescription != null) {
+            beanInfo.setDescription(classDescription.value());
+        }
+
+        Field[] fields = clazz.getDeclaredFields();
+        for(int i = 0; i < fields.length; i ++) {
+            Field field = fields[i];
+            if (Modifier.isStatic(field.getModifiers())) {
+                continue;
+            }
+            if (field.isAnnotationPresent(Ignore.class)) { //If the field is ignored, the entire property is ignored
+                continue;
+            }
+            if (field.getDeclaringClass() == Object.class) {
+                continue;
+            }
+            Property jsonProperty = field.getAnnotation(Property.class);
+            SimplePropertyInfo propertyInfo = null;
+            if (jsonProperty != null) {
+                propertyInfo = new SimplePropertyInfo(jsonProperty, field);
+            }
+            else {
+                propertyInfo = new SimplePropertyInfo(field.getName(), field.getType().getTypeName());
+            }
+            propInfos.put(propertyInfo.getName(), propertyInfo);
+            Description jsonPropertyDescription = field.getAnnotation(Description.class);
+            if (jsonPropertyDescription != null) {
+                propertyInfo.setDescription(jsonPropertyDescription.value());
+            }
+        }
+
         Method[] methods = clazz.getDeclaredMethods();
-
-        List<PropertyInfo> propInfos = new ArrayList<>(4);
-
         for (Method method : methods) {
             if (Modifier.isStatic(method.getModifiers()) || !Modifier.isPublic(method.getModifiers())) {
                 continue;
@@ -80,22 +116,78 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
             }
 
 
+            boolean isGetter = method.getParameterTypes().length == 0;
+            boolean isSetter = method.getParameterTypes().length == 1;
+
+            if (isGetter || isSetter) {
+                String methodName = method.getName();
+                Class<?> type = isGetter ? method.getReturnType() : method.getParameterTypes()[0];
+
+                SimplePropertyInfo propertyInfo = null;
+                String propertyName = NamingConvention.toPropertyName(methodName, type);
+                if (method.isAnnotationPresent(Ignore.class)) {
+                    propertyInfo = (SimplePropertyInfo)propInfos.get(propertyName);
+                    if (propertyInfo != null) {
+                        if (isGetter) {
+                            propertyInfo.setReadable(false);
+                        }
+                        if (isSetter) {
+                            propertyInfo.setWritable(false);
+                        }
+                    }
+                }
+
+                Property jsonProperty = method.getAnnotation(Property.class);
+                if (jsonProperty != null) {
+                    propertyInfo = (SimplePropertyInfo)propInfos.get(jsonProperty.value());
+                    if (propertyInfo == null) {
+                        propertyInfo = new SimplePropertyInfo(jsonProperty, null);
+                    }
+                    if (methodName.startsWith("set")) {
+                        propertyInfo.setSetter(method.getName());
+                    }
+                    else if (methodName.startsWith("get") || methodName.startsWith("is")) {
+                        propertyInfo.setGetter(methodName);
+                    }
+                }
+
+                Getter jsonGetter = method.getAnnotation(Getter.class);
+                if (jsonGetter != null) {
+                    String v = jsonGetter.value();
+                    v = StringUtil.isInvalid(v) ? propertyName : v;
+                    propertyInfo = (SimplePropertyInfo)propInfos.get(v);
+                    if (propertyInfo != null) {
+                        propertyInfo.setGetter(methodName);
+                    }
+                }
+
+                Setter jsonSetter = method.getAnnotation(Setter.class);
+                if (jsonSetter != null) {
+                    String v = jsonSetter.value();
+                    v = StringUtil.isInvalid(v) ? propertyName : v;
+                    propertyInfo = (SimplePropertyInfo)propInfos.get(v);
+                    if (propertyInfo != null) {
+                        propertyInfo.setSetter(methodName);
+                    }
+                }
+
+                Description jsonPropertyDescription = method.getAnnotation(Description.class);
+                if (jsonPropertyDescription != null) {
+                    if (propertyInfo != null) {
+                        propertyInfo.setDescription(jsonPropertyDescription.value());
+                    }
+                }
+            }
+        }
+
+        if (coined != null) {
+            beanInfo.setAlphabeticOrder(coined.alphabeticOrder());
+            beanInfo.setIgnoreUnknownProperties(coined.ignoreUnknownProperties());
         }
 
 
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers())) {
-                continue;
-            }
-
-            JsonProperty property = field.getAnnotation(JsonProperty.class);
-            if (property != null) {
-//                propInfos.add(new SimplePropertyInfo(property, field));
-                continue;
-            }
-        }
-
-        return null;
+            //Order by index
+        beanInfo.setInfos(propInfos);
+        return beanInfo;
     }
 }

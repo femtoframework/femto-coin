@@ -27,16 +27,11 @@ import java.util.Collection;
  *
  * Support annotations
  *
- * @see com.fasterxml.jackson.annotation.JsonProperty
- * @see com.fasterxml.jackson.annotation.JsonGetter
- * @see com.fasterxml.jackson.annotation.JsonSetter
- * @see com.fasterxml.jackson.annotation.JsonIgnore
- * @see com.fasterxml.jackson.annotation.JsonPropertyOrder
- * @see com.fasterxml.jackson.annotation.JsonPropertyDescription
- * @see com.fasterxml.jackson.annotation.JsonIgnoreProperties
- *
- * In coin, by default the bean is auto detected
- * @see com.fasterxml.jackson.annotation.JsonAutoDetect
+ * @see org.femtoframework.coin.annotation.Property
+ * @see org.femtoframework.coin.annotation.Getter
+ * @see org.femtoframework.coin.annotation.Setter
+ * @see org.femtoframework.coin.annotation.Ignore
+ * @see org.femtoframework.coin.annotation.Description
  *
  *
  * @author Sheldon Shao
@@ -93,4 +88,18 @@ public interface BeanInfo {
      * @return ordered property names
      */
     Collection<String> getOrderedPropertyNames();
+
+    /**
+     * Ignore unknown properties
+     *
+     * @return Ignore unknown properties
+     */
+    boolean isIgnoreUnknownProperties();
+
+    /**
+     * Should the properties be in alphabeticOrder order?
+     *
+     * @return Alphabetic order
+     */
+    boolean isAlphabeticOrder();
 }

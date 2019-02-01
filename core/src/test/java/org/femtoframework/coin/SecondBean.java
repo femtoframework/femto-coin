@@ -1,7 +1,5 @@
 package org.femtoframework.coin;
 
-import org.femtoframework.parameters.Parameters;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

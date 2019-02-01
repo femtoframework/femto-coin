@@ -1,27 +1,10 @@
-/**
- * Licensed to the FemtoFramework under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.femtoframework.coin.info.ext;
 
 import org.femtoframework.coin.info.BeanInfo;
 import org.femtoframework.coin.info.PropertyInfo;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashMap;
 
 /**
  * Simple Bean Info
@@ -32,7 +15,9 @@ import java.util.List;
 public class SimpleBeanInfo implements BeanInfo {
     private String className;
     private String description;
-    private List<PropertyInfo> infos = new ArrayList<>(2);
+    private LinkedHashMap<String, PropertyInfo> infos = new LinkedHashMap<>(2);
+    private boolean ignoreUnknownProperties = false;
+    private boolean alphabeticOrder = false;
 
     /**
      * Return the class name of the bean
@@ -71,7 +56,7 @@ public class SimpleBeanInfo implements BeanInfo {
      */
     @Override
     public Collection<PropertyInfo> getProperties() {
-        return infos;
+        return infos.values();
     }
 
     /**
@@ -82,7 +67,7 @@ public class SimpleBeanInfo implements BeanInfo {
      */
     @Override
     public PropertyInfo getProperty(String propertyName) {
-        return null;
+        return infos.get(propertyName);
     }
 
     /**
@@ -118,10 +103,45 @@ public class SimpleBeanInfo implements BeanInfo {
      */
     @Override
     public Collection<String> getOrderedPropertyNames() {
-        return null;
+        return infos.keySet();
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * Ignore unknown properties
+     *
+     * @return Ignore unknown properties
+     */
+    public boolean isIgnoreUnknownProperties() {
+        return ignoreUnknownProperties;
+    }
+
+    /**
+     * Should the properties be in alphabeticOrder order?
+     *
+     * @return Alphabetic order
+     */
+    public boolean isAlphabeticOrder() {
+        return alphabeticOrder;
+    }
+
+    /**
+     * Set Property Infos
+     *
+     * @param infos
+     */
+    public void setInfos(LinkedHashMap<String, PropertyInfo> infos) {
+        this.infos = infos;
+    }
+
+    public void setIgnoreUnknownProperties(boolean ignoreUnknownProperties) {
+        this.ignoreUnknownProperties = ignoreUnknownProperties;
+    }
+
+    public void setAlphabeticOrder(boolean alphabeticOrder) {
+        this.alphabeticOrder = alphabeticOrder;
     }
 }

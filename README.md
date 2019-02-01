@@ -33,12 +33,12 @@ It only has 7 dependencies includes slf4j.
 ### PostConstruct
 ### PreDestroy
 
-## com/fasterxml/jackson/annotation
-### @JsonProperty
-### @JsonSetter
-### @JsonGetter
-### @JsonIgnore
-### @JsonIgnoreProperties
+## org/femtoframework/coin/annotation
+### Property
+### Setter
+### Getter
+### Ignore
+### Coined
 
 ## Does not support
 ### @Qualifier

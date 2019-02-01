@@ -16,14 +16,17 @@
  */
 package org.femtoframework.coin.info.ext;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.info.AbstractFeatureInfo;
+import org.femtoframework.coin.info.BeanNamingConvension;
 import org.femtoframework.coin.info.PropertyInfo;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.text.NamingConvention;
+import org.femtoframework.util.StringUtil;
 import org.femtoframework.util.convert.ConverterUtil;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -37,18 +40,18 @@ import java.util.Map;
  *    getXxx + setXxx  xxx      getXxx       true            setXxx      true
  *
  *
- * 2. With @JsonIgnore
+ * 2. With @Ignore
  *                                       name     getter       readable        setter      writable
- *    getXxx only + JsonIgnore           xxx      getXxx       false            ""         false
- *    setXxx only + JsonIgnore           xxx      ""           false           setXxx      false
+ *    getXxx only + Ignore               xxx      getXxx       false            ""         false
+ *    setXxx only + Ignore               xxx      ""           false           setXxx      false
  *    getXxx + setXxx  IgnoreOnGetter    xxx      getXxx       false           setXxx      true
  *    getXxx + setXxx  IgnoreOnSetter    xxx      getXxx       true            setXxx      false
  *
- * JsonSetter or JsonGetter can redefined the getter or setter method
- * JsonProperty provides information for the property
- * JsonPropertyDescription provides the description for the property
- * JsonPropertyOrder is only supported on BeanClass, it defined the order of properties, it is lower priority than the index on JsonProperty.
- *                   That means JsonPropertyOrder assigns indexes to each properties, then it could be redefined by @JsonProperty
+ * @Setter or @Getter can redefined the getter or setter method
+ * @Property provides information for the property
+ * @Description provides the description for the property
+ * @Pojo is only supported on BeanClass, it defined the order of properties, it is lower priority than the index on Property.
+ *       That means Coined assigns indexes to each properties, then it could be redefined by @Property
  *
  * @author Sheldon Shao
  * @version 1.0
@@ -57,17 +60,43 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
     private String type;
 
     private boolean readable = true;
-    private boolean writeable = true;
+    private boolean writable = true;
 
     private String getter = null;
     private String setter = null;
 
     private String defaultValue = null;
-    private int index = JsonProperty.INDEX_UNKNOWN;
+    private int index = Property.INDEX_UNKNOWN;
     private boolean required = false;
 
+    protected static String getType(String type) {
+        if (StringUtil.isValid(type)) {
+            return type;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public SimplePropertyInfo(Property property, Field field) {
+        setProperty(property, field);
+    }
+
+    /**
+     * Constructs an <CODE>PropertyInfo</CODE> object.
+     *
+     * @param name        The name of the attribute.
+     * @param type        The type or class name of the attribute.
+     */
+    public SimplePropertyInfo(String name,
+                              String type) {
+        super(name, "");
+        setType(type);
+    }
 
     public void setName(String name) {
+        BeanNamingConvension.mustBeValidJavaIdentifier(name);
+
         super.setName(name);
         if (getGetter() == null && getType() != null) {
             setGetter(NamingConvention.toGetter(name, getType()));
@@ -92,14 +121,14 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
      * @return Is the property writable
      */
     public boolean isWritable() {
-        return writeable;
+        return writable;
     }
 
     /**
      * Return the getter method, default is "getXxx" or "isXxx"
      * But it could be redefined by "@JsonGetter"
      *
-     * @see com.fasterxml.jackson.annotation.JsonGetter
+     * @see org.femtoframework.coin.annotation.Getter
      *
      * @return The real getter method name
      */
@@ -111,7 +140,7 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
      * Return the setter method, default is "setXxx"
      * It could be redefined by "@JsonSetter"
      *
-     * @see com.fasterxml.jackson.annotation.JsonSetter
+     * @see org.femtoframework.coin.annotation.Setter
      *
      * @return the real setter method name
      */
@@ -159,7 +188,7 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
     /**
      * Default value defined in String
      *
-     * @see com.fasterxml.jackson.annotation.JsonProperty
+     * @see Property
      */
     @Override
     public String getDefaultValue() {
@@ -172,7 +201,7 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
      * @return default value as expected type
      */
     @Override
-    @JsonIgnore
+    @Ignore
     public <T> T getExpectedDefaultValue() {
         return ConverterUtil.convertToType(defaultValue, getType());
     }
@@ -203,33 +232,28 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
     }
 
     /**
-     * Set the properties from JsonProperty
+     * Set the properties from Property
      *
-     * @param jsonProperty JsonProperty
+     * @param property Property
      */
-    @JsonIgnore
-    public void setJsonProperty(JsonProperty jsonProperty) {
-        setName(jsonProperty.value());
-        defaultValue = jsonProperty.defaultValue();
-        setIndex(jsonProperty.index());
-        this.required = jsonProperty.required();
-        JsonProperty.Access access = jsonProperty.access();
-        switch (access) {
-            case READ_ONLY:
-                readable = true;
-                writeable = false;
-                break;
-            case WRITE_ONLY:
-                readable = false;
-                writeable = true;
-                break;
-            case READ_WRITE:
-                readable = true;
-                writeable = true;
-                break;
-            case AUTO:
-
+    @Ignore
+    public void setProperty(Property property, Field field) {
+        if (StringUtil.isInvalid(type) && field != null) {
+            setType(field.getType().getName());
         }
+
+        String name = property.value();
+        if (StringUtil.isInvalid(name) && field != null) {
+            name = field.getName();
+        }
+
+        setName(name);
+
+        defaultValue = property.defaultValue();
+        setIndex(property.index());
+        this.required = property.required();
+        this.readable = property.readable();
+        this.writable = property.writable();
     }
 
     public void setType(String type) {
@@ -240,12 +264,8 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
         this.readable = readable;
     }
 
-    public boolean isWriteable() {
-        return writeable;
-    }
-
-    public void setWriteable(boolean writeable) {
-        this.writeable = writeable;
+    public void setWritable(boolean writable) {
+        this.writable = writable;
     }
 
     public void setGetter(String getter) {
