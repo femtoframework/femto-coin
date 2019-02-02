@@ -14,7 +14,7 @@ import java.util.LinkedHashMap;
  */
 public class SimpleBeanInfo implements BeanInfo {
     private String className;
-    private String description;
+    private String description = "";
     private LinkedHashMap<String, PropertyInfo> infos = new LinkedHashMap<>(2);
     private boolean ignoreUnknownProperties = false;
     private boolean alphabeticOrder = false;

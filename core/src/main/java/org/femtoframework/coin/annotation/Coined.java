@@ -31,15 +31,15 @@ public @interface Coined {
     /**
      * Property that defines what to do regarding ordering of properties
      * not explicitly included in annotation instance. If set to true,
-     * they will be alphabetically ordered(default settings); if false, order is
-     * undefined
+     * they will be alphabetically ordered; if false, order is
+     * undefined(default settings)
      */
-    boolean alphabeticOrder() default true;
+    boolean alphabeticOrder() default false;
 
-    /**
-     * Specify the order or properties, it is used to generate the ProtoBuf encoder or other serialization which needs to keep order
-     *
-     * @return Property Order
-     */
-    String[] propertyOrder() default {};
+//    /**
+//     * Specify the order or properties, it is used to generate the ProtoBuf encoder or other serialization which needs to keep order
+//     *
+//     * @return Property Order
+//     */
+//    String[] propertyOrder() default {};
 }

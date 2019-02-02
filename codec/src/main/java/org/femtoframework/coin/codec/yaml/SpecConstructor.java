@@ -1,20 +1,4 @@
-/**
- * Licensed to the FemtoFramework under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package org.femtoframework.coin.spec.ext;
+package org.femtoframework.coin.codec.yaml;
 
 import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.CoreKind;
@@ -22,7 +6,6 @@ import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.coin.spec.element.*;
 import org.yaml.snakeyaml.constructor.Construct;
-import org.yaml.snakeyaml.constructor.ConstructorException;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
@@ -33,8 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.femtoframework.coin.spec.CoreKind.MAP;
-import static org.femtoframework.coin.spec.CoreKind.NULL;
+import static org.femtoframework.coin.spec.CoreKind.*;
 
 /**
  * Spec Constructor
@@ -72,13 +54,9 @@ public class SpecConstructor extends SafeConstructor {
             }
         }
 
-        this.yamlConstructors.put(null, new ConstructWrapper(undefinedConstructor, NULL));
+        this.yamlConstructors.put(null, new ConstructWrapper(SafeConstructor.undefinedConstructor, NULL));
         this.yamlConstructors.put(Tag.OMAP, new ConstructWrapper(yamlConstructors.get(Tag.OMAP), MAP));
         this.yamlConstructors.put(Tag.PAIRS, new ConstructWrapper(yamlConstructors.get(Tag.PAIRS), MAP));
-
-//        this.yamlClassConstructors.put(NodeId.scalar, undefinedConstructor);
-//        this.yamlClassConstructors.put(NodeId.sequence, undefinedConstructor);
-//        this.yamlClassConstructors.put(NodeId.mapping, undefinedConstructor);
     }
 
     /**
@@ -136,28 +114,28 @@ public class SpecConstructor extends SafeConstructor {
                     String trimmedV = v.trim();
                     if (trimmedV.startsWith("${") && trimmedV.endsWith("}")) {
                         String var = trimmedV.substring(2, trimmedV.length()-1);
-                        return new VariableElement(CoreKind.VAR, var, v);
+                        return new VariableElement(VAR, var, v);
                     }
                     else {
-                        return new PrimitiveElement(CoreKind.STRING, value);
+                        return new PrimitiveElement<>(STRING, v);
                     }
                 case INT:
                 case LONG:
                     if (value instanceof Long) {
-                        return new PrimitiveElement(CoreKind.LONG, value);
+                        return new PrimitiveElement<>(LONG, (Long)value);
                     } else {
-                        return new PrimitiveElement(CoreKind.INT, value);
+                        return new PrimitiveElement<>(INT, value);
                     }
                 case DOUBLE:
-                    return new PrimitiveElement(CoreKind.DOUBLE, value);
+                    return new PrimitiveElement<>(DOUBLE, value);
                 case BOOLEAN:
-                    return new PrimitiveElement(CoreKind.BOOLEAN, value);
+                    return new PrimitiveElement<>(BOOLEAN, value);
                 case BYTES:
-                    return new PrimitiveElement(CoreKind.BYTES, value);
+                    return new PrimitiveElement<>(BYTES, value);
                 case TIMESTAMP:
-                    return new PrimitiveElement(CoreKind.TIMESTAMP, value);
+                    return new PrimitiveElement<>(TIMESTAMP, value);
                 case NULL: // should not get this but...
-                    return new PrimitiveElement(NULL, value);
+                    return new PrimitiveElement<>(NULL, value);
                 case SET:
                     return new SetElement<>((Set)value);
                 case MAP:

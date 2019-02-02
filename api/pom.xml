@@ -26,6 +26,10 @@
       <artifactId>coin-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.femtoframework.coin</groupId>
+      <artifactId>coin-codec</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.nanohttpd</groupId>
       <artifactId>nanohttpd</artifactId>
     </dependency>
