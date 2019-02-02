@@ -121,4 +121,7 @@ public interface PropertyInfo extends FeatureInfo, DefaultValued {
      */
     <T> T invokeGetter(Object bean);
 
+
+
+
 }

@@ -96,7 +96,8 @@ public class SimpleCoinController implements CoinController {
             classLoader = Thread.currentThread().getContextClassLoader();
         }
         try {
-            return classLoader.getResource(APPLICATION_YAML).toURI();
+            URL url = classLoader.getResource(APPLICATION_YAML);
+            return url != null ? url.toURI() : null;
         } catch (URISyntaxException e) {
             throw new IOException("URI syntax error", e);
         }

@@ -39,7 +39,7 @@
           <property name="product_home" value="${home}"/>
           <property name="file.encoding" value="UTF8"/>
           <property name="cube.system.env" value="prod"/>
-          <property name="java.library.path" value="${lib}/native/${osid}"/>
+          <property name="java.library.paths" value="${lib}/native/${osid}"/>
 
           <classpath file="${nova}/util/${nova_version}/util-${nova_version}.jar"/>
           <classpath file="${nova}/coin/${nova_version}/coin-${nova_version}.jar"/>

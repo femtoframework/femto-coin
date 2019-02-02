@@ -1,10 +1,10 @@
 package org.femtoframework.coin.info.ext;
 
+import org.femtoframework.coin.info.ActionInfo;
 import org.femtoframework.coin.info.BeanInfo;
 import org.femtoframework.coin.info.PropertyInfo;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.*;
 
 /**
  * Simple Bean Info
@@ -15,7 +15,9 @@ import java.util.LinkedHashMap;
 public class SimpleBeanInfo implements BeanInfo {
     private String className;
     private String description = "";
-    private LinkedHashMap<String, PropertyInfo> infos = new LinkedHashMap<>(2);
+    private LinkedHashMap<String, PropertyInfo> properties = new LinkedHashMap<>(4);
+    private Map<String, ActionInfo> actions = null;
+
     private boolean ignoreUnknownProperties = false;
     private boolean alphabeticOrder = false;
 
@@ -56,7 +58,7 @@ public class SimpleBeanInfo implements BeanInfo {
      */
     @Override
     public Collection<PropertyInfo> getProperties() {
-        return infos.values();
+        return properties.values();
     }
 
     /**
@@ -67,7 +69,7 @@ public class SimpleBeanInfo implements BeanInfo {
      */
     @Override
     public PropertyInfo getProperty(String propertyName) {
-        return infos.get(propertyName);
+        return properties.get(propertyName);
     }
 
     /**
@@ -83,15 +85,27 @@ public class SimpleBeanInfo implements BeanInfo {
 
         //TODO Reorder
         SimpleBeanInfo simple = (SimpleBeanInfo)beanInfo;
-        LinkedHashMap<String, PropertyInfo> map = simple.infos;
+        LinkedHashMap<String, PropertyInfo> map = simple.properties;
         if (map != null && !map.isEmpty()) {
             map = new LinkedHashMap<>(map);
-            if (infos == null) {
-                infos = map;
+            if (properties == null) {
+                properties = map;
             }
             else {
-                map.putAll(infos);
-                infos = map;
+                map.putAll(properties);
+                properties = map;
+            }
+        }
+
+        Map<String, ActionInfo> actions = simple.actions;
+        if (actions != null && !actions.isEmpty()) {
+            if (this.actions == null) {
+                this.actions = actions;
+            }
+            else { //Puts the parent actions, then puts actions from current bean
+                Map<String, ActionInfo> newActions = new HashMap<>(actions);
+                newActions.putAll(this.actions);
+                this.actions = newActions;
             }
         }
     }
@@ -103,7 +117,7 @@ public class SimpleBeanInfo implements BeanInfo {
      */
     @Override
     public Collection<String> getOrderedPropertyNames() {
-        return infos.keySet();
+        return properties.keySet();
     }
 
     public void setDescription(String description) {
@@ -128,13 +142,37 @@ public class SimpleBeanInfo implements BeanInfo {
         return alphabeticOrder;
     }
 
+    @Override
+    public Collection<ActionInfo> getActions() {
+        return actions != null ? actions.values() : Collections.emptyList();
+    }
+
+    @Override
+    public Set<String> getActionNames() {
+        return actions != null ? actions.keySet() : Collections.emptySet();
+    }
+
+    @Override
+    public ActionInfo getAction(String name) {
+        return actions != null ? actions.get(name) : null;
+    }
+
+    /**
+     * Set action infos
+     *
+     * @param actions Action Infos
+     */
+    public void setActions(Map<String, ActionInfo> actions) {
+        this.actions = actions;
+    }
+
     /**
      * Set Property Infos
      *
-     * @param infos
+     * @param properties
      */
-    public void setInfos(LinkedHashMap<String, PropertyInfo> infos) {
-        this.infos = infos;
+    public void setProperties(LinkedHashMap<String, PropertyInfo> properties) {
+        this.properties = properties;
     }
 
     public void setIgnoreUnknownProperties(boolean ignoreUnknownProperties) {

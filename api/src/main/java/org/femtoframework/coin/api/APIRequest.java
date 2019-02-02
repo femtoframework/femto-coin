@@ -3,6 +3,7 @@ package org.femtoframework.coin.api;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.parameters.ParametersMap;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -79,7 +80,7 @@ public class APIRequest {
     /**
      * Path
      */
-    private String path;
+    private String[] paths;
 
 
     private String method;
@@ -143,19 +144,30 @@ public class APIRequest {
         this.parameters = parameters;
     }
 
-    public void setQueryParams(Map<String, String> queryParams) {
-        setParameters(new ParametersMap<>(queryParams));
+    public void setQueryParams(Map<String, List<String>> queryParams) {
+        ParametersMap parametersMap = new ParametersMap<>();
+        for(Map.Entry<String, List<String>> entry : queryParams.entrySet()) {
+            List<String> values = entry.getValue();
+            String key = entry.getKey();
+            if (values.size() == 1) {
+                parametersMap.put(key, values.get(0));
+            }
+            else {
+                parametersMap.put(key, values);
+            }
+        }
+        setParameters(parametersMap);
     }
 
     /**
-     * Original path
+     * Original paths after "/coin/api/v1"
      */
-    public String getPath() {
-        return path;
+    public String[] getPaths() {
+        return paths;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setPaths(String[] paths) {
+        this.paths = paths;
     }
 
     /**

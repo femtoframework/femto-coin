@@ -22,6 +22,7 @@ import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
+import org.femtoframework.coin.spec.element.VariableElement;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.text.NamingConvention;
 import org.femtoframework.util.StringUtil;
@@ -217,6 +218,9 @@ public class AutoConfigurator implements Configurator {
                     if (List.class.isAssignableFrom(expectedType)) {
                         injection = new Injection(element, targetName, method, expectedType, null);
                     }
+                }
+                else if (element instanceof VariableSpec) {
+                    injection = new Injection(element, targetName, method, expectedType, null);
                 }
 
                 Class<?> expectedClass = childSpec != null ? childSpec.getTypeClass() : null;

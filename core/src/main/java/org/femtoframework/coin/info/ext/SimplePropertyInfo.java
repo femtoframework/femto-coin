@@ -49,6 +49,12 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
     private String getter = null;
     private String setter = null;
 
+    @Ignore
+    private transient Method getterMethod = null;
+
+    @Ignore
+    private transient Method setterMethod = null;
+
     private String defaultValue = null;
     private int index = Property.INDEX_UNKNOWN;
     private boolean required = false;
@@ -82,11 +88,11 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
         BeanNamingConvension.mustBeValidJavaIdentifier(name);
 
         super.setName(name);
-        if (getGetter() == null && getType() != null) {
-            setGetter(NamingConvention.toGetter(name, getType()));
+        if (getter == null && getType() != null) {
+            this.getter = NamingConvention.toGetter(name, getType());
         }
-        if (getSetter() == null) {
-            setSetter(NamingConvention.toSetter(name));
+        if (setter == null) {
+            this.setter = NamingConvention.toSetter(name);
         }
     }
 
@@ -144,9 +150,11 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
             ((Map)bean).put(getName(), value);
         }
         else {
-            String setter = getSetter();
-            Method method = Reflection.getMethod(bean.getClass(), setter);
-            Reflection.invoke(bean, method, value);
+            Method setterMethod = this.setterMethod;
+            if (setterMethod == null) {
+                this.setterMethod = setterMethod = Reflection.getMethod(bean.getClass(), getSetter());
+            }
+            Reflection.invoke(bean, setterMethod, value);
         }
     }
 
@@ -162,9 +170,11 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
             return (T)((Map)bean).getOrDefault(getName(), getExpectedDefaultValue());
         }
         else {
-            String getter = getGetter();
-            Method method = Reflection.getMethod(bean.getClass(), getter);
-            Object value = Reflection.invoke(bean, method, null);
+            Method getterMethod = this.getterMethod;
+            if (getterMethod == null) {
+                this.getterMethod = getterMethod = Reflection.getMethod(bean.getClass(), getGetter());
+            }
+            Object value = Reflection.invoke(bean, getterMethod, null);
             return value != null ? (T)value : getExpectedDefaultValue();
         }
     }
@@ -252,12 +262,16 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
         this.writable = writable;
     }
 
-    public void setGetter(String getter) {
-        this.getter = getter;
+    @Ignore
+    public void setGetterMethod(Method getterMethod) {
+        this.getterMethod = getterMethod;
+        this.getter = getterMethod.getName();
     }
 
-    public void setSetter(String setter) {
-        this.setter = setter;
+    @Ignore
+    public void setSetterMethod(Method setterMethod) {
+        this.setterMethod = setterMethod;
+        this.setter = setterMethod.getName();
     }
 
     public void setIndex(int index) {

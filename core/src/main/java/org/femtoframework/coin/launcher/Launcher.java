@@ -56,7 +56,9 @@ public class Launcher {
 
         List<URI> allUris = new ArrayList<>(componentYamls.size() + 1 + args.length);
         allUris.addAll(componentYamls);
-        allUris.add(applicationYaml);
+        if (applicationYaml != null) {
+            allUris.add(applicationYaml);
+        }
         for(int i = 0; i < args.length; i ++) {
             allUris.add(new File(args[i]).toURI());
         }

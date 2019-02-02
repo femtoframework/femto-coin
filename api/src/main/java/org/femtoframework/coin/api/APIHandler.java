@@ -1,5 +1,7 @@
 package org.femtoframework.coin.api;
 
+import java.io.IOException;
+
 /**
  * API Handler
  *
@@ -14,5 +16,5 @@ public interface APIHandler {
      * @param request API Request
      * @return
      */
-    APIResponse handleRequest(APIRequest request);
+    APIResponse handleRequest(APIRequest request) throws IOException;
 }
