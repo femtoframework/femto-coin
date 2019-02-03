@@ -175,7 +175,7 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
         SimpleComponent component = new SimpleComponent(module, spec);
         component.setStage(targetStage);
         component.setBean(bean);
-        createBean(component);
+        bean = createBean(component);
         if (StringUtil.isValid(component.getName())) {
             //Only named component will be added in this factory, otherwise it will be linked to parent component
             add(component);

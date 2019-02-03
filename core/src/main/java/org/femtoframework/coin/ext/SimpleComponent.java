@@ -51,6 +51,26 @@ public class SimpleComponent implements Component, Nameable {
     }
 
     /**
+     * Namespace of this component
+     *
+     * @return Namespace
+     */
+    @Property(writable = false)
+    public String getNamespace() {
+        return Component.super.getNamespace();
+    }
+
+    /**
+     * Name of this bean
+     *
+     * @return Name of the bean and component
+     */
+    @Property(writable = false)
+    public String getName() {
+        return Component.super.getName();
+    }
+
+    /**
      * Absolute Name
      */
     private String absoluteName = null;

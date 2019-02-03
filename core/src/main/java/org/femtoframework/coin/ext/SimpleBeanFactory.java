@@ -44,7 +44,9 @@ public class SimpleBeanFactory extends BaseFactory<Object> implements BeanFactor
             Component component = componentFactory.get(name);
             if (component != null) {
                 bean = component.getBean();
-                add(name, bean);
+                if (bean != null) {
+                    add(name, bean);
+                }
             }
         }
         return bean;
@@ -52,6 +54,11 @@ public class SimpleBeanFactory extends BaseFactory<Object> implements BeanFactor
 
     @Override
     public void add(String name, Object bean) {
-        super.add(name, bean);
+        if (bean != null) {
+            super.add(name, bean);
+        }
+        else {
+            throw new IllegalArgumentException("Bean of " + name + " is null");
+        }
     }
 }

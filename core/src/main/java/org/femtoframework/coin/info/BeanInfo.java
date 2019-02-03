@@ -1,5 +1,7 @@
 package org.femtoframework.coin.info;
 
+import org.femtoframework.parameters.Parameters;
+
 import java.util.Collection;
 import java.util.Set;
 
@@ -111,4 +113,13 @@ public interface BeanInfo {
      * @return ActionInfo, if doesn't exist, it returns <code>null</code>
      */
     ActionInfo getAction(String name);
+
+    /**
+     * Convert bean to parameters information.
+     * Supports non-structure properties only.
+     *
+     * @param bean Bean
+     * @return
+     */
+    Parameters toParameters(Object bean);
 }

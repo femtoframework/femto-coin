@@ -3,6 +3,9 @@ package org.femtoframework.coin.info.ext;
 import org.femtoframework.coin.info.ActionInfo;
 import org.femtoframework.coin.info.BeanInfo;
 import org.femtoframework.coin.info.PropertyInfo;
+import org.femtoframework.lang.reflect.Reflection;
+import org.femtoframework.parameters.Parameters;
+import org.femtoframework.parameters.ParametersMap;
 
 import java.util.*;
 
@@ -155,6 +158,26 @@ public class SimpleBeanInfo implements BeanInfo {
     @Override
     public ActionInfo getAction(String name) {
         return actions != null ? actions.get(name) : null;
+    }
+
+    @Override
+    public Parameters toParameters(Object bean) {
+        Parameters parameters = new ParametersMap();
+        for(String name: getOrderedPropertyNames()) {
+            PropertyInfo propertyInfo = getProperty(name);
+            try {
+                Class<?> clazz = Reflection.getClass(propertyInfo.getType());
+                if (Reflection.isNonStructureClass(clazz)) {
+                    Object value = propertyInfo.invokeGetter(bean);
+                    if (value != null) {
+                        parameters.put(name, value);
+                    }
+                }
+            } catch (ClassNotFoundException e) {
+                //Ignore
+            }
+        }
+        return parameters;
     }
 
     /**

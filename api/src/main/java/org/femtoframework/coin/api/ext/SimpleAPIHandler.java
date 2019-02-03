@@ -7,6 +7,8 @@ import org.femtoframework.coin.api.APIResponse;
 import org.femtoframework.coin.codec.Encoder;
 import org.femtoframework.coin.codec.json.JsonCodec;
 import org.femtoframework.coin.codec.yaml.YamlCodec;
+import org.femtoframework.coin.info.BeanInfo;
+import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.coin.spi.CoinModuleAware;
 import org.femtoframework.parameters.Parameters;
 
@@ -76,15 +78,17 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
             case RESOURCE_CONFIG:
                 String ns = request.getNamespace();
                 Namespace namespace = namespaceFactory.get(ns);
+                boolean convert = RESOURCE_BEAN.equals(resourceType);
                 if (namespace == null) {
                     if (request.isAll()) {
                         int index = 0;
                         List<Object> selected = new ArrayList<>(limit);
                         finish: for(Namespace n: namespaceFactory) {
-                            Factory factory = n.getFactory(resourceType);
-                            for(Object obj: factory) {
+                            Factory<?> factory = n.getFactory(resourceType);
+                            for(String name: factory.getNames()) {
+                                Object obj = factory.get(name);
                                 if (index >= offset) {
-                                    selected.add(obj);
+                                    selected.add(convert ? toParameters(name, obj) : obj);
                                     if (selected.size() >= limit) {
                                         break finish;
                                     }
@@ -110,7 +114,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                             response.setCode(404);
                             response.setMessage("Resource " + ns + ":" + name + " not found");
                         } else {
-                            encoder.encode(obj, baos);
+                            encoder.encode(convert ? toParameters(name, obj) : obj, baos);
                         }
                     }
                 }
@@ -121,6 +125,15 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
             response.setContent(baos.toString("utf8"));
         }
         return response;
+    }
+
+    protected Parameters toParameters(String name, Object obj) {
+        Class<?> clazz = obj.getClass();
+        BeanInfo beanInfo = coinModule.getBeanInfoFactory().getBeanInfo(clazz);
+        Parameters parameters = beanInfo.toParameters(obj);
+        parameters.put(SpecConstants._NAME, name);
+        parameters.put(SpecConstants._TYPE, clazz.getName());
+        return parameters;
     }
 
     protected void write(Encoder<Object, OutputStream> encoder, ByteArrayOutputStream out,
