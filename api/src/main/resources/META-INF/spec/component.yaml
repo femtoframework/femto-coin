@@ -10,5 +10,5 @@ _kind: bean
 _type: org.femtoframework.coin.api.nanohttpd.APIServer
 host: 0.0.0.0
 port: 9169
-daemon: false
-apiHandler: ${b:api_handler}
+daemon: true
+api_handler: ${b:api_handler}

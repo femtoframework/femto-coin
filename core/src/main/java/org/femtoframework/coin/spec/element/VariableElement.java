@@ -1,6 +1,7 @@
 package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.Component;
+import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.VariableResolverFactory;
 import org.femtoframework.coin.spec.VariableSpec;
@@ -13,8 +14,11 @@ import org.femtoframework.coin.spec.VariableSpec;
  */
 public class VariableElement extends PrimitiveElement<Object> implements VariableSpec
 {
+    @Ignore
     private String prefix;
+    @Ignore
     private String suffix;
+    @Ignore
     private String name;
 
     public VariableElement(CoreKind type, String name, String orig) {
@@ -57,9 +61,6 @@ public class VariableElement extends PrimitiveElement<Object> implements Variabl
     public String getSuffix() {
         return suffix;
     }
-
-
-
 
     /**
      * Return the value of this element definition

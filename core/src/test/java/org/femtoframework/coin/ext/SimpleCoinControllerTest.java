@@ -1,13 +1,10 @@
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.ext.SimpleKindSpecFactory;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
-import org.junit.runners.parameterized.ParametersRunnerFactory;
 
 import java.io.File;
 
@@ -50,7 +47,7 @@ public class SimpleCoinControllerTest {
         Namespace ns = coinModule.getNamespaceFactory().get("test");
         assertNotNull(ns);
 
-        BeanSpec spec = ns.getBeanSpecFactory().get("first");
+        BeanSpec spec = ns.getSpecFactory(BeanSpec.class).get("first");
         assertNotNull(spec.get("second"));
 
         Component component = ns.getComponentFactory().get(spec.getName());

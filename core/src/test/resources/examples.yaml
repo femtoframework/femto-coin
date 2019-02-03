@@ -62,3 +62,17 @@ parameters:
   current: ${first.second}
   ref: ${b:third1}
 
+---
+# Config doesn't have the structure information, it has the properties only
+_version: v1 #optional
+_namespace: test #optional, default is "default"
+_kind: config #required
+first:
+  second:
+    intMap:
+      4: 4
+      5: 5
+      6: 6
+  parameters:
+    abc: newValue
+    cfg: 6

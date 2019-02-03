@@ -258,6 +258,28 @@ public class AutoConfigurator implements Configurator {
             else if (element != null) { //Primitive value
                 injection = new Injection(element, targetName, method, expectedType, null);
             }
+            // This is low performance
+//            else {
+//                if (expectedType != null && expectedType.isInterface()) {
+//                    //Search existing beans, whether there is only one bean implements this interface
+//                    BeanSpec foundSpec = null;
+//                    for(BeanSpec beanSpec: component.getCurrentNamespace().getBeanSpecFactory()) {
+//                        if (expectedType.isAssignableFrom(beanSpec.getTypeClass())) {
+//                            if (foundSpec == null) {
+//                                foundSpec = beanSpec;
+//                            }
+//                            else {
+//                                log.warn("Found multiple beans implement this interface:" + expectedType.getSimpleName());
+//                                break;
+//                            }
+//                        }
+//                    }
+//                    if (foundSpec != null) {
+//                        injection = new Injection(foundSpec, targetName, method, expectedType, null);
+//                    }
+//                }
+//            }
+
 
             if (childComponent != null) {
                 injection = new Injection(element, targetName, method, expectedType, childComponent);

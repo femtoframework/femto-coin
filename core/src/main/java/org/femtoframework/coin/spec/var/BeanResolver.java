@@ -17,7 +17,7 @@
 package org.femtoframework.coin.spec.var;
 
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.exception.BeanSpecSyntaxException;
+import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.spec.VariableResolver;
 import org.femtoframework.coin.spec.VariableSpec;
 import org.femtoframework.coin.spi.CoinModuleAware;
@@ -55,7 +55,7 @@ public class BeanResolver implements VariableResolver, CoinModuleAware {
         else {
             namespace = namespaceFactory.get(prefix);
             if (namespace == null) {
-                throw new BeanSpecSyntaxException("No such namespace '" + prefix + "' in ${" + var.getName() + "}");
+                throw new SpecSyntaxException("No such namespace '" + prefix + "' in ${" + var.getName() + "}");
             }
         }
         String suffix = var.getSuffix();
@@ -66,13 +66,13 @@ public class BeanResolver implements VariableResolver, CoinModuleAware {
             try {
                 return (T)coinModule.getLookup().lookup(namespace.getName() + CoinConstants.CHAR_COLON + var.getSuffix());
             } catch (NamingException e) {
-                throw new BeanSpecSyntaxException("Bean name syntax exception:" + var.getName(), e);
+                throw new SpecSyntaxException("Bean name syntax exception:" + var.getName(), e);
             }
         }
         else {
             Component next = namespace.getComponentFactory().get(suffix);
             if (next == null) {
-                throw new BeanSpecSyntaxException("No such component '" + suffix + "' in ${" + var.getName() + "}");
+                throw new SpecSyntaxException("No such component '" + suffix + "' in ${" + var.getName() + "}");
             }
             return next.getBean(expectedType);
         }

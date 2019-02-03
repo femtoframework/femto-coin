@@ -20,7 +20,7 @@ import org.femtoframework.coin.CoinConstants;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Configurator;
 import org.femtoframework.coin.Namespace;
-import org.femtoframework.coin.exception.BeanSpecSyntaxException;
+import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.spec.BeanSpec;
 
 import java.lang.reflect.InvocationTargetException;
@@ -56,13 +56,13 @@ public class BelongsToConfigurator implements Configurator {
 
         Namespace ns = component.getNamespaceByName(belongsTo.getNamespace());
         if (ns == null) {
-            throw new BeanSpecSyntaxException("Invalid belongsTo field, the namespace '" + belongsTo.getNamespace() +
+            throw new SpecSyntaxException("Invalid belongsTo field, the namespace '" + belongsTo.getNamespace() +
                     "' does not exist '" + link + "' in bean spec " + spec.getQualifiedName());
         }
 
         Component parent = ns.getComponentFactory().get(belongsTo.getName());
         if (parent == null) {
-            throw new BeanSpecSyntaxException("Invalid belongsTo field, the parent bean name '" + belongsTo.getName()
+            throw new SpecSyntaxException("Invalid belongsTo field, the parent bean name '" + belongsTo.getName()
                     + "' does not exist '" + link + "' in bean spec " + spec.getQualifiedName());
         }
 
@@ -82,10 +82,10 @@ public class BelongsToConfigurator implements Configurator {
                 try {
                     m.invoke(parentBean, currentBean);
                 } catch (IllegalAccessException e) {
-                    throw new BeanSpecSyntaxException("Invalid belongsTo field, the method is not able to access: '" + belongsTo.getMethod()
+                    throw new SpecSyntaxException("Invalid belongsTo field, the method is not able to access: '" + belongsTo.getMethod()
                             + "', belongsTo '" + link + "' in bean spec " + spec.getQualifiedName());
                 } catch (InvocationTargetException e) {
-                    throw new BeanSpecSyntaxException("Invalid belongsTo field, invoking method : '" + belongsTo.getMethod()
+                    throw new SpecSyntaxException("Invalid belongsTo field, invoking method : '" + belongsTo.getMethod()
                             + "' exception, belongsTo '" + link + "' in bean spec " + spec.getQualifiedName(), e.getCause());
                 }
             }
@@ -126,7 +126,7 @@ public class BelongsToConfigurator implements Configurator {
         }
         int poundIndex = str.indexOf('#', start);
         if (poundIndex < start) {
-            throw new BeanSpecSyntaxException("Invalid belongsTo field " + str + " in bean spec " + spec.getQualifiedName()
+            throw new SpecSyntaxException("Invalid belongsTo field " + str + " in bean spec " + spec.getQualifiedName()
                     + ", it should be in format [NAMESPACE':']NAME'#'METHOD, for example myNS:myBean#myMethod or myBean#myMethod");
         }
         belongsTo.setName(str.substring(start, poundIndex));

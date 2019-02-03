@@ -95,7 +95,7 @@ public interface BeanSpec extends ModelSpec {
      * Whether the bean is enabled or not.
      *
      * TODO check that in component
-     * @return
+     * @return Is enabled or not
      */
     default boolean isEnabled() {
         return true;

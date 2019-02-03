@@ -4,7 +4,7 @@ import com.jsoniter.JsonIterator;
 import com.jsoniter.JsonIteratorPool;
 import com.jsoniter.spi.JsonException;
 import org.femtoframework.coin.codec.json.CoinCompatibilityMode;
-import org.femtoframework.coin.exception.BeanSpecSyntaxException;
+import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.spec.SpecParser;
 import org.yaml.snakeyaml.Yaml;
 
@@ -68,7 +68,7 @@ public class SimpleSpecParser implements SpecParser {
             }
         }
         else {
-            throw new BeanSpecSyntaxException("Unrecognized file type:" + path);
+            throw new SpecSyntaxException("Unrecognized file type:" + path);
         }
     }
 }

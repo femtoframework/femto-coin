@@ -14,9 +14,10 @@ import java.io.Serializable;
  */
 public abstract class AbstractElement implements Element, Serializable
 {
-
+    @Ignore
     protected Kind kind = null;
 
+    @Ignore
     private String kindClass = null;
 
     /**
@@ -24,7 +25,6 @@ public abstract class AbstractElement implements Element, Serializable
      *
      * @return Type of the element
      */
-    @Ignore
     public Kind getKind()
     {
         return kind;
@@ -45,7 +45,6 @@ public abstract class AbstractElement implements Element, Serializable
      *
      * @return Class
      */
-    @Ignore
     public String getKindClass()
     {
         return kindClass;

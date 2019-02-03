@@ -65,7 +65,7 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
 
     private CoinLookup lookup = new SimpleCoinLookup(namespaceFactory);
 
-    private VariableResolverFactory variableResolverFactory = new SimpleVariableResolverFactory(this, namespaceFactory);
+    private VariableResolverFactory variableResolverFactory = new SimpleVariableResolverFactory(namespaceFactory);
 
 
     /**

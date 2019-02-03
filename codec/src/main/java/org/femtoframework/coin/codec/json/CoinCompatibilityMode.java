@@ -4,10 +4,7 @@ import com.jsoniter.annotation.*;
 import com.jsoniter.spi.Config;
 import com.jsoniter.spi.Decoder;
 import com.jsoniter.spi.Encoder;
-import org.femtoframework.coin.annotation.AnyGetter;
-import org.femtoframework.coin.annotation.AnySetter;
-import org.femtoframework.coin.annotation.Ignore;
-import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.coin.annotation.*;
 
 import java.lang.annotation.Annotation;
 
@@ -79,17 +76,17 @@ public class CoinCompatibilityMode extends Config {
         return new JsonProperty() {
             @Override
             public String value() {
-                return "";
+                return jacksonObj.value();
             }
 
             @Override
             public String[] from() {
-                return new String[]{jacksonObj.value()};
+                return new String[]{};
             }
 
             @Override
             public String[] to() {
-                return new String[]{jacksonObj.value()};
+                return new String[]{};
             }
 
             @Override
@@ -114,17 +111,17 @@ public class CoinCompatibilityMode extends Config {
 
             @Override
             public boolean nullable() {
-                return true;
+                return !jacksonObj.required();
             }
 
             @Override
             public boolean collectionValueNullable() {
-                return true;
+                return !jacksonObj.required();
             }
 
             @Override
             public String defaultValueToOmit() {
-                return "";
+                return jacksonObj.defaultValue();
             }
 
             @Override
@@ -156,7 +153,8 @@ public class CoinCompatibilityMode extends Config {
             return jsoniterObj;
         }
         AnyGetter jacksonObj = getAnnotation(annotations, AnyGetter.class);
-        if (jacksonObj == null) {
+        AsValue asValue = getAnnotation(annotations, AsValue.class);
+        if (jacksonObj == null && asValue == null) {
             return null;
         }
         return new JsonUnwrapper() {

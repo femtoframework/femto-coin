@@ -35,6 +35,8 @@ public interface SpecConstants {
 
     String BEAN = "bean";
 
+    String CONFIG = "config";
+
     /**
      * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
      */

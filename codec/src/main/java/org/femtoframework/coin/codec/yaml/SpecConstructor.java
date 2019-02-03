@@ -28,7 +28,7 @@ public class SpecConstructor extends SafeConstructor {
 
 
     private static Tag[] tags = new Tag[] {
-            Tag.NULL, Tag.STR, Tag.INT, null,  Tag.FLOAT, Tag.BOOL, Tag.BINARY, Tag.TIMESTAMP, Tag.MAP, Tag.SEQ, Tag.SET, null, null, null
+            Tag.NULL, Tag.STR, Tag.INT, null,  Tag.FLOAT, Tag.BOOL, Tag.BINARY, Tag.TIMESTAMP, Tag.MAP, Tag.SEQ, Tag.SET, null, null, null, null
     };
 
 

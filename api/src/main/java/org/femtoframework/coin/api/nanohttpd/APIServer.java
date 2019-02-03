@@ -10,7 +10,10 @@ import org.femtoframework.coin.api.APIResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 public class APIServer implements LifecycleMBean {
 
@@ -151,8 +154,10 @@ public class APIServer implements LifecycleMBean {
                             response.getContentType(), response.getMessage());
                 }
             } catch (Exception ex) {
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ex.printStackTrace(new PrintStream(baos));
                 return newFixedLengthResponse(Response.Status.INTERNAL_ERROR,
-                        "text/plain", ex.getMessage());
+                        "text/plain", baos.toString());
             }
         }
 
@@ -194,6 +199,7 @@ public class APIServer implements LifecycleMBean {
         return apiHandler;
     }
 
+    @Inject
     public void setApiHandler(APIHandler apiHandler) {
         this.apiHandler = apiHandler;
         if (httpd != null) {

@@ -18,6 +18,7 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.ModelElement;
@@ -150,13 +151,30 @@ public class SimpleCoinController implements CoinController {
                     throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
                 }
                 String name = beanSpec.getName();
-                BeanSpec oldSpec = ns.getBeanSpecFactory().get(name);
+                SpecFactory<BeanSpec> specFactory = ns.getSpecFactory(BeanSpec.class);
+                BeanSpec oldSpec = specFactory.get(name);
                 if (log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
                     log.warn("A new BeanSpec with same namespace and name has been found, replacing with new one, "
                             + oldSpec.getQualifiedName());
                 }
-                ns.getBeanSpecFactory().add(beanSpec);
+                specFactory.add(beanSpec);
                 beanSpecs.add(beanSpec);
+            }
+            else if (kind == CoreKind.CONFIG) {
+                ConfigSpec configSpec = (ConfigSpec)spec;
+                String namespace = configSpec.getNamespace();
+                Namespace ns = namespaceFactory.get(namespace);
+                if (ns == null) {
+                    throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
+                }
+                String name = configSpec.getName();
+                SpecFactory<ConfigSpec> specFactory = ns.getSpecFactory(ConfigSpec.class);
+                ModelSpec oldSpec = specFactory.get(name);
+                if (log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
+                    log.warn("A new ConfigSpec with same namespace and name has been found, replacing with new one, "
+                            + oldSpec.getName());
+                }
+                specFactory.add(configSpec);
             }
             else {
                 //TODO CUSTOM Spec
@@ -236,12 +254,33 @@ public class SimpleCoinController implements CoinController {
                     throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
                 }
                 String name = beanSpec.getName();
-                BeanSpec oldSpec = ns.getBeanSpecFactory().get(name);
+                SpecFactory<BeanSpec> specFactory = ns.getSpecFactory(BeanSpec.class);
+                ModelSpec oldSpec = specFactory.get(name);
                 if (oldSpec == null) {
-                    throw new IOException("BeanSpec " + namespace + ":" + name + " doesn't exist.");
+                    throw new IOException("Spec " + namespace + ":" + name + " doesn't exist.");
                 }
 
                 //TODO apply new beanSpec
+                Component component = ns.getComponentFactory().get(name);
+                if (component != null) {
+
+                }
+            }
+            else if (kind == CoreKind.CONFIG) {
+                ConfigSpec configSpec = (ConfigSpec)spec;
+                String namespace = configSpec.getNamespace();
+                Namespace ns = namespaceFactory.get(namespace);
+                if (ns == null) {
+                    throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
+                }
+                String name = configSpec.getName();
+                SpecFactory<ConfigSpec> specFactory = ns.getSpecFactory(ConfigSpec.class);
+                ModelSpec oldSpec = specFactory.get(name);
+                if (oldSpec == null) {
+                    throw new IOException("Spec " + namespace + ":" + name + " doesn't exist.");
+                }
+
+                //TODO apply new configSpec
                 Component component = ns.getComponentFactory().get(name);
                 if (component != null) {
 
@@ -294,7 +333,7 @@ public class SimpleCoinController implements CoinController {
                 String name = beanSpec.getName();
 
                 ns.getBeanFactory().delete(name);
-                ns.getBeanSpecFactory().delete(name);
+                ns.getSpecFactory(BeanSpec.class).delete(name);
                 Component component = ns.getComponentFactory().get(name);
                 if (component != null) {
                     ns.getComponentFactory().delete(name);

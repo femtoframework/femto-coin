@@ -33,35 +33,54 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
         String className = clazz.getName();
         BeanInfo beanInfo = map.get(className);
         if (beanInfo == null) {
-            synchronized (clazz) {
+            synchronized (this) {
                 beanInfo = map.get(className);
                 if (beanInfo == null) {
 
                     Class superClass = clazz.getSuperclass();
-                    BeanInfo superBeanInfo = null;
+                    List<BeanInfo> superBeanInfos = null;
                     if (superClass != null && superClass != Object.class) {
-                        superBeanInfo = getBeanInfo(superClass, generate);
+                        superBeanInfos = append(superBeanInfos, getBeanInfo(superClass, generate));
                     }
+                    Class[] interfaceClasses = clazz.getInterfaces();
+                    if (interfaceClasses.length > 0) {
+                        for(Class interfaceClass: interfaceClasses) {
+                            superBeanInfos = append(superBeanInfos, getBeanInfo(interfaceClass, generate));
+                        }
+                    }
+
                     if (generate) {
                         beanInfo = generate(clazz);
                     }
-                    if (beanInfo != null) {
-                        if (superBeanInfo != null) {
-                            beanInfo.mergeSuper(superBeanInfo);
+                    if (beanInfo != null || superBeanInfos != null) {
+                        if (beanInfo == null) {
+                            beanInfo = getBeanInfo(superClass, true);
+                        }
+
+                        if (superBeanInfos != null) {
+                            for(BeanInfo parentInfo: superBeanInfos) {
+                                beanInfo.mergeSuper(parentInfo);
+                            }
                         }
                         if (beanInfo.getClassName() == null) {
                             beanInfo.setClassName(className);
                         }
                         map.put(className, beanInfo);
                     }
-                    else if (superBeanInfo != null) {
-                        beanInfo = superBeanInfo;
-                        map.put(className, superBeanInfo);
-                    }
                 }
             }
         }
         return beanInfo;
+    }
+
+    protected List<BeanInfo> append(List<BeanInfo> beanInfos, BeanInfo beanInfo) {
+        if (beanInfo != null) {
+            if (beanInfos == null) {
+                beanInfos = new ArrayList<>(2);
+            }
+            beanInfos.add(beanInfo);
+        }
+        return beanInfos;
     }
 
     /**
@@ -158,7 +177,7 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                     Class<?> type = isGetter ? method.getReturnType() : method.getParameterTypes()[0];
 
                     SimplePropertyInfo propertyInfo = null;
-                    String propertyName = NamingConvention.toPropertyName(methodName, type);
+                    String propertyName = NamingConvention.toPropertyName(methodName, isGetter ? type : null);
                     Property jsonProperty = method.getAnnotation(Property.class);
                     if (jsonProperty != null) {
                         propertyName = jsonProperty.value();
@@ -261,13 +280,6 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
      * @return Primitive, String, Enum, List of non-structure
      */
     protected boolean isActionArgument(Class<?> type) {
-        String typeName = type.getName();
-        if (type.isArray()) {
-            return isActionArgument(type.getComponentType());
-        }
-        else if (Reflection.isPrimitiveClass(typeName)) {
-            return true;
-        }
-        else return String.class == type || Enum.class.isAssignableFrom(type);
+        return Reflection.isNonStructureClass(type);
     }
 }
