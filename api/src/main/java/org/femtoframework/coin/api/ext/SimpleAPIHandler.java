@@ -1,8 +1,6 @@
 package org.femtoframework.coin.api.ext;
 
-import org.femtoframework.coin.CoinModule;
-import org.femtoframework.coin.Namespace;
-import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.*;
 import org.femtoframework.coin.api.APIHandler;
 import org.femtoframework.coin.api.APIRequest;
 import org.femtoframework.coin.api.APIResponse;
@@ -15,9 +13,12 @@ import org.femtoframework.parameters.Parameters;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static org.femtoframework.coin.CoinConstants.*;
 
 /**
  * API Handler
@@ -51,9 +52,9 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         if (resourceType == null) {
             throw new IOException("Resource type is null");
         }
+        NamespaceFactory namespaceFactory = coinModule.getNamespaceFactory();
         switch (resourceType) {
-            case "namespace":
-                NamespaceFactory namespaceFactory = coinModule.getNamespaceFactory();
+            case NAMESPACE_NAMESPACE:
                 if (request.isAll()) {
                     write(encoder, baos, offset, limit, namespaceFactory);
                 }
@@ -66,6 +67,51 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                     }
                     else {
                         encoder.encode(namespace, baos);
+                    }
+                }
+                break;
+            case RESOURCE_COMPONENT:
+            case RESOURCE_BEAN:
+            case RESOURCE_SPEC:
+            case RESOURCE_CONFIG:
+                String ns = request.getNamespace();
+                Namespace namespace = namespaceFactory.get(ns);
+                if (namespace == null) {
+                    if (request.isAll()) {
+                        int index = 0;
+                        List<Object> selected = new ArrayList<>(limit);
+                        finish: for(Namespace n: namespaceFactory) {
+                            Factory factory = n.getFactory(resourceType);
+                            for(Object obj: factory) {
+                                if (index >= offset) {
+                                    selected.add(obj);
+                                    if (selected.size() >= limit) {
+                                        break finish;
+                                    }
+                                }
+                                index ++;
+                            }
+                        }
+                        write(encoder, baos, offset, limit, selected);
+                    }
+                    else {
+                        response.setCode(404);
+                        response.setMessage("Namespace " + ns + " not found");
+                    }
+                }
+                else {
+                    Factory factory = namespace.getFactory(resourceType);
+                    if (request.isAll()) {
+                        write(encoder, baos, offset, limit, factory);
+                    } else {
+                        String name = request.getName();
+                        Object obj = factory.get(name);
+                        if (obj == null) {
+                            response.setCode(404);
+                            response.setMessage("Resource " + ns + ":" + name + " not found");
+                        } else {
+                            encoder.encode(obj, baos);
+                        }
                     }
                 }
                 break;

@@ -49,4 +49,9 @@ public class SimpleBeanFactory extends BaseFactory<Object> implements BeanFactor
         }
         return bean;
     }
+
+    @Override
+    public void add(String name, Object bean) {
+        super.add(name, bean);
+    }
 }

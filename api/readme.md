@@ -30,6 +30,11 @@ It is designed similar as [K8s API](https://kubernetes.io/docs/reference/using-a
   - GET /namespaces/NAMESPACE/specs - Returns all specs under namespace 'NAMESPACE'
   - GET /namespaces/NAMESPACE/spec/NAME - Returns the spec with given name under namespace 'NAMESPACE'
   - PATCH /namespaces/NAMESPACE/spec/NAME - Applies patch configuration on bean spec
+- config
+  - GET /configs - Returns all configs from all namespaces
+  - GET /namespaces/NAMESPACE/configs - Returns all configs under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/config/NAME - Returns the config with given name under namespace 'NAMESPACE'
+  - PATCH /namespaces/NAMESPACE/config/NAME - Applies patch properties on config
 
 ### Samples
 ```

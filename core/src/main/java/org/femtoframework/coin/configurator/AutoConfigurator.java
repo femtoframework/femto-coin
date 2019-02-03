@@ -22,7 +22,6 @@ import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
-import org.femtoframework.coin.spec.element.VariableElement;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.text.NamingConvention;
 import org.femtoframework.util.StringUtil;
@@ -227,7 +226,7 @@ public class AutoConfigurator implements Configurator {
                 if (clazz != null && clazz != Object.class) {
                     expectedClass = clazz;
                 }
-                else if (childSpec != null && expectedType.isInterface()) {
+                else if (childSpec == null && expectedType.isInterface()) {
                     clazz = ns.getComponentFactory().getImplement(targetName, expectedType);
                     if (clazz == null) { //Ignore this
                         if (log.isInfoEnabled()) {

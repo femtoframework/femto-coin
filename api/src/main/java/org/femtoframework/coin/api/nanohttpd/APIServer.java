@@ -15,6 +15,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import static org.femtoframework.coin.CoinConstants.*;
+
 public class APIServer implements LifecycleMBean {
 
     private String host = "0.0.0.0";
@@ -93,30 +95,39 @@ public class APIServer implements LifecycleMBean {
             request.setPaths(paths);
 
             boolean invalidPath = false;
-            if ("namespaces".equals(paths[0])) {
+            if ("namespaces".equals(paths[0]) || NAMESPACE_NAMESPACE.equals(paths[0])) {
                 if (paths.length == 1) {
                     request.setAll(true);
-                    request.setType("namespace");
-                } else if (paths.length == 3) {
+                    request.setType(NAMESPACE_NAMESPACE);
+                }
+                else if (paths.length == 2 && NAMESPACE_NAMESPACE.equals(paths[0])) {
+                    request.setAll(false);
+                    request.setType(NAMESPACE_NAMESPACE);
+                    request.setNamespace(paths[1]);
+                }
+                else if (paths.length == 3) {
                     request.setAll(true);
                     request.setNamespace(paths[1]);
                     if ("components".equals(paths[2])) {
-                        request.setType("component");
+                        request.setType(RESOURCE_COMPONENT);
                     } else if ("beans".equals(paths[2])) {
-                        request.setType("bean");
+                        request.setType(RESOURCE_BEAN);
                     } else if ("specs".equals(paths[2])) {
-                        request.setType("spec");
-                    } else {
+                        request.setType(RESOURCE_SPEC);
+                    } else if ("configs".equals(paths[2])) {
+                        request.setType("config");
+                    }
+                    else {
                         invalidPath = true;
                     }
                 } else if (paths.length == 4) {
                     request.setNamespace(paths[1]);
-                    if ("component".equals(paths[2])) {
-                        request.setType("component");
-                    } else if ("bean".equals(paths[2])) {
-                        request.setType("bean");
-                    } else if ("spec".equals(paths[2])) {
-                        request.setType("spec");
+                    if (RESOURCE_COMPONENT.equals(paths[2])) {
+                        request.setType(RESOURCE_COMPONENT);
+                    } else if (RESOURCE_BEAN.equals(paths[2])) {
+                        request.setType(RESOURCE_BEAN);
+                    } else if (RESOURCE_SPEC.equals(paths[2])) {
+                        request.setType(RESOURCE_SPEC);
                     } else {
                         invalidPath = true;
                     }
@@ -128,13 +139,16 @@ public class APIServer implements LifecycleMBean {
             } else if (paths.length == 1) {
                 if ("components".equals(paths[0])) {
                     request.setAll(true);
-                    request.setType("component");
+                    request.setType(RESOURCE_COMPONENT);
                 } else if ("beans".equals(paths[0])) {
                     request.setAll(true);
-                    request.setType("bean");
+                    request.setType(RESOURCE_BEAN);
                 } else if ("specs".equals(paths[0])) {
                     request.setAll(true);
-                    request.setType("spec");
+                    request.setType(RESOURCE_SPEC);
+                } else if ("configs".equals(paths[0])) {
+                    request.setAll(true);
+                    request.setType(RESOURCE_CONFIG);
                 } else {
                     invalidPath = true;
                 }

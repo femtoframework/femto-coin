@@ -45,4 +45,9 @@ public interface CoinConstants {
 
     char CHAR_DELIM = '.';
     char CHAR_COLON = ':';
+
+    String RESOURCE_COMPONENT = "component";
+    String RESOURCE_BEAN = "bean";
+    String RESOURCE_SPEC = "spec";
+    String RESOURCE_CONFIG = "config";
 }

@@ -7,6 +7,8 @@ import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Namespace;
 import org.femtoframework.coin.NamespaceFactory;
 import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.coin.info.BeanInfo;
 import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.CoreKind;
@@ -153,6 +155,11 @@ public class SimpleComponent implements Component, Nameable {
 
     public void setBean(Object bean) {
         this.bean = bean;
+    }
+
+    @Property(writable = false)
+    public BeanInfo getBeanInfo() {
+        return Component.super.getBeanInfo();
     }
 
     /**

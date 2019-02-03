@@ -2,6 +2,7 @@ package org.femtoframework.coin;
 
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.NamedBean;
+import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.info.BeanInfo;
 import org.femtoframework.coin.naming.CoinName;

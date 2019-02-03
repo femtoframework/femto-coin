@@ -7,4 +7,12 @@ package org.femtoframework.coin;
  * @version 1.00 2005-1-27 14:12:22
  */
 public interface BeanFactory extends Factory<Object> {
+
+    /**
+     * Add bean
+     *
+     * @param name Name of the bean
+     * @param bean Bean
+     */
+    void add(String name, Object bean);
 }
