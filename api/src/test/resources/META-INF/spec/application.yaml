@@ -1,0 +1,5 @@
+_version: v1 #optional
+_namespace: coin #optional, default is "default"
+_kind: config #required
+api_server:
+  daemon: false
