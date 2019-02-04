@@ -39,6 +39,14 @@ public interface PropertyInfo extends FeatureInfo, DefaultValued {
 
 
     /**
+     * Return the type class
+     *
+     * @return the type class
+     */
+    Class<?> getTypeClass();
+
+
+    /**
      * Index of this property
      *
      * @return Index of this property, for ProtocolBuf or other schema enabled serialization
@@ -77,8 +85,8 @@ public interface PropertyInfo extends FeatureInfo, DefaultValued {
      * @return Is boolean style getter?
      */
     default boolean isIs() {
-        String type = getType();
-        return Boolean.class.getName().equalsIgnoreCase(type) || boolean.class.getName().equalsIgnoreCase(type);
+        Class<?> type = getTypeClass();
+        return Boolean.class == type || boolean.class == type;
     }
 
     /**

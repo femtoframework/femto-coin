@@ -1,5 +1,6 @@
 package org.femtoframework.coin.info.ext;
 
+import org.femtoframework.coin.annotation.Coined;
 import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.info.AbstractFeatureInfo;
@@ -9,6 +10,7 @@ import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.text.NamingConvention;
 import org.femtoframework.util.StringUtil;
 import org.femtoframework.util.convert.ConverterUtil;
+import org.femtoframework.util.convert.DataConverter;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -40,8 +42,12 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
+@Coined
 public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyInfo {
     private String type;
+
+    @Ignore
+    private transient Class<?> typeClass;
 
     private boolean readable = true;
     private boolean writable = true;
@@ -72,16 +78,19 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
         setProperty(property, field);
     }
 
+    public SimplePropertyInfo(Property property, Method method) {
+        setProperty(property, method);
+    }
+
     /**
      * Constructs an <CODE>PropertyInfo</CODE> object.
      *
      * @param name        The name of the attribute.
      * @param type        The type or class name of the attribute.
      */
-    public SimplePropertyInfo(String name,
-                              String type) {
+    public SimplePropertyInfo(String name, Class<?> type) {
         super(name, "");
-        setType(type);
+        setTypeClass(type);
     }
 
     public void setName(String name) {
@@ -172,7 +181,8 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
         else {
             Method getterMethod = this.getterMethod;
             if (getterMethod == null) {
-                this.getterMethod = getterMethod = Reflection.getMethod(bean.getClass(), getGetter());
+                getterMethod = Reflection.getMethod(bean.getClass(), getGetter());
+                this.getterMethod = getterMethod;
             }
             Object value = Reflection.invoke(bean, getterMethod, null);
             return value != null ? (T)value : getExpectedDefaultValue();
@@ -197,12 +207,23 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
     @Override
     @Ignore
     public <T> T getExpectedDefaultValue() {
-        return ConverterUtil.convertToType(defaultValue, getType());
+        if (defaultValue != null) {
+            DataConverter converter = ConverterUtil.getConverter(getTypeClass());
+            if (converter != null) {
+                return (T)converter.convert(defaultValue);
+            }
+        }
+        return null;
     }
 
     @Override
     public String getType() {
         return type;
+    }
+
+    @Override
+    public Class<?> getTypeClass() {
+        return typeClass;
     }
 
     /**
@@ -231,9 +252,46 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
      * @param property Property
      */
     @Ignore
+    public void setProperty(Property property, Method method) {
+        boolean setter = false;
+        if (StringUtil.isInvalid(type) && method != null) {
+            if (method.getParameterTypes().length == 1) {
+                setTypeClass(method.getParameterTypes()[0]);
+                setter = true;
+            }
+            else {
+                setTypeClass(method.getReturnType());
+            }
+        }
+
+        String name = property.value();
+        if (StringUtil.isInvalid(name) && method != null) {
+            name = NamingConvention.toPropertyName(method.getName(), setter ? null : getTypeClass());
+        }
+
+        setName(name);
+
+        setProperty(property);
+    }
+
+    @Ignore
+    protected void setProperty(Property property) {
+        defaultValue = property.defaultValue();
+        setIndex(property.index());
+        this.required = property.required();
+        this.readable = property.readable();
+        this.writable = property.writable();
+    }
+
+    /**
+     * Set the properties from Property
+     *
+     * @param property Property
+     */
+    @Ignore
     public void setProperty(Property property, Field field) {
         if (StringUtil.isInvalid(type) && field != null) {
-            setType(field.getType().getName());
+            setTypeClass(field.getType());
         }
 
         String name = property.value();
@@ -242,16 +300,12 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
         }
 
         setName(name);
-
-        defaultValue = property.defaultValue();
-        setIndex(property.index());
-        this.required = property.required();
-        this.readable = property.readable();
-        this.writable = property.writable();
+        setProperty(property);
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setTypeClass(Class<?> type) {
+        this.typeClass = type;
+        this.type = type.getName();
     }
 
     public void setReadable(boolean readable) {
@@ -272,6 +326,7 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
     public void setSetterMethod(Method setterMethod) {
         this.setterMethod = setterMethod;
         this.setter = setterMethod.getName();
+        this.writable = true;
     }
 
     public void setIndex(int index) {

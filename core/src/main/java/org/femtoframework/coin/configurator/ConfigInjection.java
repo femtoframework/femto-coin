@@ -49,33 +49,27 @@ public class ConfigInjection implements Configurator {
             if (!propertyInfo.isWritable()) {
                 logger.warn("Property:" + key + " in bean:" + component.getQualifiedName() + " is declared as not writable.");
             }
-            String type = propertyInfo.getType();
-            try {
-                Class<?> clazz = Reflection.getClass(type);
-                if (Reflection.isNonStructureClass(clazz)) {
-                    Object bean = component.getBean();
-                    if (Enum.class.isAssignableFrom(clazz)) {
-                        propertyInfo.invokeSetter(bean, config.getEnum((Class<? extends Enum>)clazz, key));
-                    }
-                    else {
-                        propertyInfo.invokeSetter(bean, config.get(key));
+            Class<?> typeClass = propertyInfo.getTypeClass();
+            if (Reflection.isNonStructureClass(typeClass)) {
+                Object bean = component.getBean();
+                if (Enum.class.isAssignableFrom(typeClass)) {
+                    propertyInfo.invokeSetter(bean, config.getEnum((Class<? extends Enum>)typeClass, key));
+                }
+                else {
+                    propertyInfo.invokeSetter(bean, config.get(key));
+                }
+            }
+            else {
+                Component child = component.getChild(key);
+                if (child != null) {
+                    Parameters<Object> configForChild = config.getParameters(key);
+                    if (configForChild != null) {
+                        inject(child, configForChild);
                     }
                 }
                 else {
-                    Component child = component.getChild(key);
-                    if (child != null) {
-                        Parameters<Object> configForChild = config.getParameters(key);
-                        if (configForChild != null) {
-                            inject(child, configForChild);
-                        }
-                    }
-                    else {
-                        logger.warn("No such child:" + key + " in bean:" + component.getQualifiedName() + ".");
-                    }
+                    logger.warn("No such child:" + key + " in bean:" + component.getQualifiedName() + ".");
                 }
-            }
-            catch(ClassNotFoundException ex) {
-                logger.warn("No such type in property:" + key + " of bean:" + component.getQualifiedName() + " type:" + type);
             }
         }
     }

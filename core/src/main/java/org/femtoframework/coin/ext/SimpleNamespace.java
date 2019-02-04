@@ -1,6 +1,7 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.annotation.Coined;
 import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.spec.BeanSpec;
@@ -17,6 +18,7 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
+@Coined
 public class SimpleNamespace implements Namespace {
 
     private String name;

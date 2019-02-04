@@ -25,8 +25,8 @@ public interface Element
     Kind getKind();
 
     /**
-     * Class of the element, for example "java.util.ArrayList"
-     * For all other element except "Bean" are certain class.
+     * Class of the spec, for example "java.util.ArrayList"
+     * For all other spec except "Bean" are certain class.
      *
      * MAP: org.femtoframework.parameters.ParametersMap
      * LIST: java.util.ArrayList
@@ -41,7 +41,7 @@ public interface Element
     String getKindClass();
 
     /**
-     * Return the value of this element definition
+     * Return the value of this spec definition
      *
      * @param expectedType Expected kind
      * @param parentComponent  Component

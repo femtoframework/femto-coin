@@ -3,12 +3,11 @@ package org.femtoframework.coin.ext;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.annotation.Coined;
 import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.coin.annotation.Property;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Base Factory
@@ -16,10 +15,12 @@ import java.util.Set;
  * @author Sheldon Shao
  * @version 1.0
  */
+@Coined
 public class BaseFactory<B> implements Factory<B> {
 
-
     private String namespace;
+
+    @Ignore
     protected Map<String, B> map = new LinkedHashMap<>();
 
     protected void add(String name, B object) {
@@ -61,6 +62,7 @@ public class BaseFactory<B> implements Factory<B> {
      * @return all names
      */
     @Override
+    @Property(writable = false)
     public Set<String> getNames() {
         return map.keySet();
     }
@@ -97,6 +99,15 @@ public class BaseFactory<B> implements Factory<B> {
         return map.values().iterator();
     }
 
+    /**
+     * Return all objects
+     *
+     * @return Objects
+     */
+    @Property(writable = false)
+    public Collection<B> getObjects() {
+        return map.values();
+    }
 
     public void setNamespace(String namespace) {
         this.namespace = namespace;

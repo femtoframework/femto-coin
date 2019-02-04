@@ -42,12 +42,12 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                     if (superClass != null && superClass != Object.class) {
                         superBeanInfos = append(superBeanInfos, getBeanInfo(superClass, generate));
                     }
-                    Class[] interfaceClasses = clazz.getInterfaces();
-                    if (interfaceClasses.length > 0) {
-                        for(Class interfaceClass: interfaceClasses) {
-                            superBeanInfos = append(superBeanInfos, getBeanInfo(interfaceClass, generate));
-                        }
-                    }
+//                    Class[] interfaceClasses = clazz.getInterfaces();
+//                    if (interfaceClasses.length > 0) {
+//                        for(Class interfaceClass: interfaceClasses) {
+//                            superBeanInfos = append(superBeanInfos, getBeanInfo(interfaceClass, generate));
+//                        }
+//                    }
 
                     if (generate) {
                         beanInfo = generate(clazz);
@@ -95,7 +95,7 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
 
         Coined coined = clazz.getAnnotation(Coined.class);
 
-        SimpleBeanInfo beanInfo = new SimpleBeanInfo();
+        SimpleBeanInfo beanInfo = new SimpleBeanInfo(this);
 
         Description classDescription = clazz.getAnnotation(Description.class);
         if (classDescription != null) {
@@ -120,7 +120,9 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                 propertyInfo = new SimplePropertyInfo(jsonProperty, field);
             }
             else {
-                propertyInfo = new SimplePropertyInfo(field.getName(), field.getType().getTypeName());
+                propertyInfo = new SimplePropertyInfo(field.getName(), field.getType());
+                propertyInfo.setWritable(false);
+                propertyInfo.setReadable(false);
             }
             propInfos.put(propertyInfo.getName(), propertyInfo);
             Description jsonPropertyDescription = field.getAnnotation(Description.class);
@@ -179,7 +181,7 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                     SimplePropertyInfo propertyInfo = null;
                     String propertyName = NamingConvention.toPropertyName(methodName, isGetter ? type : null);
                     Property jsonProperty = method.getAnnotation(Property.class);
-                    if (jsonProperty != null) {
+                    if (jsonProperty != null && StringUtil.isValid(jsonProperty.value())) {
                         propertyName = jsonProperty.value();
                     }
 
@@ -198,7 +200,7 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                     propertyInfo = (SimplePropertyInfo) propInfos.get(propertyName);
                     if (propertyInfo == null) {
                         if (jsonProperty != null) {
-                            propertyInfo = new SimplePropertyInfo(jsonProperty, null);
+                            propertyInfo = new SimplePropertyInfo(jsonProperty, method);
                             propertyInfo.setDescription(description);
                         }
                         else { // Since the property is not found in the field, so ignore this setter or getter
@@ -212,6 +214,7 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                         v = StringUtil.isInvalid(v) ? propertyName : v;
                         propertyInfo = (SimplePropertyInfo) propInfos.get(v);
                         if (propertyInfo != null) {
+                            propertyInfo.setReadable(true);
                             propertyInfo.setGetterMethod(method);
                             continue;
                         }
@@ -223,6 +226,7 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                         v = StringUtil.isInvalid(v) ? propertyName : v;
                         propertyInfo = (SimplePropertyInfo) propInfos.get(v);
                         if (propertyInfo != null) {
+                            propertyInfo.setWritable(true);
                             propertyInfo.setSetterMethod(method);
                             continue;
                         }
@@ -231,9 +235,12 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                     if (propertyInfo != null) {
                         if (isSetter && methodName.startsWith("set")) {
                             propertyInfo.setSetterMethod(method);
+                            propertyInfo.setWritable(true);
                         } else if (isGetter && (methodName.startsWith("get") || methodName.startsWith("is"))) {
                             propertyInfo.setGetterMethod(method);
+                            propertyInfo.setReadable(true);
                         }
+                        propInfos.put(propertyInfo.getName(), propertyInfo);
                     }
                 }
             }
@@ -246,6 +253,18 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
         if (coined != null) {
             beanInfo.setAlphabeticOrder(coined.alphabeticOrder());
             beanInfo.setIgnoreUnknownProperties(coined.ignoreUnknownProperties());
+        }
+
+        //Delete no getter and no setter property
+        Set<String> toRemove = new HashSet<>();
+        for(String key: propInfos.keySet()) {
+            PropertyInfo info = propInfos.get(key);
+            if (!info.isWritable() && !info.isReadable()) {
+                toRemove.add(key);
+            }
+        }
+        for(String k: toRemove) {
+            propInfos.remove(k);
         }
 
         //TODO order by index

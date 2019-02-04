@@ -1,5 +1,6 @@
 package org.femtoframework.coin.api.ext;
 
+import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.api.APIHandler;
 import org.femtoframework.coin.api.APIRequest;
@@ -8,19 +9,25 @@ import org.femtoframework.coin.codec.Encoder;
 import org.femtoframework.coin.codec.json.JsonCodec;
 import org.femtoframework.coin.codec.yaml.YamlCodec;
 import org.femtoframework.coin.info.BeanInfo;
+import org.femtoframework.coin.spec.MapSpec;
 import org.femtoframework.coin.spec.SpecConstants;
+import org.femtoframework.coin.spec.element.SpecParameters;
 import org.femtoframework.coin.spi.CoinModuleAware;
 import org.femtoframework.parameters.Parameters;
+import org.femtoframework.parameters.ParametersMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.femtoframework.coin.CoinConstants.*;
+import static org.femtoframework.coin.spec.SpecConstants.NAME;
+import static org.femtoframework.coin.spec.SpecConstants._NAME;
 
 /**
  * API Handler
@@ -49,7 +56,11 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         int limit = parameters.getInt("limit", 100);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Encoder<Object, OutputStream> encoder = toEncoder(parameters.getString("output"));
+        String output = parameters.getString("output");
+        Encoder<Object, OutputStream> encoder = toEncoder(output);
+        String contentType = "yaml".equalsIgnoreCase(output) || "yml".equalsIgnoreCase(output) ?
+                "text/yaml; charset=UTF-8" :"application/json; charset=UTF-8";
+
         String resourceType = request.getType();
         if (resourceType == null) {
             throw new IOException("Resource type is null");
@@ -58,7 +69,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         switch (resourceType) {
             case NAMESPACE_NAMESPACE:
                 if (request.isAll()) {
-                    write(encoder, baos, offset, limit, namespaceFactory);
+                    write(encoder, baos, offset, limit, namespaceFactory, true);
                 }
                 else {
                     String ns = request.getNamespace();
@@ -78,7 +89,6 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
             case RESOURCE_CONFIG:
                 String ns = request.getNamespace();
                 Namespace namespace = namespaceFactory.get(ns);
-                boolean convert = RESOURCE_BEAN.equals(resourceType);
                 if (namespace == null) {
                     if (request.isAll()) {
                         int index = 0;
@@ -88,7 +98,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                             for(String name: factory.getNames()) {
                                 Object obj = factory.get(name);
                                 if (index >= offset) {
-                                    selected.add(convert ? toParameters(name, obj) : obj);
+                                    selected.add(toParameters(name, obj));
                                     if (selected.size() >= limit) {
                                         break finish;
                                     }
@@ -96,7 +106,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                                 index ++;
                             }
                         }
-                        write(encoder, baos, offset, limit, selected);
+                        write(encoder, baos, offset, limit, selected, false);
                     }
                     else {
                         response.setCode(404);
@@ -106,7 +116,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                 else {
                     Factory factory = namespace.getFactory(resourceType);
                     if (request.isAll()) {
-                        write(encoder, baos, offset, limit, factory);
+                        write(encoder, baos, offset, limit, factory, true);
                     } else {
                         String name = request.getName();
                         Object obj = factory.get(name);
@@ -114,7 +124,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                             response.setCode(404);
                             response.setMessage("Resource " + ns + ":" + name + " not found");
                         } else {
-                            encoder.encode(convert ? toParameters(name, obj) : obj, baos);
+                            encoder.encode(toParameters(name, obj), baos);
                         }
                     }
                 }
@@ -122,25 +132,50 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         }
 
         if (response.getCode() == 200) {
+            response.setContentType(contentType);
             response.setContent(baos.toString("utf8"));
         }
         return response;
     }
 
     protected Parameters toParameters(String name, Object obj) {
-        Class<?> clazz = obj.getClass();
-        BeanInfo beanInfo = coinModule.getBeanInfoFactory().getBeanInfo(clazz);
-        Parameters parameters = beanInfo.toParameters(obj);
-        parameters.put(SpecConstants._NAME, name);
-        parameters.put(SpecConstants._TYPE, clazz.getName());
-        return parameters;
+        if (obj instanceof MapSpec) {
+            return new SpecParameters((MapSpec)obj);
+        }
+        else if (obj instanceof Parameters) {
+            return ((Parameters)obj);
+        }
+        else if (obj instanceof Map) {
+            return new ParametersMap((Map)obj);
+        }
+        else {
+            Class<?> clazz = obj.getClass();
+            BeanInfo beanInfo = coinModule.getBeanInfoFactory().getBeanInfo(clazz);
+            Parameters parameters = beanInfo.toParameters(obj);
+            if (name != null && !(parameters.containsKey(NAME) || parameters.containsKey(_NAME))) {
+                parameters.put(_NAME, name);
+            }
+            parameters.put(SpecConstants._TYPE, clazz.getName());
+            return parameters;
+        }
     }
 
     protected void write(Encoder<Object, OutputStream> encoder, ByteArrayOutputStream out,
-                         int offset, int limit, Iterable<?> iterable) throws IOException {
+                         int offset, int limit, Iterable<?> iterable, boolean parameterize) throws IOException {
         List objects = StreamSupport.stream(iterable.spliterator(), false)
                 .skip(offset).limit(limit).collect(Collectors.toList());
-        encoder.encode(objects, out);
+
+        if (parameterize) {
+            List list = new ArrayList(objects.size());
+            for(Object object: objects) {
+                String name = object instanceof NamedBean ? ((NamedBean)object).getName() : null;
+                list.add(toParameters(name, object));
+            }
+            encoder.encode(list, out);
+        }
+        else {
+            encoder.encode(objects, out);
+        }
     }
 
     private JsonCodec jsonCodec = new JsonCodec();
@@ -158,5 +193,6 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
     @Override
     public void setCoinModule(CoinModule module) {
         this.coinModule = module;
+        yamlCodec.setCoinModule(module);
     }
 }

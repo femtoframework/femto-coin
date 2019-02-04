@@ -6,6 +6,7 @@ import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Namespace;
 import org.femtoframework.coin.NamespaceFactory;
+import org.femtoframework.coin.annotation.Coined;
 import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.annotation.Property;
 import org.femtoframework.coin.info.BeanInfo;
@@ -29,13 +30,14 @@ import static org.femtoframework.coin.spec.SpecConstants.NAME;
  * @author Sheldon Shao
  * @version 1.0
  */
+@Coined
 public class SimpleComponent implements Component, Nameable {
 
     private BeanSpec spec;
+
     private BeanStatus status = new SimpleBeanStatus();
     private BeanStage stage = BeanStage.CREATE;
 
-    @Ignore
     private transient Object bean;
 
     @Ignore

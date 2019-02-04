@@ -1,6 +1,7 @@
 package org.femtoframework.coin.info.ext;
 
 import org.femtoframework.coin.annotation.Action;
+import org.femtoframework.coin.annotation.Coined;
 import org.femtoframework.coin.annotation.Description;
 import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.info.AbstractFeatureInfo;
@@ -15,6 +16,7 @@ import java.util.List;
 /**
  * Simple Action Info
  */
+@Coined
 public class SimpleActionInfo extends AbstractFeatureInfo implements ActionInfo {
 
     private String returnType;
