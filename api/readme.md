@@ -18,23 +18,32 @@ It is designed similar as [K8s API](https://kubernetes.io/docs/reference/using-a
 ### Resources
 - component
   - GET /components - Returns all components from all namespaces
-  - GET /namespaces/NAMESPACE/components - Returns all components under namespace 'NAMESPACE'
-  - GET /namespaces/NAMESPACE/component/NAME - Returns the component with given name under namespace 'NAMESPACE'
-- bean
-  - GET /beans - Returns all beans from all namespaces
-  - GET /namespaces/NAMESPACE/beans - Returns all beans under namespace 'NAMESPACE'
-  - GET /namespaces/NAMESPACE/bean/NAME - Returns the bean with given name under namespace 'NAMESPACE'
-  - PATCH /namespaces/NAMESPACE/bean/NAME - Takes one action on the resource
+  - GET /namespace/NAMESPACE/components - Returns all components under namespace 'NAMESPACE'
+  - GET /namespace/NAMESPACE/component/NAME - Returns the component with given name under namespace 'NAMESPACE'
 - spec
   - GET /specs - Returns all specs from all namespaces
-  - GET /namespaces/NAMESPACE/specs - Returns all specs under namespace 'NAMESPACE'
-  - GET /namespaces/NAMESPACE/spec/NAME - Returns the spec with given name under namespace 'NAMESPACE'
-  - PATCH /namespaces/NAMESPACE/spec/NAME - Applies patch configuration on bean spec
+  - GET /namespace/NAMESPACE/specs - Returns all specs under namespace 'NAMESPACE'
+  - GET /namespace/NAMESPACE/spec/NAME - Returns the spec with given name under namespace 'NAMESPACE'
+  - PATCH /namespace/NAMESPACE/spec/NAME - Applies patch configuration on bean spec
 - config
   - GET /configs - Returns all configs from all namespaces
-  - GET /namespaces/NAMESPACE/configs - Returns all configs under namespace 'NAMESPACE'
-  - GET /namespaces/NAMESPACE/config/NAME - Returns the config with given name under namespace 'NAMESPACE'
-  - PATCH /namespaces/NAMESPACE/config/NAME - Applies patch properties on config
+  - GET /namespace/NAMESPACE/configs - Returns all configs under namespace 'NAMESPACE'
+  - GET /namespace/NAMESPACE/config/NAME - Returns the config with given name under namespace 'NAMESPACE'
+  - PATCH /namespace/NAMESPACE/config/NAME - Applies patch properties on config
+- info
+  - GET /infos - Returns all infos from all namespaces
+  - GET /namespace/NAMESPACE/infos - Returns all infos under namespace 'NAMESPACE'
+  - GET /namespace/NAMESPACE/info/NAME - Returns the info with given name under namespace 'NAMESPACE'
+- bean
+  - GET /beans - Returns all beans from all namespaces
+  - GET /namespace/NAMESPACE/beans - Returns all beans under namespace 'NAMESPACE'
+  - GET /namespace/NAMESPACE/bean/NAME - Returns the bean with given name under namespace 'NAMESPACE'
+  - PATCH /namespace/NAMESPACE/bean/NAME - Takes one action on the resource
+  
+NAME could be the name of the component or multiple paths for child component.
+For examples,
+- first  The component on first level
+- first/second  Means "second" child component under "first" component
 
 ### Samples
 ```

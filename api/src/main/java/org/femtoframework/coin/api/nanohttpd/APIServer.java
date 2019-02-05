@@ -4,6 +4,7 @@ package org.femtoframework.coin.api.nanohttpd;
 import fi.iki.elonen.NanoHTTPD;
 import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.bean.LifecycleMBean;
+import org.femtoframework.coin.ResourceType;
 import org.femtoframework.coin.api.APIHandler;
 import org.femtoframework.coin.api.APIRequest;
 import org.femtoframework.coin.api.APIResponse;
@@ -14,8 +15,6 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import static org.femtoframework.coin.CoinConstants.*;
 
 public class APIServer implements LifecycleMBean {
 
@@ -93,64 +92,43 @@ public class APIServer implements LifecycleMBean {
             String subUri = uri.substring("/coin/api/v1/".length());
             String[] paths = subUri.split("/");
             request.setPaths(paths);
+            if (paths.length == 0) {
+                return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/html", "URI not found:" + uri);
+            }
 
             boolean invalidPath = false;
-            if ("namespaces".equals(paths[0]) || NAMESPACE_NAMESPACE.equals(paths[0])) {
+            if (ResourceType.NAMESPACE.getName().equals(paths[0])) {
                 if (paths.length == 1) {
                     request.setAll(true);
-                    request.setType(NAMESPACE_NAMESPACE);
+                    request.setType(ResourceType.NAMESPACE);
                 }
-                else if (paths.length == 2 && NAMESPACE_NAMESPACE.equals(paths[0])) {
+                else if (paths.length == 2 && ResourceType.NAMESPACE.getName().equals(paths[0])) {
                     request.setAll(false);
-                    request.setType(NAMESPACE_NAMESPACE);
+                    request.setType(ResourceType.NAMESPACE);
                     request.setNamespace(paths[1]);
                 }
-                else if (paths.length == 3) {
-                    request.setAll(true);
+                else if (paths.length >= 3) {
                     request.setNamespace(paths[1]);
-                    if ("components".equals(paths[2])) {
-                        request.setType(RESOURCE_COMPONENT);
-                    } else if ("beans".equals(paths[2])) {
-                        request.setType(RESOURCE_BEAN);
-                    } else if ("specs".equals(paths[2])) {
-                        request.setType(RESOURCE_SPEC);
-                    } else if ("configs".equals(paths[2])) {
-                        request.setType("config");
+                    ResourceType type = ResourceType.toType(paths[2]);
+                    if (type == ResourceType.UNKNOWN) {
+                        invalidPath = true;
+                    }
+                    request.setType(type);
+                    if (paths.length >= 4) {
+                        request.setName(paths[3]);
                     }
                     else {
-                        invalidPath = true;
+                        request.setAll(true);
                     }
-                } else if (paths.length == 4) {
-                    request.setNamespace(paths[1]);
-                    if (RESOURCE_COMPONENT.equals(paths[2])) {
-                        request.setType(RESOURCE_COMPONENT);
-                    } else if (RESOURCE_BEAN.equals(paths[2])) {
-                        request.setType(RESOURCE_BEAN);
-                    } else if (RESOURCE_SPEC.equals(paths[2])) {
-                        request.setType(RESOURCE_SPEC);
-                    } else {
-                        invalidPath = true;
-                    }
-                    request.setName(paths[3]);
+                }
+            } else if (paths.length == 1) { // resources
+                ResourceType type = ResourceType.toType(paths[0]);
+                if (type == ResourceType.UNKNOWN) {
+                    invalidPath = true;
                 }
                 else {
-                    invalidPath = true;
-                }
-            } else if (paths.length == 1) {
-                if ("components".equals(paths[0])) {
                     request.setAll(true);
-                    request.setType(RESOURCE_COMPONENT);
-                } else if ("beans".equals(paths[0])) {
-                    request.setAll(true);
-                    request.setType(RESOURCE_BEAN);
-                } else if ("specs".equals(paths[0])) {
-                    request.setAll(true);
-                    request.setType(RESOURCE_SPEC);
-                } else if ("configs".equals(paths[0])) {
-                    request.setAll(true);
-                    request.setType(RESOURCE_CONFIG);
-                } else {
-                    invalidPath = true;
+                    request.setType(type);
                 }
             } else {
                 invalidPath = true;

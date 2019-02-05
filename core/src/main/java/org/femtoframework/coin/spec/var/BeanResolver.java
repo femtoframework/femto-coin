@@ -48,7 +48,7 @@ public class BeanResolver implements VariableResolver, CoinModuleAware {
         }
         if (suffix.indexOf(CoinConstants.CHAR_DELIM) > 0) {
             try {
-                return (T)coinModule.getLookup().lookup(namespace.getName() + CoinConstants.CHAR_COLON + var.getSuffix());
+                return (T)coinModule.getLookup().lookupBean(namespace.getName() + CoinConstants.CHAR_COLON + var.getSuffix());
             } catch (NamingException e) {
                 throw new SpecSyntaxException("Bean name syntax exception:" + var.getName(), e);
             }

@@ -203,4 +203,24 @@ public interface Component extends NamedBean {
     default Component getChild(String name) {
         return null;
     }
+
+    /**
+     * Return resource by given resource Type
+     *
+     * @param resourceType COMPONENT, BEAN, INFO, SPEC
+     * @throws IllegalArgumentException if other resource type
+     */
+    default Object getResource(ResourceType resourceType) {
+        switch (resourceType) {
+            case COMPONENT:
+                return this;
+            case BEAN:
+                return getBean();
+            case SPEC:
+                return getSpec();
+            case INFO:
+                return getBeanInfo();
+        }
+        throw new IllegalArgumentException("Resource type:" + resourceType + " doesn't support");
+    }
 }

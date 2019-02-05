@@ -9,6 +9,9 @@ import org.femtoframework.coin.codec.Encoder;
 import org.femtoframework.coin.codec.json.JsonCodec;
 import org.femtoframework.coin.codec.yaml.YamlCodec;
 import org.femtoframework.coin.info.BeanInfo;
+import org.femtoframework.coin.info.BeanInfoFactory;
+import org.femtoframework.coin.naming.CoinName;
+import org.femtoframework.coin.spec.ConfigSpec;
 import org.femtoframework.coin.spec.MapSpec;
 import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.coin.spec.element.SpecParameters;
@@ -25,7 +28,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.femtoframework.coin.CoinConstants.*;
 import static org.femtoframework.coin.spec.SpecConstants.NAME;
 import static org.femtoframework.coin.spec.SpecConstants._NAME;
 
@@ -38,6 +40,8 @@ import static org.femtoframework.coin.spec.SpecConstants._NAME;
 public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
 
     private CoinModule coinModule;
+
+    private CoinLookup coinLookup;
 
     /**
      * Handle API Request
@@ -59,20 +63,122 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         String output = parameters.getString("output");
         Encoder<Object, OutputStream> encoder = toEncoder(output);
         String contentType = "yaml".equalsIgnoreCase(output) || "yml".equalsIgnoreCase(output) ?
-                "text/yaml; charset=UTF-8" :"application/json; charset=UTF-8";
+                "text/yaml; charset=UTF-8" : "application/json; charset=UTF-8";
 
-        String resourceType = request.getType();
-        if (resourceType == null) {
+        String method = request.getMethod();
+        if (method == null) {
+            method = "GET";
+        }
+        ResourceType type = request.getType();
+        if (type == null) {
             throw new IOException("Resource type is null");
         }
+        if (type == ResourceType.UNKNOWN) {
+            throw new IOException("No such resource type:" + type);
+        }
+
         NamespaceFactory namespaceFactory = coinModule.getNamespaceFactory();
+        switch (method) {
+            case "GET":
+            case "get":
+            case "Get":
+                doGet(namespaceFactory, type, request, response, encoder, baos, offset, limit);
+                break;
+            case "PATCH":
+            case "patch":
+            case "Patch":
+                doPatch(namespaceFactory, type, request, response, encoder, baos, offset, limit);
+                break;
+        }
+
+        if (response.getCode() == 200) {
+            response.setContentType(contentType);
+            response.setContent(baos.toString("utf8"));
+        }
+        return response;
+    }
+
+    protected void doPatch(NamespaceFactory namespaceFactory, ResourceType resourceType,
+                         APIRequest request, APIResponse response,
+                         Encoder<Object, OutputStream> encoder, ByteArrayOutputStream baos, int offset, int limit)
+            throws IOException {
+
         switch (resourceType) {
-            case NAMESPACE_NAMESPACE:
+            case NAMESPACE:
+            case COMPONENT:
+            case INFO:
+                response.setCode(405);
+                response.setMessage("Method not allowed on this resource type " + resourceType);
+                break;
+            case BEAN:
+            case SPEC:
+            case CONFIG:
+                String ns = request.getNamespace();
+                Namespace namespace = namespaceFactory.get(ns);
+                if (namespace == null) {
+                    response.setCode(405);
+                    response.setMessage("Namespace has to be specified for resource " + resourceType);
+                }
+                else {
+                    Factory factory = namespace.getFactory(resourceType);
+                    if (request.isAll()) {
+                        response.setCode(405);
+                        response.setMessage("Please specify resource name only for resource" + resourceType + ", when doing PATCH");
+                    } else {
+                        String name = request.getName();
+                        Object obj = factory.get(name);
+                        if (obj == null) {
+                            response.setCode(404);
+                            response.setMessage("Resource " + ns + ":" + name + " not found");
+                        } else {
+                            String[] paths = request.getPaths();
+                            if (paths.length > 4) {
+                                if (resourceType == ResourceType.CONFIG) {
+                                    CoinName nextName = new CoinName(paths, 4);
+                                    ConfigSpec configSpec = (ConfigSpec)obj;
+                                    Parameters next = coinLookup.lookupConfig(configSpec, nextName);
+                                    if (next == null) {
+                                        response.setCode(404);
+                                        response.setMessage("Resource " + ns + ":" + name + " not found");
+                                    } else {
+                                        //TODO
+//                                        encoder.encode(next, baos);
+                                    }
+                                }
+                                else {
+                                    CoinName nextName = new CoinName(paths, 4);
+                                    Component component = namespace.getComponentFactory().get(name);
+                                    Component next = coinLookup.lookupComponent(component, nextName);
+                                    if (next == null) {
+                                        response.setCode(404);
+                                        response.setMessage("Resource " + ns + ":" + name + " not found");
+                                    } else {
+//                                        encoder.encode(toParameters(paths[paths.length-1], next.getResource(resourceType)), baos);
+                                    }
+                                }
+                            }
+                            else {
+//                                encoder.encode(toParameters(name, obj), baos);
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+
+    }
+
+    protected void doGet(NamespaceFactory namespaceFactory, ResourceType resourceType,
+                         APIRequest request, APIResponse response,
+                         Encoder<Object, OutputStream> encoder, ByteArrayOutputStream baos, int offset, int limit)
+        throws IOException {
+        String ns = request.getNamespace();
+        switch (resourceType) {
+            case NAMESPACE:
                 if (request.isAll()) {
                     write(encoder, baos, offset, limit, namespaceFactory, true);
                 }
                 else {
-                    String ns = request.getNamespace();
                     Namespace namespace = namespaceFactory.get(ns);
                     if (namespace == null) {
                         response.setCode(404);
@@ -83,11 +189,54 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                     }
                 }
                 break;
-            case RESOURCE_COMPONENT:
-            case RESOURCE_BEAN:
-            case RESOURCE_SPEC:
-            case RESOURCE_CONFIG:
-                String ns = request.getNamespace();
+            case INFO:
+                if (ns == null) {
+                    BeanInfoFactory beanInfoFactory = coinModule.getBeanInfoFactory();
+                    if (request.isAll()) {
+                        write(encoder, baos, offset, limit, beanInfoFactory, true);
+                    }
+                    else {
+                        response.setCode(405);
+                        response.setMessage("Unsupported");
+                    }
+                }
+                else {
+                    Namespace namespace = namespaceFactory.get(ns);
+                    if (namespace == null) {
+                        response.setCode(404);
+                        response.setMessage("Namespace " + ns + " not found");
+                    }
+                    else {
+                        ComponentFactory factory = namespace.getComponentFactory();
+                        String name = request.getName();
+                        Component component = factory.get(name);
+                        if (component == null) {
+                            response.setCode(404);
+                            response.setMessage("Resource " + ns + ":" + name + " not found");
+                        } else {
+                            String[] paths = request.getPaths();
+                            if (paths.length > 4) {
+                                CoinName nextName = new CoinName(paths, 4);
+                                Component next = coinLookup.lookupComponent(component, nextName);
+                                if (next == null) {
+                                    response.setCode(404);
+                                    response.setMessage("Resource " + ns + ":" + name + " not found");
+                                }
+                                else {
+                                    encoder.encode(toParameters(name, next.getBeanInfo()), baos);
+                                }
+                            }
+                            else {
+                                encoder.encode(toParameters(name, component.getBeanInfo()), baos);
+                            }
+                        }
+                    }
+                }
+                break;
+            case COMPONENT:
+            case BEAN:
+            case SPEC:
+            case CONFIG:
                 Namespace namespace = namespaceFactory.get(ns);
                 if (namespace == null) {
                     if (request.isAll()) {
@@ -124,18 +273,39 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                             response.setCode(404);
                             response.setMessage("Resource " + ns + ":" + name + " not found");
                         } else {
-                            encoder.encode(toParameters(name, obj), baos);
+                            String[] paths = request.getPaths();
+                            if (paths.length > 4) {
+                                if (resourceType == ResourceType.CONFIG) {
+                                    CoinName nextName = new CoinName(paths, 4);
+                                    ConfigSpec configSpec = (ConfigSpec)obj;
+                                    Parameters next = coinLookup.lookupConfig(configSpec, nextName);
+                                    if (next == null) {
+                                        response.setCode(404);
+                                        response.setMessage("Resource " + ns + ":" + name + " not found");
+                                    } else {
+                                        encoder.encode(next, baos);
+                                    }
+                                }
+                                else {
+                                    CoinName nextName = new CoinName(paths, 4);
+                                    Component component = namespace.getComponentFactory().get(name);
+                                    Component next = coinLookup.lookupComponent(component, nextName);
+                                    if (next == null) {
+                                        response.setCode(404);
+                                        response.setMessage("Resource " + ns + ":" + name + " not found");
+                                    } else {
+                                        encoder.encode(toParameters(paths[paths.length-1], next.getResource(resourceType)), baos);
+                                    }
+                                }
+                            }
+                            else {
+                                encoder.encode(toParameters(name, obj), baos);
+                            }
                         }
                     }
                 }
                 break;
         }
-
-        if (response.getCode() == 200) {
-            response.setContentType(contentType);
-            response.setContent(baos.toString("utf8"));
-        }
-        return response;
     }
 
     protected Parameters toParameters(String name, Object obj) {
@@ -193,6 +363,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
     @Override
     public void setCoinModule(CoinModule module) {
         this.coinModule = module;
+        this.coinLookup = module.getLookup();
         yamlCodec.setCoinModule(module);
     }
 }

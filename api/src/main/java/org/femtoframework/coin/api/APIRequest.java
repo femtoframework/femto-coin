@@ -1,5 +1,6 @@
 package org.femtoframework.coin.api;
 
+import org.femtoframework.coin.ResourceType;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.parameters.ParametersMap;
 
@@ -59,7 +60,7 @@ public class APIRequest {
     /**
      * Resource Type
      */
-    private String type;
+    private ResourceType type;
 
 
     /**
@@ -93,11 +94,11 @@ public class APIRequest {
      * bean
      * spec
      */
-    public String getType() {
+    public ResourceType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ResourceType type) {
         this.type = type;
     }
 

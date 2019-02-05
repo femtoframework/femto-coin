@@ -1,11 +1,13 @@
 package org.femtoframework.coin.info;
 
+import org.femtoframework.coin.Factory;
+
 /**
  * BeanInfo Factory
  *
  *
  */
-public interface BeanInfoFactory {
+public interface BeanInfoFactory extends Factory<BeanInfo> {
     /**
      * Retrieve BeanInfo by class
      */

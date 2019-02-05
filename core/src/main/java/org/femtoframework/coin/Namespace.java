@@ -48,21 +48,18 @@ public interface Namespace extends NamedBean {
      * @param <T> Component, BeanSpec, ConfigSpec or Bean
      * @return Factory
      */
-    default <T> Factory<T> getFactory(String resource) {
-        if (RESOURCE_COMPONENT.equals(resource)) {
-            return (Factory<T>)getComponentFactory();
-        }
-        else if (RESOURCE_BEAN.equals(resource)) {
-            return (Factory<T>)getBeanFactory();
-        }
-        else if (RESOURCE_SPEC.equals(resource)) {
-            return (Factory<T>)getBeanSpecFactory();
-        }
-        else if (RESOURCE_CONFIG.equals(resource)) {
-            return (Factory<T>)getConfigSpecFactory();
-        }
-        else {
-            throw new IllegalArgumentException("Unsupport resource type:" + resource);
+    default <T> Factory<T> getFactory(ResourceType resource) {
+        switch (resource){
+            case COMPONENT:
+                return (Factory<T>)getComponentFactory();
+            case BEAN:
+                return (Factory<T>)getBeanFactory();
+            case SPEC:
+                return (Factory<T>)getBeanSpecFactory();
+            case CONFIG:
+                return (Factory<T>)getConfigSpecFactory();
+            default:
+                throw new IllegalArgumentException("Unsupport resource type:" + resource);
         }
     }
 

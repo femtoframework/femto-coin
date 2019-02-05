@@ -26,7 +26,7 @@ public interface CoinConstants {
 
     String NAME_MODULE = "module";
     String NAME_CONTROLLER = "controller";
-    String NAME_LOOKUP = "lookup";
+    String NAME_LOOKUP = "lookupBean";
     String NAME_VARIABLE_RESOLVER_FACTORY = "variable_resolver_factory";
     String NAME_CONFIGURATOR_FACTORY = "configurator_factory";
     String NAME_LIFECYCLE_STRATEGY = "lifecycle_strategy";
@@ -46,8 +46,8 @@ public interface CoinConstants {
     char CHAR_DELIM = '.';
     char CHAR_COLON = ':';
 
-    String RESOURCE_COMPONENT = "component";
-    String RESOURCE_BEAN = "bean";
-    String RESOURCE_SPEC = "spec";
-    String RESOURCE_CONFIG = "config";
+//    String RESOURCE_COMPONENT = "component";
+//    String RESOURCE_BEAN = "bean";
+//    String RESOURCE_SPEC = "spec";
+//    String RESOURCE_CONFIG = "config";
 }

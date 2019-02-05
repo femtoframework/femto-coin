@@ -144,4 +144,29 @@ public class CoinNameTest
         Name com = new CoinName("www");
         startsWith(name, domain, com, CoinName.EMPTY);
     }
+
+    @Test
+    public void testPath() throws Exception
+    {
+        Name name = new CoinName("coin:org/femtoframework/coin/api", '/');
+        assertEquals(5, name.size());
+        assertEquals("coin", name.get(0));
+        assertEquals("org", name.get(1));
+        assertEquals("femtoframework", name.get(2));
+        assertEquals("coin", name.get(3));
+        assertEquals("api", name.get(4));
+    }
+
+    @Test
+    public void testPath2() throws Exception
+    {
+        Name name = new CoinName("coin", "org", "femtoframework", "coin", "api");
+        assertEquals(5, name.size());
+        assertEquals("coin", name.get(0));
+        assertEquals("org", name.get(1));
+        assertEquals("femtoframework", name.get(2));
+        assertEquals("coin", name.get(3));
+        assertEquals("api", name.get(4));
+    }
+
 }
