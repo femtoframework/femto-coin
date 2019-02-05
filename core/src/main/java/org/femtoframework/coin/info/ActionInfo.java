@@ -41,9 +41,8 @@ public interface ActionInfo extends FeatureInfo {
      * What's the impact?
      *
      * @see Action.Impact
-     * @return the name() of Action.Impact
      */
-    String getImpact();
+    Action.Impact getImpact();
 
 
     /**

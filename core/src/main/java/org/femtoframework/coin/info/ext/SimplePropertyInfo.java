@@ -163,7 +163,14 @@ public class SimplePropertyInfo extends AbstractFeatureInfo implements PropertyI
             if (setterMethod == null) {
                 this.setterMethod = setterMethod = Reflection.getMethod(bean.getClass(), getSetter());
             }
-            Reflection.invoke(bean, setterMethod, value);
+            Object expectedValue = value;
+            if (value != null) {
+                DataConverter converter = ConverterUtil.getConverter(getTypeClass());
+                if (converter != null) {
+                    expectedValue = converter.convert(value);
+                }
+            }
+            Reflection.invoke(bean, setterMethod, expectedValue);
         }
     }
 

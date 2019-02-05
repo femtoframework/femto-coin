@@ -21,7 +21,7 @@ public class SimpleActionInfo extends AbstractFeatureInfo implements ActionInfo 
 
     private String returnType;
     private List<ArgumentInfo> arguments;
-    private String impact = Action.Impact.UNKNOWN.name();
+    private Action.Impact impact = Action.Impact.UNKNOWN;
 
     @Ignore
     private Method method;
@@ -46,7 +46,7 @@ public class SimpleActionInfo extends AbstractFeatureInfo implements ActionInfo 
     }
 
     @Override
-    public String getImpact() {
+    public Action.Impact getImpact() {
         return impact;
     }
 
@@ -59,6 +59,7 @@ public class SimpleActionInfo extends AbstractFeatureInfo implements ActionInfo 
      */
     @Override
     public <T> T invoke(Object bean, Object... arguments) throws Exception {
+
         return (T)method.invoke(bean, arguments);
     }
 
@@ -71,7 +72,7 @@ public class SimpleActionInfo extends AbstractFeatureInfo implements ActionInfo 
     }
 
     public void setImpact(Action.Impact impact) {
-        this.impact = impact.name();
+        this.impact = impact;
     }
 
     @Ignore
@@ -94,7 +95,7 @@ public class SimpleActionInfo extends AbstractFeatureInfo implements ActionInfo 
         Class<?>[] parameterTypes = method.getParameterTypes();
 
         List<ArgumentInfo> argumentInfos = new ArrayList<>(parameterTypes.length);
-        int index = 0;
+        int index = 1;
         for(Class<?> type: parameterTypes) {
             SimpleArgumentInfo info = new SimpleArgumentInfo();
             Named named = type.getAnnotation(Named.class);

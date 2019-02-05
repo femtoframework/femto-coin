@@ -54,5 +54,21 @@ For examples,
 - limit=100
 - offset=0
 
+### PATCH
+- _action Action of this PATCH
+  - "action" Invoke @Action method
+  - "set" Invoke setter method
+- _name
+  - actionName @Action method name
+  - property  Property Name for setter
+- Other arguments
+  - spec PATCH
+    - {_action:"set", _property:"property", _value:"NewPropertyValue"} 
+  - config PATCH
+    - {_action:"set", _property:"property", _value:"NewPropertyValue"}
+  - bean PATCH
+    - {_action:"set", _property:"property", _value:"NewPropertyValue"}
+    - {_action:"action", _name:"doSomeThing1", "1":"value1", "2":"value2"}
+    - {_action:"action", _name:"doSomeThing2", value:"ArgumentValue"}
 
 

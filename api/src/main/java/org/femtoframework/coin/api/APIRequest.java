@@ -3,7 +3,9 @@ package org.femtoframework.coin.api;
 import org.femtoframework.coin.ResourceType;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.parameters.ParametersMap;
+import org.femtoframework.util.CollectionUtil;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +88,7 @@ public class APIRequest {
 
     private String method;
 
+
     /**
      * Resource Types
      *
@@ -100,6 +103,15 @@ public class APIRequest {
 
     public void setType(ResourceType type) {
         this.type = type;
+    }
+
+    /**
+     * Return action, when the method is "PATCH", "POST" or "PUT"
+     *
+     * @return Action of this request
+     */
+    public String getAction() {
+        return parameters != null ? parameters.getString(APIConstants._ACTION) : null;
     }
 
     /**
@@ -138,7 +150,7 @@ public class APIRequest {
      * Query String
      */
     public Parameters getParameters() {
-        return parameters;
+        return parameters == null ? CollectionUtil.emptyParameters() : parameters;
     }
 
     public void setParameters(Parameters parameters) {

@@ -28,6 +28,11 @@ public class APIResponse {
         this.message = message;
     }
 
+    public void setErrorMessage(int code, String message) {
+        setCode(code);
+        setMessage(message);
+    }
+
     public String getContent() {
         return content;
     }

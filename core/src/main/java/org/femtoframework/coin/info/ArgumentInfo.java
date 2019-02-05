@@ -13,4 +13,13 @@ public interface ArgumentInfo extends FeatureInfo {
      * @return type of this argument
      */
     String getType();
+
+    /**
+     * Convert given value to expectedType
+     *
+     * @param value original value
+     * @param <V> Expected Type
+     * @return Converted value
+     */
+    <V> V toValue(Object value);
 }
