@@ -20,6 +20,8 @@ import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.coin.info.BeanInfo;
+import org.femtoframework.coin.info.PropertyInfo;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.util.CoinNameUtil;
@@ -226,18 +228,14 @@ public class AutoConfigurator implements Configurator {
                 if (clazz != null && clazz != Object.class) {
                     expectedClass = clazz;
                 }
-                else if (childSpec == null && expectedType.isInterface()) {
+                else if ((childSpec == null || expectedClass == null) && expectedType.isInterface()) {
                     clazz = ns.getComponentFactory().getImplement(targetName, expectedType);
-                    if (clazz == null) { //Ignore this
-                        if (log.isInfoEnabled()) {
-                            log.info("No such implementation for interface:" + expectedType);
-                        }
-                        return;
+                    if (clazz != null) { //Ignore this
+                        expectedClass = clazz;
                     }
-                    expectedClass = clazz;
                 }
 
-                if (childSpec != null) {
+                if (childSpec != null && expectedClass != null) {
                     childSpec.setTypeClass(expectedClass);
                 }
 

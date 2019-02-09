@@ -1,4 +1,4 @@
-package org.femtoframework.coin.codec.json;
+package org.femtoframework.coin.json;
 
 import com.jsoniter.annotation.*;
 import com.jsoniter.spi.Config;

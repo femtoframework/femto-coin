@@ -1,4 +1,4 @@
-package org.femtoframework.coin.codec.yaml;
+package org.femtoframework.coin.spec.ext;
 
 import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.CoreKind;

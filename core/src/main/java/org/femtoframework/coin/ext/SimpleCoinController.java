@@ -171,6 +171,10 @@ public class SimpleCoinController implements CoinController {
                 }
                 String name = configSpec.getName();
                 SpecFactory<ConfigSpec> specFactory = ns.getSpecFactory(ConfigSpec.class);
+                if (name == null) {
+                    name = "config_" + specFactory.getNames().size();
+                    configSpec.setName(name);
+                }
                 ModelSpec oldSpec = specFactory.get(name);
                 if (log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
                     log.warn("A new ConfigSpec with same namespace and name has been found, replacing with new one, "

@@ -4,6 +4,7 @@ import com.jsoniter.JsonIterator;
 import org.femtoframework.coin.annotation.AnySetter;
 import org.femtoframework.coin.annotation.Ignore;
 import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.coin.json.CoinCompatibilityMode;
 import org.junit.Test;
 
 import java.io.IOException;

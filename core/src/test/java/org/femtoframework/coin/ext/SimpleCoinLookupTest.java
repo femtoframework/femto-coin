@@ -25,6 +25,6 @@ public class SimpleCoinLookupTest {
         controller.create(file);
 
         CoinLookup lookup = coinModule.getLookup();
-        lookup.lookupBean("first");
+        lookup.lookupBean("test:first");
     }
 }

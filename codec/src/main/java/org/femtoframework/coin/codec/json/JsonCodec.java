@@ -4,6 +4,7 @@ import com.jsoniter.JsonIterator;
 import com.jsoniter.output.JsonStream;
 import org.femtoframework.coin.codec.Decoder;
 import org.femtoframework.coin.codec.Encoder;
+import org.femtoframework.coin.json.CoinCompatibilityMode;
 import org.femtoframework.parameters.ParametersMap;
 
 import java.io.*;

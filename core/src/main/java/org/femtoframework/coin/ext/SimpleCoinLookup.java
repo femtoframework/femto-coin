@@ -157,7 +157,12 @@ public class SimpleCoinLookup implements CoinLookup {
         Parameters next = configSpec.getParameters();
         while(size > i) {
             String cn = name.get(i);
-            next = next.getParameters(NamingConvention.parse(cn, false));
+            String formatted = NamingConvention.parse(cn, false);
+            Parameters parameters = next.getParameters(cn);
+            if (parameters == null) {
+                parameters = next.getParameters(formatted);
+            }
+            next = parameters;
             if (next == null) {
                 throw new IllegalArgumentException("No such config:" + cn + " in component:" + next);
             }

@@ -1,13 +1,9 @@
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.spec.ConfigSpec;
-import org.femtoframework.coin.spec.CoreKind;
-import org.femtoframework.coin.spec.SpecConstants;
+import org.femtoframework.coin.spec.*;
 import org.femtoframework.parameters.Parameters;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ConfigElement extends ModelElement implements ConfigSpec, SpecConstants {
 
@@ -40,9 +36,9 @@ public class ConfigElement extends ModelElement implements ConfigSpec, SpecConst
 
     protected static class ParametersAdapter implements Parameters<Object> {
 
-        ConfigElement element;
+        MapSpec<Element> element;
 
-        public ParametersAdapter(ConfigElement element) {
+        public ParametersAdapter(MapSpec<Element> element) {
             this.element = element;
         }
 
@@ -67,12 +63,70 @@ public class ConfigElement extends ModelElement implements ConfigSpec, SpecConst
         }
 
         public Object get(Object key) {
-            return ModelElement.getValue(element, String.valueOf(key));
+            Element value = element.get(key);
+            return toValue(value);
+        }
+
+        protected Object toValue(Element value) {
+            if (value instanceof MapSpec) {
+                return new ParametersAdapter((MapSpec)value);
+            }
+            else if (value instanceof ListSpec) {
+                List list = new ArrayList();
+                for(Element e : ((ListSpec<Element>)value)) {
+                    list.add(toValue(e));
+                }
+                return list;
+            }
+            else if (value instanceof SetSpec) {
+                Set set = new HashSet();
+                for(Element e : ((SetSpec<Element>)value)) {
+                    set.add(toValue(e));
+                }
+                return set;
+            }
+            else if (value instanceof PrimitiveSpec) {
+                return ((PrimitiveSpec)value).getPrimitiveValue();
+            }
+            else {
+                return value;
+            }
         }
 
         @Override
         public Object put(String key, Object value) {
-            throw new UnsupportedOperationException("Unsupported");
+            Element oldElement = element.get(key);
+            if (value instanceof Map) {
+                element.put(key, new MapElement<>((Map)value));
+            }
+            else if (value instanceof List) {
+                element.put(key, new ListElement<>((List)value));
+            }
+            else if (value instanceof Set) {
+                element.put(key, new SetElement<>((Set)value));
+            }
+            else if (value instanceof String) {
+                String v = (String)value;
+                if (v.startsWith("${") && v.endsWith("}")) {
+                    element.put(key, new VariableElement(CoreKind.VAR, v.substring(2, v.length()-1), v));
+                }
+                else {
+                    element.put(key, new PrimitiveElement<>(CoreKind.STRING, v));
+                }
+            }
+            else if (value instanceof Integer) {
+                element.put(key, new PrimitiveElement<>(CoreKind.INT, (Integer)value));
+            }
+            else if (value instanceof Long) {
+                element.put(key, new PrimitiveElement<>(CoreKind.LONG, (Long)value));
+            }
+            else if (value instanceof Boolean) {
+                element.put(key, new PrimitiveElement<>(CoreKind.INT, (Boolean)value));
+            }
+            else {
+                element.put(key, new PrimitiveElement<>(CoreKind.STRING, String.valueOf(value)));
+            }
+            return toValue(oldElement);
         }
 
         @Override

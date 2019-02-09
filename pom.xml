@@ -17,6 +17,7 @@
 
   <modules>
     <module>core</module>
+    <module>codec</module>
     <module>api</module>
   </modules>
 
@@ -33,19 +34,6 @@
     <system>github</system>
     <url>https://github.com/femtoframework/femto-coin/issues</url>
   </issueManagement>
-
-  <distributionManagement>
-    <repository>
-      <id>sonatype-nexus-staging</id>
-      <name>nanohttpd sonytype Maven 2 repository</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>sonatype-nexus-staging</id>
-      <name>nanohttpd sonytype Snapshot Maven 2 repository</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
 
   <developers>
     <developer>
@@ -96,7 +84,7 @@
         <version>1.21</version>
       </dependency>
       <dependency>
-        <groupId>com.jsoniter</groupId>
+        <groupId>org.femtoframework.fork</groupId>
         <artifactId>jsoniter</artifactId>
         <version>0.9.24-SNAPSHOT</version>
       </dependency>
@@ -165,4 +153,15 @@
       </plugins>
     </pluginManagement>
   </build>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh-releases</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+  </distributionManagement>
 </project>

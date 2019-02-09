@@ -62,10 +62,10 @@ public class SimpleBeanInfoTest {
         ActionInfo actionInfo1 = beanInfo.getAction("increase");
         assertNotNull(actionInfo1);
         assertEquals(1, actionInfo1.getArguments().size());
-        assertEquals("0", actionInfo1.getArguments().get(0).getName());
+        assertEquals("1", actionInfo1.getArguments().get(0).getName());
         assertEquals("int", actionInfo1.getArguments().get(0).getType());
         assertEquals("int", actionInfo1.getReturnType());
-        assertEquals("ACTION_INFO", actionInfo1.getImpact());
+        assertEquals("ACTION_INFO", actionInfo1.getImpact().name());
 
         ActionInfo actionInfo2 = beanInfo.getAction("decrease");
         assertNotNull(actionInfo2);
