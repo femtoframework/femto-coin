@@ -1,19 +1,3 @@
-/**
- * Licensed to the FemtoFramework under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.BeanStage;
@@ -78,7 +62,7 @@ public class SimpleCoinController implements CoinController {
         Enumeration<URL> en = classLoader.getResources(COMPONENT_YAML);
         while(en.hasMoreElements()) {
             try {
-                uris.add(en.nextElement().toURI());
+                uris.add(toURI(en.nextElement()));
             } catch (URISyntaxException e) {
                 throw new IOException("URI syntax error", e);
             }
@@ -99,10 +83,18 @@ public class SimpleCoinController implements CoinController {
             classLoader = Thread.currentThread().getContextClassLoader();
         }
         try {
-            URL url = classLoader.getResource(APPLICATION_YAML);
-            return url != null ? url.toURI() : null;
+            return toURI(classLoader.getResource(APPLICATION_YAML));
         } catch (URISyntaxException e) {
             throw new IOException("URI syntax error", e);
+        }
+    }
+
+    protected URI toURI(URL url) throws URISyntaxException {
+        if (url == null) {
+            return null;
+        }
+        else {
+            return url.toURI();
         }
     }
 
@@ -139,7 +131,7 @@ public class SimpleCoinController implements CoinController {
                 if (StringUtil.isInvalid(name)) {
                     throw new IOException("No name in kind 'namespace', spec index:" + index);
                 }
-                Namespace ns = namespaceFactory.get(name);
+                Namespace ns = namespaceFactory.getNamespace(name, false);
                 if (ns != null) {
                     throw new IOException("Namespace existing already:" + name);
                 }
@@ -148,14 +140,11 @@ public class SimpleCoinController implements CoinController {
             else if (kind == CoreKind.BEAN) {
                 BeanSpec beanSpec = (BeanSpec)spec;
                 String namespace = beanSpec.getNamespace();
-                Namespace ns = namespaceFactory.get(namespace);
-                if (ns == null) {
-                    throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
-                }
+                Namespace ns = namespaceFactory.getNamespace(namespace, true);
                 String name = beanSpec.getName();
                 SpecFactory<BeanSpec> specFactory = ns.getSpecFactory(BeanSpec.class);
                 BeanSpec oldSpec = specFactory.get(name);
-                if (log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
+                if (oldSpec != null && log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
                     log.warn("A new BeanSpec with same namespace and name has been found, replacing with new one, "
                             + oldSpec.getQualifiedName());
                 }
@@ -165,10 +154,7 @@ public class SimpleCoinController implements CoinController {
             else if (kind == CoreKind.CONFIG) {
                 ConfigSpec configSpec = (ConfigSpec)spec;
                 String namespace = configSpec.getNamespace();
-                Namespace ns = namespaceFactory.get(namespace);
-                if (ns == null) {
-                    throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
-                }
+                Namespace ns = namespaceFactory.getNamespace(namespace, true);
                 String name = configSpec.getName();
                 SpecFactory<ConfigSpec> specFactory = ns.getSpecFactory(ConfigSpec.class);
                 if (name == null) {
@@ -176,7 +162,7 @@ public class SimpleCoinController implements CoinController {
                     configSpec.setName(name);
                 }
                 ModelSpec oldSpec = specFactory.get(name);
-                if (log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
+                if (oldSpec != null && log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
                     log.warn("A new ConfigSpec with same namespace and name has been found, replacing with new one, "
                             + oldSpec.getName());
                 }
@@ -255,10 +241,7 @@ public class SimpleCoinController implements CoinController {
             else if (kind == CoreKind.BEAN) {
                 BeanSpec beanSpec = (BeanSpec)spec;
                 String namespace = beanSpec.getNamespace();
-                Namespace ns = namespaceFactory.get(namespace);
-                if (ns == null) {
-                    throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
-                }
+                Namespace ns = namespaceFactory.getNamespace(namespace, true);
                 String name = beanSpec.getName();
                 SpecFactory<BeanSpec> specFactory = ns.getSpecFactory(BeanSpec.class);
                 ModelSpec oldSpec = specFactory.get(name);
@@ -275,10 +258,7 @@ public class SimpleCoinController implements CoinController {
             else if (kind == CoreKind.CONFIG) {
                 ConfigSpec configSpec = (ConfigSpec)spec;
                 String namespace = configSpec.getNamespace();
-                Namespace ns = namespaceFactory.get(namespace);
-                if (ns == null) {
-                    throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
-                }
+                Namespace ns = namespaceFactory.getNamespace(namespace, true);
                 String name = configSpec.getName();
                 SpecFactory<ConfigSpec> specFactory = ns.getSpecFactory(ConfigSpec.class);
                 ModelSpec oldSpec = specFactory.get(name);

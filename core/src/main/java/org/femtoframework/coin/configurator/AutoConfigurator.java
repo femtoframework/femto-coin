@@ -282,8 +282,8 @@ public class AutoConfigurator implements Configurator {
                 injection = new Injection(element, targetName, method, expectedType, childComponent);
             }
             else {
-                if (log.isWarnEnabled()) {
-                    log.warn("Not able to create component:" + targetName + " class:" + clazz + " expected Type:" + expectedType);
+                if (log.isTraceEnabled()) {
+                    log.trace("Not able to create component:" + targetName + " class:" + clazz + " expected Type:" + expectedType);
                 }
             }
 

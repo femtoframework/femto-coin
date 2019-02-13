@@ -76,7 +76,7 @@ public class SimpleComponentFactory extends BaseFactory<Component> implements Co
                 throw new BeanNotExpectedException("The expected namespace is " + getNamespace()
                         + ", but declared namespace is " + newBeanNamespace);
             }
-            else if (StringUtil.isValid(name)){
+            else if (StringUtil.isValid(newBeanName)){
                 if (!StringUtil.equals(newBeanName, name)) {
                     throw new BeanNotExpectedException(name, newBeanName);
                 }

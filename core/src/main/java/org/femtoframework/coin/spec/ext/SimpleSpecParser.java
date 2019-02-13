@@ -6,6 +6,8 @@ import com.jsoniter.spi.JsonException;
 import org.femtoframework.coin.json.CoinCompatibilityMode;
 import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.spec.SpecParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -29,6 +31,9 @@ import java.util.List;
  * @version 1.0
  */
 public class SimpleSpecParser implements SpecParser {
+
+    private static Logger logger = LoggerFactory.getLogger(SimpleSpecParser.class);
+
     /**
      * Parse Spec
      *
@@ -39,6 +44,13 @@ public class SimpleSpecParser implements SpecParser {
     @Override
     public List<LinkedHashMap> parseSpec(URI uri) throws IOException {
         String path = uri.getPath();
+        if (path == null) {
+            path = uri.toString();
+        }
+        if (logger.isInfoEnabled()) {
+            logger.info("Parsing specs:" + uri.toString());
+        }
+        
         String lowerCase = path.toLowerCase();
         if (lowerCase.endsWith(".yaml") || lowerCase.endsWith(".yml")) { //Yaml
             Yaml yaml = new Yaml(new SpecConstructor());
