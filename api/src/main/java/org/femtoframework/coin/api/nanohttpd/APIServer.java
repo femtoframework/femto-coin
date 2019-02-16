@@ -8,12 +8,14 @@ import org.femtoframework.coin.ResourceType;
 import org.femtoframework.coin.api.APIHandler;
 import org.femtoframework.coin.api.APIRequest;
 import org.femtoframework.coin.api.APIResponse;
+import org.femtoframework.io.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 public class APIServer implements LifecycleMBean {
@@ -86,6 +88,18 @@ public class APIServer implements LifecycleMBean {
             request.setMethod(session.getMethod().name());
 
             String uri = session.getUri();
+            if ("/".equals(uri) || "/coin/api/v1".equals(uri) || "/coin/api/v1/".equals(uri)) {
+                InputStream inputStream = APIServer.class.getClassLoader().getResourceAsStream("META-INF/html/readme.html");
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                try {
+                    IOUtil.copy(inputStream, baos);
+                    return newFixedLengthResponse(Response.Status.OK, "text/html", baos.toString());
+                }
+                catch (IOException ioe) {
+                    return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/html",
+                            "Loading page exception:" + ioe.getMessage());
+                }
+            }
             if (!uri.startsWith("/coin/api/v1/")) {
                 return newFixedLengthResponse(Response.Status.NOT_FOUND, "text/html", "URI not found:" + uri);
             }
@@ -175,6 +189,9 @@ public class APIServer implements LifecycleMBean {
     public void _doStart() {
         try {
             httpd.start(timeout, daemon);
+
+            String h = "*".equals(host) || "0.0.0.0".equals(host) ? "127.0.0.1" : host;
+            logger.info("COIN API Server started, http://" + h + ":" + port + "/coin/api/v1/");
         } catch (IOException e) {
             logger.error("Start nano httpd exception", e);
         }

@@ -1,0 +1,5 @@
+_namespace: coin-examples
+_kind: bean
+_name: helloworld
+_type: org.femtoframework.coin.examples.implement.SayHelloImpl
+response: 你好

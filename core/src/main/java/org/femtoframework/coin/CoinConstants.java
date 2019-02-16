@@ -9,7 +9,7 @@ package org.femtoframework.coin;
 public interface CoinConstants {
 
     String NAME_MODULE = "module";
-    String NAME_CONTROLLER = "controller";
+    String NAME_CONTROLLER = "service";
     String NAME_LOOKUP = "lookupBean";
     String NAME_VARIABLE_RESOLVER_FACTORY = "variable_resolver_factory";
     String NAME_CONFIGURATOR_FACTORY = "configurator_factory";

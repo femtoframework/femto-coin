@@ -158,7 +158,23 @@ public class SimpleBeanInfoFactory extends BaseFactory<BeanInfo> implements Bean
                 actionInfo.setDescription(description);
                 actionInfo.setImpact(action.impact());
                 Class<?> returnType = method.getReturnType();
-                actionInfo.setReturnType(returnType == Void.class ? null : returnType.getTypeName());
+                if (returnType == Void.class) {
+                    actionInfo.setReturnType(null);
+                    if (actionInfo.getImpact() == Action.Impact.UNKNOWN) {
+                        actionInfo.setImpact(Action.Impact.ACTION);
+                    }
+                }
+                else {
+                    actionInfo.setReturnType(returnType.getName());
+                    if (actionInfo.getImpact() == Action.Impact.UNKNOWN) {
+                        if (actionInfo.getName().startsWith("get") || method.getParameterTypes().length == 0) {
+                            actionInfo.setImpact(Action.Impact.INFO);
+                        }
+                        else {
+                            actionInfo.setImpact(Action.Impact.ACTION_INFO);
+                        }
+                    }
+                }
                 actionInfo.setMethod(method);
 
                 if (actions == null) {

@@ -236,7 +236,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                                                             if (returnValue != null) { // Return the value if the returnValue is not null and the action specified as "INFO" or "ACTION_INFO"
                                                                 Action.Impact impact = actionInfo.getImpact();
                                                                 if (Action.Impact.ACTION_INFO == impact || Action.Impact.INFO == impact) {
-                                                                    encoder.encode(toParameters(null, returnValue), baos);
+                                                                    encoder.encode(toVisible(null, returnValue), baos);
                                                                 }
                                                             }
                                                         }
@@ -315,11 +315,11 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                                     response.setErrorMessage(404, "Resource " + ns + ":" + name + " not found");
                                 }
                                 else {
-                                    encoder.encode(toParameters(name, next.getBeanInfo()), baos);
+                                    encoder.encode(toVisible(name, next.getBeanInfo()), baos);
                                 }
                             }
                             else {
-                                encoder.encode(toParameters(name, component.getBeanInfo()), baos);
+                                encoder.encode(toVisible(name, component.getBeanInfo()), baos);
                             }
                         }
                     }
@@ -339,7 +339,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                             for(String name: factory.getNames()) {
                                 Object obj = factory.get(name);
                                 if (index >= offset) {
-                                    selected.add(toParameters(name, obj));
+                                    selected.add(toVisible(name, obj));
                                     if (selected.size() >= limit) {
                                         break finish;
                                     }
@@ -383,12 +383,12 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                                     if (next == null) {
                                         response.setErrorMessage(404, "Resource " + ns + ":" + name + " not found");
                                     } else {
-                                        encoder.encode(toParameters(paths[paths.length-1], next.getResource(resourceType)), baos);
+                                        encoder.encode(toVisible(paths[paths.length-1], next.getResource(resourceType)), baos);
                                     }
                                 }
                             }
                             else {
-                                encoder.encode(toParameters(name, obj), baos);
+                                encoder.encode(toVisible(name, obj), baos);
                             }
                         }
                     }
@@ -397,7 +397,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         }
     }
 
-    protected Parameters toParameters(String name, Object obj) {
+    protected Object toVisible(String name, Object obj) {
         if (obj instanceof MapSpec) {
             return new SpecParameters((MapSpec)obj);
         }
@@ -410,12 +410,17 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         else {
             Class<?> clazz = obj.getClass();
             BeanInfo beanInfo = coinModule.getBeanInfoFactory().getBeanInfo(clazz);
-            Parameters parameters = beanInfo.toParameters(obj);
-            if (name != null && !(parameters.containsKey(NAME) || parameters.containsKey(_NAME))) {
-                parameters.put(_NAME, name);
+            if (beanInfo == null) { //Primitive class
+                return obj;
             }
-            parameters.put(SpecConstants._TYPE, clazz.getName());
-            return parameters;
+            else {
+                Parameters parameters = beanInfo.toParameters(obj);
+                if (name != null && !(parameters.containsKey(NAME) || parameters.containsKey(_NAME))) {
+                    parameters.put(_NAME, name);
+                }
+                parameters.put(SpecConstants._TYPE, clazz.getName());
+                return parameters;
+            }
         }
     }
 
@@ -428,7 +433,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
             List list = new ArrayList(objects.size());
             for(Object object: objects) {
                 String name = object instanceof NamedBean ? ((NamedBean)object).getName() : null;
-                list.add(toParameters(name, object));
+                list.add(toVisible(name, object));
             }
             encoder.encode(list, out);
         }
