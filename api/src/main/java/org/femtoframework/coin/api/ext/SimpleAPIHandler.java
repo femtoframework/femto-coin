@@ -459,6 +459,6 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         this.coinModule = module;
         this.coinLookup = module.getLookup();
         this.beanInfoFactory = module.getBeanInfoFactory();
-        yamlCodec.setCoinModule(module);
+        yamlCodec.setBeanInfoFactory(beanInfoFactory);
     }
 }

@@ -37,6 +37,9 @@ public class AwarenessConfigurator implements Configurator {
         if (obj instanceof BeanFactoryAware) {
             ((BeanFactoryAware) obj).setBeanFactory(component.getCurrentBeanFactory());
         }
+        if (obj instanceof BeanInfoFactoryAware) {
+            ((BeanInfoFactoryAware) obj).setBeanInfoFactory(component.getModule().getBeanInfoFactory());
+        }
         if (obj instanceof NamespaceFactoryAware) {
             ((NamespaceFactoryAware) obj).setNamespaceFactory(component.getNamespaceFactory());
         }

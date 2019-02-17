@@ -1,14 +1,15 @@
 package org.femtoframework.coin.codec.yaml;
 
-import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.codec.Decoder;
 import org.femtoframework.coin.codec.Encoder;
-import org.femtoframework.coin.spi.CoinModuleAware;
+import org.femtoframework.coin.info.BeanInfoFactory;
+import org.femtoframework.coin.spi.BeanInfoFactoryAware;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
-public class YamlCodec implements Encoder<Object, OutputStream>, Decoder<Object, String>, CoinModuleAware {
+public class YamlCodec implements Encoder<Object, OutputStream>, Decoder<Object, String>, BeanInfoFactoryAware {
     @Override
     public Object decode(String input, Class<?> expectedClass) throws IOException {
         Yaml yaml = new Yaml();
@@ -17,16 +18,21 @@ public class YamlCodec implements Encoder<Object, OutputStream>, Decoder<Object,
 
     @Override
     public void encode(Object obj, OutputStream out) throws IOException {
-        Yaml yaml = new Yaml(new CoinRepresenter(coinModule));
-        Writer writer = new BufferedWriter(new OutputStreamWriter(out, "utf8"));
+        Yaml yaml = new Yaml(new CoinRepresenter(beanInfoFactory));
+        Writer writer = new BufferedWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
         yaml.dump(obj, writer);
         writer.flush();
     }
 
-    private CoinModule coinModule;
+    private BeanInfoFactory beanInfoFactory;
 
+    /**
+     * Set BeanInfoFactory
+     *
+     * @param factory BeanInfoFactory
+     */
     @Override
-    public void setCoinModule(CoinModule module) {
-        this.coinModule = module;
+    public void setBeanInfoFactory(BeanInfoFactory factory) {
+        this.beanInfoFactory = factory;
     }
 }
