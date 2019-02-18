@@ -1,8 +1,8 @@
-package org.femtoframework.coin.info.ext;
+package org.femtoframework.bean.info.ext;
 
-import org.femtoframework.coin.info.ActionInfo;
-import org.femtoframework.coin.info.BeanInfo;
-import org.femtoframework.coin.info.PropertyInfo;
+import org.femtoframework.bean.info.ActionInfo;
+import org.femtoframework.bean.info.BeanInfo;
+import org.femtoframework.bean.info.PropertyInfo;
 import org.junit.Test;
 
 import java.util.Set;

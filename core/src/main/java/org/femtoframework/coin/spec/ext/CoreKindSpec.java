@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class CoreKindSpec implements KindSpec {
     /**
-     * The version this Factory supports
+     * The version this ResourceFactory supports
      *
      * @return Version
      */

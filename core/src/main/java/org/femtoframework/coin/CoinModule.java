@@ -18,7 +18,7 @@ package org.femtoframework.coin;
 
 import org.femtoframework.annotation.ImplementedBy;
 import org.femtoframework.coin.event.BeanEventListeners;
-import org.femtoframework.coin.info.BeanInfoFactory;
+import org.femtoframework.bean.info.BeanInfoFactory;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.coin.spec.VariableResolverFactory;
@@ -38,7 +38,7 @@ public interface CoinModule {
     /**
      * Return namespace factory
      *
-     * @return Namespace Factory
+     * @return Namespace ResourceFactory
      */
     NamespaceFactory getNamespaceFactory();
 
@@ -54,9 +54,9 @@ public interface CoinModule {
 
 
     /**
-     * VariableResolver Factory
+     * VariableResolver ResourceFactory
      *
-     * @return VariableResolver Factory
+     * @return VariableResolver ResourceFactory
      */
     default VariableResolverFactory getVariableResolverFactory() {
         return null;

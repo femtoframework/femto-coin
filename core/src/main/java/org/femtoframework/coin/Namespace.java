@@ -1,10 +1,8 @@
 package org.femtoframework.coin;
 
 import org.femtoframework.bean.NamedBean;
-import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.coin.spec.*;
-
-import static org.femtoframework.coin.CoinConstants.*;
 
 /**
  * Namespace
@@ -22,14 +20,14 @@ public interface Namespace extends NamedBean {
     String getName();
 
     /**
-     * Component Factory under this namespace
+     * Component ResourceFactory under this namespace
      *
-     * @return Component Factory
+     * @return Component ResourceFactory
      */
     ComponentFactory getComponentFactory();
 
     /**
-     * Bean Factory under this namespace;
+     * Bean ResourceFactory under this namespace;
      *
      * @return BeanFactory
      */
@@ -46,18 +44,18 @@ public interface Namespace extends NamedBean {
      *
      * @param resource Resource Type
      * @param <T> Component, BeanSpec, ConfigSpec or Bean
-     * @return Factory
+     * @return ResourceFactory
      */
-    default <T> Factory<T> getFactory(ResourceType resource) {
+    default <T> ResourceFactory<T> getFactory(ResourceType resource) {
         switch (resource){
             case COMPONENT:
-                return (Factory<T>)getComponentFactory();
+                return (ResourceFactory<T>)getComponentFactory();
             case BEAN:
-                return (Factory<T>)getBeanFactory();
+                return (ResourceFactory<T>)getBeanFactory();
             case SPEC:
-                return (Factory<T>)getBeanSpecFactory();
+                return (ResourceFactory<T>)getBeanSpecFactory();
             case CONFIG:
-                return (Factory<T>)getConfigSpecFactory();
+                return (ResourceFactory<T>)getConfigSpecFactory();
             default:
                 throw new IllegalArgumentException("Unsupport resource type:" + resource);
         }
@@ -84,7 +82,7 @@ public interface Namespace extends NamedBean {
     }
 
     /**
-     * Spec Factory under this namespace;
+     * Spec ResourceFactory under this namespace;
      *
      * @param specClass Return spec factory by specClass
      * @return SpecFactory

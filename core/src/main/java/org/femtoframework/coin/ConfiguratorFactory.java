@@ -17,10 +17,10 @@
 package org.femtoframework.coin;
 
 /**
- * Configurator Factory
+ * Configurator ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface ConfiguratorFactory extends Factory<Configurator>, Configurator {
+public interface ConfiguratorFactory extends ResourceFactory<Configurator>, Configurator {
 }

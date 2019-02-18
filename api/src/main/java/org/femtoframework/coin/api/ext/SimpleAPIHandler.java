@@ -2,14 +2,14 @@ package org.femtoframework.coin.api.ext;
 
 import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.annotation.Action;
+import org.femtoframework.bean.annotation.Action;
 import org.femtoframework.coin.api.APIHandler;
 import org.femtoframework.coin.api.APIRequest;
 import org.femtoframework.coin.api.APIResponse;
 import org.femtoframework.coin.codec.Encoder;
 import org.femtoframework.coin.codec.json.JsonCodec;
 import org.femtoframework.coin.codec.yaml.YamlCodec;
-import org.femtoframework.coin.info.*;
+import org.femtoframework.bean.info.*;
 import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.ConfigSpec;
 import org.femtoframework.coin.spec.CoreKind;
@@ -124,7 +124,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                     response.setErrorMessage(405, "Namespace has to be specified for resource " + resourceType);
                 }
                 else {
-                    Factory factory = namespace.getFactory(resourceType);
+                    ResourceFactory factory = namespace.getFactory(resourceType);
                     if (request.isAll()) {
                         response.setCode(405);
                         response.setMessage("PATCH has to be applied to '/namespace/NAMESPACE/RESOURCE_TYPE/NAME'");
@@ -335,7 +335,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                         int index = 0;
                         List<Object> selected = new ArrayList<>(limit);
                         finish: for(Namespace n: namespaceFactory) {
-                            Factory<?> factory = n.getFactory(resourceType);
+                            ResourceFactory<?> factory = n.getFactory(resourceType);
                             for(String name: factory.getNames()) {
                                 Object obj = factory.get(name);
                                 if (index >= offset) {
@@ -354,7 +354,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                     }
                 }
                 else {
-                    Factory factory = namespace.getFactory(resourceType);
+                    ResourceFactory factory = namespace.getFactory(resourceType);
                     if (request.isAll()) {
                         write(encoder, baos, offset, limit, factory, true);
                     } else {

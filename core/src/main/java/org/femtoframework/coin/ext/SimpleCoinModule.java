@@ -18,10 +18,10 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.InitializableMBean;
+import org.femtoframework.bean.info.BeanInfoUtil;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.event.BeanEventListeners;
-import org.femtoframework.coin.info.BeanInfoFactory;
-import org.femtoframework.coin.info.ext.SimpleBeanInfoFactory;
+import org.femtoframework.bean.info.BeanInfoFactory;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.coin.spec.VariableResolverFactory;
@@ -69,14 +69,14 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
 
 
     /**
-     * Bean Info Factory
+     * Bean Info ResourceFactory
      */
-    private SimpleBeanInfoFactory beanInfoFactory = new SimpleBeanInfoFactory(namespaceFactory, NAMESPACE_COIN);
+    private BeanInfoFactory beanInfoFactory = BeanInfoUtil.getBeanInfoFactory();
 
     /**
      * Return namespace factory
      *
-     * @return Namespace Factory
+     * @return Namespace ResourceFactory
      *
      */
     @Override
@@ -95,9 +95,9 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
     }
 
     /**
-     * VariableResolver Factory
+     * VariableResolver ResourceFactory
      *
-     * @return VariableResolver Factory
+     * @return VariableResolver ResourceFactory
      */
     @Override
     public VariableResolverFactory getVariableResolverFactory() {

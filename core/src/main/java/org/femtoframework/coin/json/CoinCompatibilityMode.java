@@ -4,7 +4,7 @@ import com.jsoniter.annotation.*;
 import com.jsoniter.spi.Config;
 import com.jsoniter.spi.Decoder;
 import com.jsoniter.spi.Encoder;
-import org.femtoframework.coin.annotation.*;
+import org.femtoframework.bean.annotation.*;
 
 import java.lang.annotation.Annotation;
 

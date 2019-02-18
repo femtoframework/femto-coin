@@ -1,6 +1,6 @@
 package org.femtoframework.coin.spec.element;
 
-import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.spec.Element;
 import org.femtoframework.coin.spec.Kind;
 

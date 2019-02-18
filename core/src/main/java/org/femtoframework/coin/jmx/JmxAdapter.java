@@ -4,8 +4,8 @@ import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.event.BeanEvent;
 import org.femtoframework.coin.event.BeanEventListener;
-import org.femtoframework.coin.info.BeanInfo;
-import org.femtoframework.coin.info.BeanInfoFactory;
+import org.femtoframework.bean.info.BeanInfo;
+import org.femtoframework.bean.info.BeanInfoFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

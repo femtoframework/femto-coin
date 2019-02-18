@@ -1,4 +1,4 @@
-package org.femtoframework.coin.info.ext;
+package org.femtoframework.bean.info.ext;
 
 
 public class PropertiesOrdered {

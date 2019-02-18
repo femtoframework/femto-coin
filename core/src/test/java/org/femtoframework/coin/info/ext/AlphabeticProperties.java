@@ -1,6 +1,6 @@
-package org.femtoframework.coin.info.ext;
+package org.femtoframework.bean.info.ext;
 
-import org.femtoframework.coin.annotation.Coined;
+import org.femtoframework.bean.annotation.Coined;
 
 @Coined(alphabeticOrder = true)
 public class AlphabeticProperties {

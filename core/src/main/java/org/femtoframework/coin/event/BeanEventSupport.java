@@ -101,7 +101,7 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener, 
      * Fire Event
      *
      * @param phase Phase
-     * @param factory Bean Factory
+     * @param factory Bean ResourceFactory
      * @param beanName BeanName
      * @param bean Bean
      * @param component Component

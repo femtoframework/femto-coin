@@ -2,7 +2,7 @@ package org.femtoframework.coin.codec.yaml;
 
 import org.femtoframework.coin.codec.Decoder;
 import org.femtoframework.coin.codec.Encoder;
-import org.femtoframework.coin.info.BeanInfoFactory;
+import org.femtoframework.bean.info.BeanInfoFactory;
 import org.femtoframework.coin.spi.BeanInfoFactoryAware;
 import org.yaml.snakeyaml.Yaml;
 

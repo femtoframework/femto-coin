@@ -17,12 +17,12 @@
 package org.femtoframework.coin;
 
 /**
- * Namespace Factory
+ * Namespace ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface NamespaceFactory extends Factory<Namespace> {
+public interface NamespaceFactory extends ResourceFactory<Namespace> {
     /**
      * Get namespace with given name
      *

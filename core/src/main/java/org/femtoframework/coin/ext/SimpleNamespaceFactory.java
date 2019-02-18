@@ -19,12 +19,12 @@ package org.femtoframework.coin.ext;
 import org.femtoframework.coin.*;
 
 /**
- * Namespace Factory implementation
+ * Namespace ResourceFactory implementation
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleNamespaceFactory extends BaseFactory<Namespace> implements NamespaceFactory {
+public class SimpleNamespaceFactory extends BaseResourceFactory<Namespace> implements NamespaceFactory {
 
     private LifecycleStrategy strategy;
 

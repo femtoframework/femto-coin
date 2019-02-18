@@ -25,7 +25,7 @@ public interface KindSpec extends NamedBean {
     }
 
     /**
-     * The version this Factory supports
+     * The version this ResourceFactory supports
      *
      * @return Version
      */

@@ -1,17 +1,17 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.bean.annotation.Ignore;
 
 import java.util.Set;
 
 /**
- * Simple Bean Factory
+ * Simple Bean ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleBeanFactory extends BaseFactory<Object> implements BeanFactory {
+public class SimpleBeanFactory extends BaseResourceFactory<Object> implements BeanFactory {
 
     @Ignore
     private ComponentFactory componentFactory;

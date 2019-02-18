@@ -1,7 +1,7 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.BeanPhase;
-import org.femtoframework.coin.annotation.Coined;
+import org.femtoframework.bean.annotation.Coined;
 import org.femtoframework.coin.status.BeanCondition;
 
 import java.util.ArrayList;

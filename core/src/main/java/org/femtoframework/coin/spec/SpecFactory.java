@@ -1,14 +1,14 @@
 package org.femtoframework.coin.spec;
 
-import org.femtoframework.coin.Factory;
+import org.femtoframework.coin.ResourceFactory;
 
 /**
- * Bean Spec Factory
+ * Bean Spec ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface SpecFactory<S extends ModelSpec> extends Factory<S> {
+public interface SpecFactory<S extends ModelSpec> extends ResourceFactory<S> {
 
     /**
      * Add new ModelSpec

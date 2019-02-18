@@ -2,7 +2,7 @@ package org.femtoframework.coin.examples.implement;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.femtoframework.coin.annotation.Action;
+import org.femtoframework.bean.annotation.Action;
 import org.femtoframework.coin.examples.service.SayHello;
 
 /**

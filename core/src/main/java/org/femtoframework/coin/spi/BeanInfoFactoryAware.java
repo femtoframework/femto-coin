@@ -1,6 +1,6 @@
 package org.femtoframework.coin.spi;
 
-import org.femtoframework.coin.info.BeanInfoFactory;
+import org.femtoframework.bean.info.BeanInfoFactory;
 
 public interface BeanInfoFactoryAware {
 

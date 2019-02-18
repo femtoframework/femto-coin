@@ -2,7 +2,7 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.*;

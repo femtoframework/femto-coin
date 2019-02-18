@@ -4,7 +4,7 @@ import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.exception.SpecSyntaxException;
-import org.femtoframework.coin.ext.BaseFactory;
+import org.femtoframework.coin.ext.BaseResourceFactory;
 import org.femtoframework.coin.spec.VariableResolver;
 import org.femtoframework.coin.spec.VariableResolverFactory;
 import org.femtoframework.coin.spec.VariableSpec;
@@ -18,7 +18,7 @@ import org.femtoframework.implement.InstancesFunction;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleVariableResolverFactory extends BaseFactory<VariableResolver>  implements VariableResolverFactory, InitializableMBean {
+public class SimpleVariableResolverFactory extends BaseResourceFactory<VariableResolver> implements VariableResolverFactory, InitializableMBean {
 
 
     public SimpleVariableResolverFactory(NamespaceFactory namespaceFactory) {

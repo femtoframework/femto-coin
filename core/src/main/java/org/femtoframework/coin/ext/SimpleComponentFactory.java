@@ -3,8 +3,8 @@ package org.femtoframework.coin.ext;
 import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.annotation.Coined;
-import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.bean.annotation.Coined;
+import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.exception.BeanCreationException;
 import org.femtoframework.coin.exception.BeanNotExpectedException;
 import org.femtoframework.coin.spec.BeanSpec;
@@ -23,13 +23,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Simple Component Factory
+ * Simple Component ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
 @Coined
-public class SimpleComponentFactory extends BaseFactory<Component> implements ComponentFactory {
+public class SimpleComponentFactory extends BaseResourceFactory<Component> implements ComponentFactory {
 
     @Ignore
     private SpecFactory<BeanSpec> specFactory;

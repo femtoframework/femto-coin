@@ -23,12 +23,12 @@ import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.implement.InstancesFunction;
 
 /**
- * Simple Configurator Factory
+ * Simple Configurator ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleConfiguratorFactory extends BaseFactory<Configurator> implements ConfiguratorFactory, InitializableMBean {
+public class SimpleConfiguratorFactory extends BaseResourceFactory<Configurator> implements ConfiguratorFactory, InitializableMBean {
 
     protected SimpleConfiguratorFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);

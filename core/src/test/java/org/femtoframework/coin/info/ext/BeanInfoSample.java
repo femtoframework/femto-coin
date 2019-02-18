@@ -1,8 +1,8 @@
-package org.femtoframework.coin.info.ext;
+package org.femtoframework.bean.info.ext;
 
-import org.femtoframework.coin.annotation.Coined;
-import org.femtoframework.coin.annotation.Ignore;
-import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.bean.annotation.Coined;
+import org.femtoframework.bean.annotation.Ignore;
+import org.femtoframework.bean.annotation.Property;
 
 @Coined
 public class BeanInfoSample {

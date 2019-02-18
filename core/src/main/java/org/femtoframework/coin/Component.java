@@ -2,9 +2,9 @@ package org.femtoframework.coin;
 
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.NamedBean;
-import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
-import org.femtoframework.coin.info.BeanInfo;
+import org.femtoframework.bean.info.BeanInfo;
 import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.status.BeanStatus;
@@ -98,18 +98,18 @@ public interface Component extends NamedBean {
     Namespace getCurrentNamespace();
 
     /**
-     * Bean Factory
+     * Bean ResourceFactory
      *
-     * @return Current Bean Factory
+     * @return Current Bean ResourceFactory
      */
     default BeanFactory getCurrentBeanFactory() {
         return getCurrentNamespace().getBeanFactory();
     }
 
     /**
-     * Component Factory
+     * Component ResourceFactory
      *
-     * @return Current Component Factory
+     * @return Current Component ResourceFactory
      */
     default ComponentFactory getCurrentComponentFactory() {
         return getCurrentNamespace().getComponentFactory();

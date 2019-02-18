@@ -1,6 +1,6 @@
-package org.femtoframework.coin.info.ext;
+package org.femtoframework.bean.info.ext;
 
-import org.femtoframework.coin.annotation.Action;
+import org.femtoframework.bean.annotation.Action;
 
 /**
  * Simple Business Object

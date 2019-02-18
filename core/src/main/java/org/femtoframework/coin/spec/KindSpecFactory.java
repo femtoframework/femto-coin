@@ -1,14 +1,14 @@
 package org.femtoframework.coin.spec;
 
-import org.femtoframework.coin.Factory;
+import org.femtoframework.coin.ResourceFactory;
 
 /**
- * Kind Spec Factory
+ * Kind Spec ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface KindSpecFactory extends Factory<KindSpec> {
+public interface KindSpecFactory extends ResourceFactory<KindSpec> {
 
     /**
      * Return the core kind spec

@@ -1,9 +1,9 @@
 package org.femtoframework.coin.codec.json;
 
 import com.jsoniter.JsonIterator;
-import org.femtoframework.coin.annotation.AnySetter;
-import org.femtoframework.coin.annotation.Ignore;
-import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.bean.annotation.AnySetter;
+import org.femtoframework.bean.annotation.Ignore;
+import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.coin.json.CoinCompatibilityMode;
 import org.junit.Test;
 

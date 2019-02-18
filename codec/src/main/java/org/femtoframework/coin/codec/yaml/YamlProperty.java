@@ -1,6 +1,6 @@
 package org.femtoframework.coin.codec.yaml;
 
-import org.femtoframework.coin.info.PropertyInfo;
+import org.femtoframework.bean.info.PropertyInfo;
 import org.yaml.snakeyaml.introspector.Property;
 
 import java.lang.annotation.Annotation;

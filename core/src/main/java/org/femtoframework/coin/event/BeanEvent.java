@@ -58,7 +58,7 @@ public class BeanEvent extends EventObject {
     }
 
     /**
-     * Bean Factory
+     * Bean ResourceFactory
      */
     public BeanFactory getFactory() {
         return factory;

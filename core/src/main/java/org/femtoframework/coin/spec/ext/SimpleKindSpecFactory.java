@@ -19,7 +19,7 @@ package org.femtoframework.coin.spec.ext;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.CoinConstants;
-import org.femtoframework.coin.ext.BaseFactory;
+import org.femtoframework.coin.ext.BaseResourceFactory;
 import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.coin.spec.SpecConstants;
@@ -27,12 +27,12 @@ import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.implement.InstancesFunction;
 
 /**
- * Simple Kind Spec Factory
+ * Simple Kind Spec ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleKindSpecFactory extends BaseFactory<KindSpec> implements KindSpecFactory, InitializableMBean {
+public class SimpleKindSpecFactory extends BaseResourceFactory<KindSpec> implements KindSpecFactory, InitializableMBean {
 
     public SimpleKindSpecFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);

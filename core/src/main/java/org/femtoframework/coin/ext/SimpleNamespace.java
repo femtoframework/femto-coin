@@ -1,9 +1,9 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.annotation.Coined;
-import org.femtoframework.coin.annotation.Ignore;
-import org.femtoframework.coin.annotation.Property;
+import org.femtoframework.bean.annotation.Coined;
+import org.femtoframework.bean.annotation.Ignore;
+import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.ConfigSpec;
 import org.femtoframework.coin.spec.ModelSpec;
@@ -55,9 +55,9 @@ public class SimpleNamespace implements Namespace {
     }
 
     /**
-     * Component Factory under this namespace
+     * Component ResourceFactory under this namespace
      *
-     * @return Component Factory
+     * @return Component ResourceFactory
      */
     @Override
     @Property(writable = false)
@@ -66,7 +66,7 @@ public class SimpleNamespace implements Namespace {
     }
 
     /**
-     * Bean Factory under this namespace;
+     * Bean ResourceFactory under this namespace;
      *
      * @return BeanFactory
      */

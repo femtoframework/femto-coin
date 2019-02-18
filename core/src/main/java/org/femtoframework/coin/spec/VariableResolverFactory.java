@@ -16,13 +16,13 @@
  */
 package org.femtoframework.coin.spec;
 
-import org.femtoframework.coin.Factory;
+import org.femtoframework.coin.ResourceFactory;
 
 /**
- * VariableResolver Factory
+ * VariableResolver ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface VariableResolverFactory extends Factory<VariableResolver>, VariableResolver {
+public interface VariableResolverFactory extends ResourceFactory<VariableResolver>, VariableResolver {
 }

@@ -1,7 +1,7 @@
 package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.Component;
-import org.femtoframework.coin.annotation.Ignore;
+import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.VariableResolverFactory;
 import org.femtoframework.coin.spec.VariableSpec;

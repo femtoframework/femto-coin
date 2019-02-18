@@ -1,9 +1,9 @@
 package org.femtoframework.coin.codec.yaml;
 
-import org.femtoframework.coin.annotation.Coined;
-import org.femtoframework.coin.info.BeanInfo;
-import org.femtoframework.coin.info.BeanInfoFactory;
-import org.femtoframework.coin.info.PropertyInfo;
+import org.femtoframework.bean.annotation.Coined;
+import org.femtoframework.bean.info.BeanInfo;
+import org.femtoframework.bean.info.BeanInfoFactory;
+import org.femtoframework.bean.info.PropertyInfo;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;

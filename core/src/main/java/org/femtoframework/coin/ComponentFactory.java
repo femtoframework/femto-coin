@@ -21,12 +21,12 @@ import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.spec.BeanSpec;
 
 /**
- * Component Factory
+ * Component ResourceFactory
  *
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface ComponentFactory extends Factory<Component> {
+public interface ComponentFactory extends ResourceFactory<Component> {
 
     /**
      * Create component on-demand

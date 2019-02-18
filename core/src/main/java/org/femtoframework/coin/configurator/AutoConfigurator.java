@@ -18,10 +18,10 @@ package org.femtoframework.coin.configurator;
 
 import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.annotation.Ignore;
-import org.femtoframework.coin.annotation.Property;
-import org.femtoframework.coin.info.BeanInfo;
-import org.femtoframework.coin.info.PropertyInfo;
+import org.femtoframework.bean.annotation.Ignore;
+import org.femtoframework.bean.annotation.Property;
+import org.femtoframework.bean.info.BeanInfo;
+import org.femtoframework.bean.info.PropertyInfo;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.util.CoinNameUtil;
