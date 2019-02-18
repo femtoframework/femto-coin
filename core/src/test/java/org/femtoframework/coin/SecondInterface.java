@@ -3,6 +3,7 @@ package org.femtoframework.coin;
 import org.femtoframework.annotation.ImplementedBy;
 
 import java.util.List;
+import java.util.Properties;
 
 /**
  * 第二个接口
@@ -14,4 +15,6 @@ import java.util.List;
 public interface SecondInterface
 {
     List<ThirdInterface> getThirds();
+
+    Properties getProperties();
 }

@@ -37,6 +37,9 @@ second:
     ? Oct
     ? Nov
     ? Dec
+  properties:
+    prop1: value1
+    prop2: value2
   thirds:
   - name: third1
     _type: org.femtoframework.coin.ThirdBean

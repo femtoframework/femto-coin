@@ -1,9 +1,6 @@
 package org.femtoframework.coin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Second Bean
@@ -14,6 +11,8 @@ import java.util.Set;
 public class SecondBean implements SecondInterface
 {
     private List<ThirdInterface> thirds = new ArrayList<>(2);
+
+    private Properties properties = new Properties();
 
     public List<ThirdInterface> getThirds()
     {
@@ -62,5 +61,14 @@ public class SecondBean implements SecondInterface
 
     public void setStringSet(Set<String> stringSet) {
         this.stringSet = stringSet;
+    }
+
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 }

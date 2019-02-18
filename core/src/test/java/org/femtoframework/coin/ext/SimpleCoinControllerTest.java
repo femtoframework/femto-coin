@@ -63,6 +63,7 @@ public class SimpleCoinControllerTest {
         assertEquals(firstInterface, parameters.get("var"));
         assertEquals(firstInterface.getSecond(), parameters.get("current"));
         assertEquals(firstInterface.getSecond().getThirds().get(0), parameters.get("ref"));
+        assertEquals(firstInterface.getSecond().getProperties().getProperty("prop1"), "value1");
 
         System.out.println("TimeElapsed:" + (System.currentTimeMillis() - start));
     }
