@@ -2,6 +2,8 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.CoinController;
 import org.femtoframework.coin.CoinLookup;
+import org.femtoframework.coin.CoinModule;
+import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
 
@@ -13,13 +15,9 @@ public class SimpleCoinLookupTest {
     public void lookupComponent() throws Exception {
         File file = NutletUtil.getResourceAsFile("examples.yaml");
 
-
         long start = System.currentTimeMillis();
 
-
-        SimpleCoinModule coinModule = new SimpleCoinModule();
-        coinModule.initialize();
-
+        CoinModule coinModule = CoinUtil.newModule();
         CoinController controller = coinModule.getController();
 
         controller.create(file);

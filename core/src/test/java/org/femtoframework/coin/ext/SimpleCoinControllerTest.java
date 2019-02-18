@@ -37,9 +37,7 @@ public class SimpleCoinControllerTest {
         long start = System.currentTimeMillis();
 
 
-        SimpleCoinModule coinModule = new SimpleCoinModule();
-        coinModule.initialize();
-
+        CoinModule coinModule = CoinUtil.newModule();
         CoinController controller = coinModule.getController();
 
         controller.create(file);
