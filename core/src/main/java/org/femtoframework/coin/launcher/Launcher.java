@@ -19,12 +19,16 @@ package org.femtoframework.coin.launcher;
 import org.femtoframework.coin.CoinController;
 import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.CoinUtil;
+import org.femtoframework.implement.ImplementConfig;
+import org.femtoframework.implement.ImplementUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.femtoframework.implement.ImplementUtil.getImplementConfig;
 
 /**
  * Coin Launcher
@@ -49,6 +53,9 @@ public class Launcher {
      * @throws IOException
      */
     public static void main(String... args) throws IOException {
+        LauncherListeners launcherListener = new LauncherListeners();
+        launcherListener.onBeforeStarting();
+
         CoinModule module = CoinUtil.getModule();
         CoinController controller = module.getController();
         List<URI> componentYamls = controller.getComponentYamls(null);
@@ -59,9 +66,11 @@ public class Launcher {
         if (applicationYaml != null) {
             allUris.add(applicationYaml);
         }
-        for(int i = 0; i < args.length; i ++) {
-            allUris.add(new File(args[i]).toURI());
+        for (String arg : args) {
+            allUris.add(new File(arg).toURI());
         }
+
+        allUris = launcherListener.onYamlFilesFound(allUris);
 
         if (allUris.isEmpty()) {
             System.out.println("WARNING: no any yaml files, launcher exit");
@@ -69,5 +78,7 @@ public class Launcher {
         }
 
         controller.create(allUris.toArray(new URI[allUris.size()]));
+
+        launcherListener.onAfterLoadingYamlFiles(allUris);
     }
 }
