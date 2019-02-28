@@ -184,7 +184,7 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
      * Initiliaze internally
      */
     @Override
-    public void _doInitialize() {
+    public void _doInit() {
         namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
 
         ComponentFactory componentFactory = namespaceCoin.getComponentFactory();

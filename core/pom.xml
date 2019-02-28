@@ -9,9 +9,11 @@
     <groupId>org.femtoframework.coin</groupId>
     <artifactId>femto-coin</artifactId>
     <version>7.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>coin-core</artifactId>
+  <version>7.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -51,7 +53,7 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.femtoframework</groupId>
+      <groupId>org.femtoframework.util</groupId>
       <artifactId>femto-util</artifactId>
     </dependency>
   </dependencies>

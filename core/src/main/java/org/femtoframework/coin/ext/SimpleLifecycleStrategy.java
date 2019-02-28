@@ -148,11 +148,11 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
      * @param component
      */
     @Override
-    public void initialize(Component component) {
-        doInitialize(component, false);
+    public void init(Component component) {
+        doInit(component, false);
     }
 
-    protected void doInitialize(Component component, boolean isChild) {
+    protected void doInit(Component component, boolean isChild) {
         eventSupport.fireEvent(BeanPhase.INITIALIZING,component);
 
         Object bean = component.getBean();
@@ -160,10 +160,10 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             if (bean instanceof InitializableMBean) {
                 InitializableMBean mBean = (InitializableMBean) bean;
                 if (!mBean.isInitialized()) {
-                    mBean.initialize();
+                    mBean.init();
                 }
             } else if (bean instanceof Initializable) {
-                ((Initializable) bean).initialize();
+                ((Initializable) bean).init();
             } else {
                 Class<?> clazz = bean.getClass();
                 invokeByAnnotation(clazz, bean, PostConstruct.class);
@@ -171,7 +171,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         }
         else {
             // The parent bean needs to control the lifecycle of the child,
-            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // So in some cases parent bean needs to invoke child's init method explicitly
             // But in some cases parent bean doesn't want to take care about the lifecycle of child
             // As the container, we can not use the single rule to fit both of the use cases.
             // Our strategy is the following
@@ -183,7 +183,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
                 if (bean instanceof InitializableMBean) {
                     InitializableMBean mBean = (InitializableMBean)bean;
                     if (!mBean.isInitialized()) {
-                        mBean.initialize();
+                        mBean.init();
                     }
                 }
             }
@@ -195,7 +195,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             //Keep the sequences of keys, since the map is linked hash map
             for(String key: children.keySet()) {
                 Component child = children.get(key);
-                doInitialize(child, true);
+                doInit(child, true);
             }
         }
 
@@ -229,7 +229,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         }
         else {
             // The parent bean needs to control the lifecycle of the child,
-            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // So in some cases parent bean needs to invoke child's init method explicitly
             // But in some cases parent bean doesn't want to take care about the lifecycle of child
             // As the container, we can not use the single rule to fit both of the use cases.
             // Our strategy is the following
@@ -283,7 +283,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         }
         else {
             // The parent bean needs to control the lifecycle of the child,
-            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // So in some cases parent bean needs to invoke child's init method explicitly
             // But in some cases parent bean doesn't want to take care about the lifecycle of child
             // As the container, we can not use the single rule to fit both of the use cases.
             // Our strategy is the following
@@ -373,7 +373,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         }
         else {
             // The parent bean needs to control the lifecycle of the child,
-            // So in some cases parent bean needs to invoke child's initialize method explicitly
+            // So in some cases parent bean needs to invoke child's init method explicitly
             // But in some cases parent bean doesn't want to take care about the lifecycle of child
             // As the container, we can not use the single rule to fit both of the use cases.
             // Our strategy is the following
@@ -430,7 +430,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
      * Initiliaze internally
      */
     @Override
-    public void _doInitialize() {
-        eventSupport.initialize();
+    public void _doInit() {
+        eventSupport.init();
     }
 }

@@ -37,7 +37,7 @@ public interface LifecycleStrategy extends Configurator {
      *
      * @param component
      */
-    void initialize(Component component);
+    void init(Component component);
 
     /**
      * Start component

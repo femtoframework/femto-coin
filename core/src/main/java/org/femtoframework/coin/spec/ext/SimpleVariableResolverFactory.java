@@ -51,7 +51,7 @@ public class SimpleVariableResolverFactory extends BaseResourceFactory<VariableR
      * Initiliaze internally
      */
     @Override
-    public void _doInitialize() {
+    public void _doInit() {
         ImplementUtil.applyInstances(VariableResolver.class, (InstancesFunction<String, VariableResolver>) this::add);
 
         applyStageToChildren("vr_", BeanStage.INITIALIZE);

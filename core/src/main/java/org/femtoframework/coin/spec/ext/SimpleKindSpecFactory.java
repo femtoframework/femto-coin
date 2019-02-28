@@ -64,7 +64,7 @@ public class SimpleKindSpecFactory extends BaseResourceFactory<KindSpec> impleme
      * Initiliaze internally
      */
     @Override
-    public void _doInitialize() {
+    public void _doInit() {
         ImplementUtil.applyInstances(KindSpec.class, (InstancesFunction<String, KindSpec>) this::add);
         applyStageToChildren("kind_spec_", BeanStage.INITIALIZE);
     }

@@ -136,7 +136,7 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
                 }
                 currentPhaseId = status.getPhase().ordinal();
                 if (currentPhaseId < expectedPhaseId && currentPhaseId < BeanPhase.INITIALIZED.ordinal()) {
-                    strategy.initialize(component);
+                    strategy.init(component);
                 }
                 currentPhaseId = status.getPhase().ordinal();
                 if (currentPhaseId < expectedPhaseId && currentPhaseId < BeanPhase.STARTED.ordinal()) {

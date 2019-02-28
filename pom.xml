@@ -7,6 +7,7 @@
     <groupId>org.femtoframework.util</groupId>
     <artifactId>femto-parent</artifactId>
     <version>7.0.0-SNAPSHOT</version>
+    <relativePath>../femto-util/pom.xml</relativePath>
   </parent>
 
   <groupId>org.femtoframework.coin</groupId>
@@ -55,11 +56,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <femto-util-version>0.7.0-SNAPSHOT</femto-util-version>
+    <femto-util-version>7.0.0-SNAPSHOT</femto-util-version>
     <slf4j-version>1.7.7</slf4j-version>
-    <jackson.version>2.8.11</jackson.version>
     <nanohttpd.version>2.3.1</nanohttpd.version>
     <logback.version>1.2.3</logback.version>
+    <coin.version>7.0.0-SNAPSHOT</coin.version>
   </properties>
 
   <dependencyManagement>
@@ -68,17 +69,6 @@
         <groupId>javax.annotation</groupId>
         <artifactId>javax.annotation-api</artifactId>
         <version>1.2</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
-        <version>1</version>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.12</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.yaml</groupId>
@@ -91,27 +81,6 @@
         <version>0.9.24-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j-version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.femtoframework</groupId>
-        <artifactId>femto-util</artifactId>
-        <version>${femto-util-version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.nanohttpd</groupId>
         <artifactId>nanohttpd</artifactId>
         <version>${nanohttpd.version}</version>
@@ -119,108 +88,19 @@
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-core</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>${coin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-codec</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>${coin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-api</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>${coin.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
 
-  <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-    </resources>
-    <testResources>
-      <testResource>
-        <directory>src/test/resources</directory>
-      </testResource>
-    </testResources>
-
-    <pluginManagement>
-      <plugins>
-
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.1.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
-          <configuration>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-            <branchName>V_@{project.version}</branchName>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.apache.maven.surefire</groupId>
-              <artifactId>surefire-junit47</artifactId>
-              <version>2.9</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
-          <groupId>org.femtoframework.fork</groupId>
-          <artifactId>exec-jar-plugin</artifactId>
-          <version>1.1.0-SNAPSHOT</version>
-          <configuration>
-            <addClasspath>true</addClasspath>
-            <jarLayout>inline</jarLayout>
-            <libPath>COIN-INF/lib</libPath>
-            <mainClass>org.femtoframework.coin.launcher.Launcher</mainClass>
-            <extraLauncherArgs>\$JAVA_OPTS</extraLauncherArgs>
-          </configuration>
-          <executions>
-            <execution>
-              <id>exec-jar</id>
-              <configuration>
-                <attachToBuild>true</attachToBuild>
-              </configuration>
-              <goals>
-                <goal>exec-jar</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.1.1</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh-snapshots</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh-releases</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-  </distributionManagement>
 </project>

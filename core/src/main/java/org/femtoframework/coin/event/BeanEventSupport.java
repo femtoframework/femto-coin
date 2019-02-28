@@ -154,7 +154,7 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener, 
      * Initiliaze internally
      */
     @Override
-    public void _doInitialize() {
+    public void _doInit() {
         ImplementUtil.applyInstances(BeanEventListener.class, (InstanceFunction<BeanEventListener>) listeners::add);
     }
 }

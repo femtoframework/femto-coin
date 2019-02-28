@@ -73,7 +73,7 @@ public class SimpleConfiguratorFactory extends BaseResourceFactory<Configurator>
      * Initiliaze internally
      */
     @Override
-    public void _doInitialize() {
+    public void _doInit() {
         ImplementUtil.applyInstances(Configurator.class, (InstancesFunction<String, Configurator>) this::add);
         applyStageToChildren("configurator_", BeanStage.INITIALIZE);
     }

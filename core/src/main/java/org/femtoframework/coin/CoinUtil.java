@@ -15,7 +15,7 @@ public class CoinUtil {
 
     static {
         module = ImplementUtil.getInstance(CoinModule.class);
-        ImplementUtil.initialize(module);
+        ImplementUtil.init(module);
     }
 
     public static CoinModule getModule() {
@@ -29,7 +29,7 @@ public class CoinUtil {
      */
     public static CoinModule newModule() {
         CoinModule module = ImplementUtil.getInstance(CoinModule.class, false);
-        ImplementUtil.initialize(module);
+        ImplementUtil.init(module);
         return module;
     }
 

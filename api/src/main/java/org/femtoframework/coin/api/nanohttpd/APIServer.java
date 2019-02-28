@@ -179,7 +179,7 @@ public class APIServer implements LifecycleMBean {
     /**
      * Initiliaze internally
      */
-    public void _doInitialize() {
+    public void _doInit() {
         httpd = new Httpd(getHost(), getPort(), apiHandler);
     }
 
