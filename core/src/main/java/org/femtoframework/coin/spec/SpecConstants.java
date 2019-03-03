@@ -59,7 +59,7 @@ public interface SpecConstants {
 
     String _VERSION = "_version";
 
-    String _ALIASES = "_aliases";
+    String _ACCESS = "_access";
 
     String _SINGLETON = "_singleton";
 

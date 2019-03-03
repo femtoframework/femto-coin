@@ -23,6 +23,8 @@ public class SimpleNamespace implements Namespace {
 
     private String name;
 
+    private NamespaceAccess access;
+
     @Ignore
     private Map<Class<?>, SpecFactory> specFactories = new HashMap<>(4);
 
@@ -31,8 +33,9 @@ public class SimpleNamespace implements Namespace {
     @Ignore
     private BeanFactory beanFactory;
 
-    public SimpleNamespace(String name, CoinModule module, LifecycleStrategy strategy) {
+    public SimpleNamespace(String name, CoinModule module, LifecycleStrategy strategy, NamespaceAccess access) {
         this.name = name;
+        this.access = access;
         NamespaceFactory namespaceFactory = module.getNamespaceFactory();
 
         SimpleSpecFactory<BeanSpec> beanSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
@@ -80,4 +83,8 @@ public class SimpleNamespace implements Namespace {
         return specFactories.get(specClass);
     }
 
+    @Override
+    public NamespaceAccess getAccess() {
+        return access;
+    }
 }

@@ -53,7 +53,11 @@ public abstract class ModelElement extends MapElement<Element> implements ModelS
     }
 
     public static String getVersion(Map map) {
-        return DataUtil.getString(ModelElement.getValue(map, SpecConstants._VERSION), SpecConstants.VERSION_CORE_KIND);
+        return getVersion(map, SpecConstants.VERSION_CORE_KIND);
+    }
+
+    public static String getVersion(Map map, String defaultVersion) {
+        return DataUtil.getString(ModelElement.getValue(map, SpecConstants._VERSION), defaultVersion);
     }
 
     public static Object getValue(Map map, String key) {

@@ -20,6 +20,13 @@ public interface Namespace extends NamedBean {
     String getName();
 
     /**
+     * Namespace Access define different strategy for accessing from outside namespace or JVM
+     *
+     * @return Access Information
+     */
+    NamespaceAccess getAccess();
+
+    /**
      * Component ResourceFactory under this namespace
      *
      * @return Component ResourceFactory

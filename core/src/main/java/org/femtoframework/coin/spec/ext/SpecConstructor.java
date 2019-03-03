@@ -4,13 +4,11 @@ import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.KindSpecFactory;
+import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.coin.spec.element.*;
 import org.yaml.snakeyaml.constructor.Construct;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
-import org.yaml.snakeyaml.nodes.MappingNode;
-import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.Tag;
+import org.yaml.snakeyaml.nodes.*;
 
 import java.util.List;
 import java.util.Map;
@@ -87,7 +85,7 @@ public class SpecConstructor extends SafeConstructor {
         }
     }
 
-    public static class ConstructWrapper implements Construct {
+    public class ConstructWrapper implements Construct {
 
         private Construct construct;
 
@@ -148,6 +146,7 @@ public class SpecConstructor extends SafeConstructor {
                                 "your KindSpec implementation has been put in your jar " +
                                 "file /META-INF/spec/implements.properties");
                     }
+//                    SpecConstructor.this.version = version;
                     return kindSpec.toSpec(map);
                 case LIST:
                     return new ListElement<>((List)value);

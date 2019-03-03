@@ -2,6 +2,7 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.NamespaceAccess;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
@@ -44,6 +45,7 @@ public class SimpleCoinControllerTest {
 
         Namespace ns = coinModule.getNamespaceFactory().get("test");
         assertNotNull(ns);
+        assertEquals(NamespaceAccess.PUBLIC, ns);
 
         BeanSpec spec = ns.getSpecFactory(BeanSpec.class).get("first");
         assertNotNull(spec.get("second"));

@@ -78,6 +78,15 @@ public class BeanElement extends ModelElement implements BeanSpec, SpecConstants
     }
 
     /**
+     * Set belongsTo
+     *
+     * @param belongsTo BelongsTo
+     */
+    public void setBelongsTo(String belongsTo) {
+        put(_BELONGS_TO, new PrimitiveElement<>(CoreKind.STRING, belongsTo));
+    }
+
+    /**
      * Indicate the kind of this bean
      *
      * @return

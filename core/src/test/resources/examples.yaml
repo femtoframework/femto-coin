@@ -2,6 +2,7 @@
 _version: v1 #optional
 _name: test #optional, default is "default"
 _kind: namespace #required
+_access: PUBLIC
 
 ---
 # First Bean
