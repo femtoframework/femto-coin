@@ -52,6 +52,7 @@ public class SimpleNamespaceFactory extends BaseResourceFactory<Namespace> imple
                 ns = new SimpleNamespace();
             }
         }
+        ns.setName(name);
         ns.setSpec(spec);
         ns.setCoinModule(coinModule);
         ns.setLifecycleStrategy(lifecycleStrategy);

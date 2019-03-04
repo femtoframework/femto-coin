@@ -131,7 +131,9 @@ public class SimpleNamespace implements Namespace, InitializableMBean {
     }
 
     protected void setSpec(NamespaceSpec spec) {
-        setName(spec.getName());
-        setAccess(spec.getAccess());
+        if (spec != null) {
+            setName(spec.getName());
+            setAccess(spec.getAccess());
+        }
     }
 }

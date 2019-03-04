@@ -45,7 +45,7 @@ public class SimpleCoinControllerTest {
 
         Namespace ns = coinModule.getNamespaceFactory().get("test");
         assertNotNull(ns);
-        assertEquals(NamespaceAccess.PUBLIC, ns);
+        assertEquals(NamespaceAccess.PUBLIC, ns.getAccess());
 
         BeanSpec spec = ns.getSpecFactory(BeanSpec.class).get("first");
         assertNotNull(spec.get("second"));

@@ -12,6 +12,8 @@ import org.femtoframework.text.NamingConvention;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * Inject all configs
  *
@@ -43,15 +45,15 @@ public class ConfigInjection implements Configurator {
             String propertyName = NamingConvention.parse(key, false);
             PropertyInfo propertyInfo = beanInfo.getProperty(propertyName);
             if (propertyInfo == null) {
-                logger.warn("No such property:" + key + " in bean:" + component.getQualifiedName() + " ignore this config.");
+                logger.warn("No such property:" + key + " in bean '" + component.getQualifiedName() + "' ignore this config.");
                 continue;
             }
             if (!propertyInfo.isWritable()) {
-                logger.warn("Property:" + key + " in bean:" + component.getQualifiedName() + " is declared as not writable.");
+                logger.warn("Property:" + key + " in bean '" + component.getQualifiedName() + "' is declared as not writable.");
             }
             Class<?> typeClass = propertyInfo.getTypeClass();
+            Object bean = component.getBean();
             if (Reflection.isNonStructureClass(typeClass)) {
-                Object bean = component.getBean();
                 if (Enum.class.isAssignableFrom(typeClass)) {
                     propertyInfo.invokeSetter(bean, config.getEnum((Class<? extends Enum>)typeClass, key));
                 }
@@ -60,15 +62,31 @@ public class ConfigInjection implements Configurator {
                 }
             }
             else {
-                Component child = component.getChild(key);
-                if (child != null) {
+                Component childComp = component.getChild(key);
+                if (childComp != null) {
                     Parameters<Object> configForChild = config.getParameters(key);
                     if (configForChild != null) {
-                        inject(child, configForChild);
+                        inject(childComp, configForChild);
                     }
                 }
                 else {
-                    logger.warn("No such child:" + key + " in bean:" + component.getQualifiedName() + ".");
+                    if (Map.class.isAssignableFrom(typeClass) && propertyInfo.isReadable()) {
+                        Map map = propertyInfo.invokeGetter(bean);
+                        Parameters<Object> configForChild = config.getParameters(key);
+                        if (configForChild != null) {
+                            if (map == null || map.isEmpty()) {
+                                propertyInfo.invokeSetter(bean, configForChild);
+                            }
+                            else {
+                                for(String n: configForChild.keySet()) {
+                                    map.put(n, configForChild.get(n));
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        logger.warn("No such child:" + key + " in bean '" + component.getQualifiedName() + "'.");
+                    }
                 }
             }
         }

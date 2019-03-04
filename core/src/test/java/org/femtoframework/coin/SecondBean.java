@@ -27,6 +27,8 @@ public class SecondBean implements SecondInterface
 
     private Set<String> stringSet;
 
+    private Map<Integer, Integer> intMap;
+
     public List<String> getStringList() {
         return stringList;
     }
@@ -70,5 +72,13 @@ public class SecondBean implements SecondInterface
 
     public void setProperties(Properties properties) {
         this.properties = properties;
+    }
+
+    public Map<Integer, Integer> getIntMap() {
+        return intMap;
+    }
+
+    public void setIntMap(Map<Integer, Integer> intMap) {
+        this.intMap = intMap;
     }
 }
