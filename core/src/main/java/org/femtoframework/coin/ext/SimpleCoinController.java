@@ -135,8 +135,7 @@ public class SimpleCoinController implements CoinController {
                 if (ns != null) {
                     throw new IOException("Namespace existing already:" + name);
                 }
-                NamespaceAccess access = ((NamespaceSpec)spec).getAccess();
-                ns = namespaceFactory.createNamespace(name);
+                namespaceFactory.createNamespace(name, ((NamespaceSpec)spec));
             }
             else if (kind == CoreKind.BEAN) {
                 BeanSpec beanSpec = (BeanSpec)spec;

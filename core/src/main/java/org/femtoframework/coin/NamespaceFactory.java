@@ -1,5 +1,7 @@
 package org.femtoframework.coin;
 
+import org.femtoframework.coin.spec.NamespaceSpec;
+
 /**
  * Namespace ResourceFactory
  *
@@ -14,16 +16,17 @@ public interface NamespaceFactory extends ResourceFactory<Namespace> {
      * @return Created Namespace
      */
     default Namespace createNamespace(String name) {
-        return createNamespace(name, NamespaceAccess.LOCAL);
+        return createNamespace(name, null);
     }
 
     /**
      * Creates namespace with given name
      *
      * @param name Name
+     * @param spec Namespace Spec, Nullable
      * @return Created Namespace
      */
-    Namespace createNamespace(String name, NamespaceAccess access);
+    Namespace createNamespace(String name, NamespaceSpec spec);
 
     /**
      * Gets namespace with given name

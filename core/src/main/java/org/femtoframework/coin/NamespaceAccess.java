@@ -12,12 +12,12 @@ public enum NamespaceAccess {
     PRIVATE,
 
     /**
-     * Allow accessing from JVM, default value.
+     * Allow accessing from JVM
      */
     LOCAL,
 
     /**
-     * Allow accessing from Cluster.
+     * Allow accessing from Cluster, default value.
      */
     PUBLIC
 }

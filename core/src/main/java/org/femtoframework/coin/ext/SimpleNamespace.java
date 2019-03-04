@@ -1,13 +1,11 @@
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.*;
 import org.femtoframework.bean.annotation.Coined;
 import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.bean.annotation.Property;
-import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.ConfigSpec;
-import org.femtoframework.coin.spec.ModelSpec;
-import org.femtoframework.coin.spec.SpecFactory;
+import org.femtoframework.coin.spec.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +17,7 @@ import java.util.Map;
  * @version 1.0
  */
 @Coined
-public class SimpleNamespace implements Namespace {
+public class SimpleNamespace implements Namespace, InitializableMBean {
 
     private String name;
 
@@ -33,19 +31,9 @@ public class SimpleNamespace implements Namespace {
     @Ignore
     private BeanFactory beanFactory;
 
-    public SimpleNamespace(String name, CoinModule module, LifecycleStrategy strategy, NamespaceAccess access) {
-        this.name = name;
-        this.access = access;
-        NamespaceFactory namespaceFactory = module.getNamespaceFactory();
+    private CoinModule coinModule;
 
-        SimpleSpecFactory<BeanSpec> beanSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
-        SimpleSpecFactory<ConfigSpec> configSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
-        specFactories.put(BeanSpec.class, beanSpecFactory);
-        specFactories.put(ConfigSpec.class, configSpecFactory);
-
-        this.componentFactory = new SimpleComponentFactory(module, beanSpecFactory, strategy);
-        this.beanFactory = new SimpleBeanFactory(namespaceFactory, componentFactory);
-    }
+    private LifecycleStrategy lifecycleStrategy;
 
     /**
      * Namespace
@@ -86,5 +74,64 @@ public class SimpleNamespace implements Namespace {
     @Override
     public NamespaceAccess getAccess() {
         return access;
+    }
+
+    private boolean initialized = false;
+
+    /**
+     * Return whether it is initialized
+     *
+     * @return whether it is initialized
+     */
+    @Override
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    /**
+     * Initialized setter for internal
+     *
+     * @param initialized BeanPhase
+     */
+    @Override
+    public void _doSetInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    /**
+     * Initiliaze internally
+     */
+    @Override
+    public void _doInit() {
+        NamespaceFactory namespaceFactory = coinModule.getNamespaceFactory();
+
+        SimpleSpecFactory<BeanSpec> beanSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
+        SimpleSpecFactory<ConfigSpec> configSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
+        specFactories.put(BeanSpec.class, beanSpecFactory);
+        specFactories.put(ConfigSpec.class, configSpecFactory);
+
+        this.componentFactory = new SimpleComponentFactory(coinModule, beanSpecFactory, lifecycleStrategy);
+        this.beanFactory = new SimpleBeanFactory(namespaceFactory, componentFactory);
+    }
+
+    protected void setAccess(NamespaceAccess access) {
+        this.access = access;
+    }
+
+    protected void setCoinModule(CoinModule coinModule) {
+        this.coinModule = coinModule;
+    }
+
+    protected void setLifecycleStrategy(LifecycleStrategy lifecycleStrategy) {
+        this.lifecycleStrategy = lifecycleStrategy;
+    }
+
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    protected void setSpec(NamespaceSpec spec) {
+        setName(spec.getName());
+        setAccess(spec.getAccess());
     }
 }
