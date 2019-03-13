@@ -32,8 +32,8 @@ public class ContextObjectFactory
             Name n = ctx.getNameParser(name).parse(url.substring(url.indexOf(":") + 1));
             if (n.size() >= 3) {
                 // Provider URL?
-                if (n.get(0).toString().equals("") &&
-                    n.get(1).toString().equals("")) {
+                if (n.get(0).equals("") &&
+                    n.get(1).equals("")) {
                     ctx.addToEnvironment(Context.PROVIDER_URL, n.get(2));
                 }
             }

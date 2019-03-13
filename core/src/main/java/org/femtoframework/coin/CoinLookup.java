@@ -60,6 +60,16 @@ public interface CoinLookup {
     Object lookup(ResourceType resourceType, Name name);
 
     /**
+     * Resolve resource by Name in specific namespace
+     *
+     * @param resourceType ResourceType
+     * @param namespace Namespace
+     * @param name Name
+     * @return Object
+     */
+    Object lookup(ResourceType resourceType, Namespace namespace, Name name);
+
+    /**
      * Lookup Child Component based on existing Component.
      *
      * @param component Component

@@ -79,31 +79,44 @@ public class SimpleCoinLookup implements CoinLookup {
             if (ns == null) {
                 throw new IllegalArgumentException("No such namespace:" + n);
             }
-            if (size == 1) {
-                if (resourceType == ResourceType.NAMESPACE) {
-                    return ns;
-                }
-                else {
-                    throw new IllegalArgumentException("No such resource " + name + " for type:" + resourceType);
-                }
+            return lookup(resourceType, ns, name.getSuffix(1));
+        }
+    }
+
+    /**
+     * Resolve resource by Name in specific namespace
+     *
+     * @param resourceType ResourceType
+     * @param namespace    Namespace
+     * @param name         Name
+     * @return Object
+     */
+    @Override
+    public Object lookup(ResourceType resourceType, Namespace namespace, Name name) {
+        if (name.isEmpty()) {
+            if (resourceType == ResourceType.NAMESPACE) {
+                return namespace;
             }
             else {
-                String on = name.get(1);
-                if (resourceType == ResourceType.CONFIG) {
-                    ConfigSpec configSpec = ns.getConfigSpecFactory().get(on);
-                    if (configSpec == null) {
-                        throw new IllegalArgumentException("No such config spec:" + on + " in namespace:" + n);
-                    }
-                    return doLookupConfig(configSpec, name, 2, size);
+                throw new IllegalArgumentException("No such resource " + name + " for type:" + resourceType);
+            }
+        }
+        else {
+            String on = name.get(0);
+            if (resourceType == ResourceType.CONFIG) {
+                ConfigSpec configSpec = namespace.getConfigSpecFactory().get(on);
+                if (configSpec == null) {
+                    throw new IllegalArgumentException("No such config spec:" + on + " in namespace:" + namespace.getName());
                 }
-                else {
-                    Component component = ns.getComponentFactory().get(on);
-                    if (component == null) {
-                        throw new IllegalArgumentException("No such component:" + on + " in namespace:" + n);
-                    }
-                    Component next = doLookupComponent(component, name, 2, size);
-                    return next.getResource(resourceType);
+                return doLookupConfig(configSpec, name, 1, name.size());
+            }
+            else {
+                Component component = namespace.getComponentFactory().get(on);
+                if (component == null) {
+                    throw new IllegalArgumentException("No such component:" + on + " in namespace:" + namespace.getName());
                 }
+                Component next = doLookupComponent(component, name, 1, name.size());
+                return next.getResource(resourceType);
             }
         }
     }
