@@ -13,9 +13,11 @@ public class LauncherListeners extends EventListeners<LauncherListener> implemen
 {
     public LauncherListeners() {
         ImplementConfig<LauncherListener> implementConfig = ImplementUtil.getImplementConfig(LauncherListener.class);
-        Collection<String> classes = implementConfig.getImplementations();
-        for(String className: classes) {
-            addListener((LauncherListener) Reflection.newInstance(className));
+        if (implementConfig != null) {
+            Collection<String> classes = implementConfig.getImplementations();
+            for (String className : classes) {
+                addListener((LauncherListener) Reflection.newInstance(className));
+            }
         }
     }
 
