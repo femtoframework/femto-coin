@@ -85,7 +85,14 @@ public class APIServer implements LifecycleMBean {
         public Response serve(IHTTPSession session) {
             APIRequest request = new APIRequest();
             request.setQueryParams(session.getParameters());
-            request.setMethod(session.getMethod().name());
+            String method= session.getMethod().name();
+            if ("POST".equalsIgnoreCase(method)) {
+                String realMethod = session.getHeaders().get("X-HTTP-Method-Override");
+                if ("PATCH".equalsIgnoreCase(realMethod)) {
+                    method = "PATCH";
+                }
+            }
+            request.setMethod(method);
 
             String uri = session.getUri();
             if ("/".equals(uri) || "/coin/api/v1".equals(uri) || "/coin/api/v1/".equals(uri)) {
