@@ -403,7 +403,7 @@ public class NamingContext extends AbstractContext
         checkRef(env);
         try {
             //不用绝对名称
-//            name = getAbsoluteName(name);
+//            name = getGenerateName(name);
             return naming.createSubcontext(name);
         }
         catch (CannotProceedException cpe) {

@@ -31,16 +31,16 @@ public interface SpecConstants {
     /**
      * Kind
      */
-    String _KIND = "_kind";
+    String KIND = "kind";
+
+    String METADATA = "metadata";
+
+    String SPEC = "spec";
 
     String BEAN = "bean";
 
     String CONFIG = "config";
 
-    /**
-     * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
-     */
-    String NAME = "name";
 
     /**
      * If it uses "_name" in the spec, the attribute won't be injected to bean
@@ -49,7 +49,6 @@ public interface SpecConstants {
 
     String _DEFAULT = "_default";
 
-    String NAMESPACE = "namespace";
 
     String _NAMESPACE = "_namespace";
 
@@ -57,7 +56,7 @@ public interface SpecConstants {
 
     String _TYPE = "_type";
 
-    String _VERSION = "_version";
+    String API_VERSION = "apiVersion";
 
     String _ACCESS = "_access";
 

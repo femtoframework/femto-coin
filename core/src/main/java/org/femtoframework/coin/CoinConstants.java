@@ -21,7 +21,7 @@ public interface CoinConstants {
 
     String NAMESPACE_NAMESPACE = "namespace";
 
-    String DEFAULT_NAMESPACE = "default";
+    String NAMESPACE_DEFAULT = "default";
 
 
     String COMPONENT_YAML = "META-INF/spec/component.yaml";
@@ -30,4 +30,22 @@ public interface CoinConstants {
     char CHAR_DELIM = '.';
     char CHAR_COLON = ':';
     char CHAR_SLASH = '/';
+
+    /**
+     * Kind
+     */
+    String KIND = "kind";
+
+    String METADATA = "metadata";
+
+    String NAMESPACE = "namespace";
+
+    /**
+     * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
+     */
+    String NAME = "name";
+
+    String SPEC = "spec";
+
+    String API_VERSION = "apiVersion";
 }

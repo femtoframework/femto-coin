@@ -5,24 +5,20 @@ import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.Namespace;
-import org.femtoframework.coin.NamespaceFactory;
 import org.femtoframework.bean.annotation.Coined;
 import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.bean.info.BeanInfo;
-import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.util.convert.ConverterUtil;
 
-import javax.naming.Name;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.femtoframework.coin.spec.SpecConstants.NAME;
+import static org.femtoframework.coin.CoinConstants.NAME;
 
 /**
  * Simple Component
@@ -73,9 +69,9 @@ public class SimpleComponent implements Component, Nameable {
     }
 
     /**
-     * Absolute Name
+     * Generated Name
      */
-    private String absoluteName = null;
+    private String generateName = null;
 
     /**
      * Absolute name in coin container
@@ -88,11 +84,11 @@ public class SimpleComponent implements Component, Nameable {
      * @return
      */
     @Override
-    public String getAbsoluteName() {
-        if (absoluteName == null) {
-            absoluteName = getName();
+    public String getGenerateName() {
+        if (generateName == null) {
+            generateName = getName();
         }
-        return absoluteName;
+        return generateName;
     }
 
     /**
@@ -223,7 +219,7 @@ public class SimpleComponent implements Component, Nameable {
         }
         if (component instanceof SimpleComponent) {
             SimpleComponent simpleComponent = (SimpleComponent)component;
-            simpleComponent.absoluteName = getAbsoluteName() + "." + propertyName;
+            simpleComponent.generateName = getGenerateName() + "." + propertyName;
         }
         children.put(propertyName, component);
     }

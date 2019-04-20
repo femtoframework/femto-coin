@@ -59,7 +59,7 @@ public class JmxAdapter implements BeanEventListener {
                 BeanInfo beanInfo = beanInfoFactory.getBeanInfo(typeClass);
 
                 //TODO convert beanInfo to MBeanInfo and generate MBean
-                String absoluteName = component.getAbsoluteName();
+                String absoluteName = component.getGenerateName();
                 String namespace = component.getNamespace();
                 String objectName = namespace + ":name=" + absoluteName;
                 try {

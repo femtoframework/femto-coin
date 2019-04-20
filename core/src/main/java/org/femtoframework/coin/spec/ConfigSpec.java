@@ -19,7 +19,7 @@ public interface ConfigSpec extends ModelSpec, Nameable {
      * @return namespace
      */
     default String getNamespace() { //Default is "current" namespace
-        return CoinConstants.DEFAULT_NAMESPACE;
+        return CoinConstants.NAMESPACE_DEFAULT;
     }
 
     /**

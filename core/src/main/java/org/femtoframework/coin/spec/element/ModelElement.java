@@ -5,6 +5,8 @@ import org.femtoframework.util.DataUtil;
 
 import java.util.Map;
 
+import static org.femtoframework.coin.CoinConstants.NAME;
+
 /**
  * Abstract Model Element,
  *
@@ -31,7 +33,7 @@ public abstract class ModelElement extends MapElement<Element> implements ModelS
      * Version
      */
     public String getVersion() {
-        return getString(_VERSION, ModelSpec.super.getVersion());
+        return getString(API_VERSION, ModelSpec.super.getVersion());
     }
 
     /**
@@ -57,7 +59,7 @@ public abstract class ModelElement extends MapElement<Element> implements ModelS
     }
 
     public static String getVersion(Map map, String defaultVersion) {
-        return DataUtil.getString(ModelElement.getValue(map, SpecConstants._VERSION), defaultVersion);
+        return DataUtil.getString(ModelElement.getValue(map, SpecConstants.API_VERSION), defaultVersion);
     }
 
     public static Object getValue(Map map, String key) {

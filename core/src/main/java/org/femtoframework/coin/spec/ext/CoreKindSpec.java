@@ -42,7 +42,7 @@ public class CoreKindSpec implements KindSpec {
      * @return right spec object
      */
     public <S extends MapSpec> S toSpec(Map map) {
-        String kind = ModelElement.getString(map, SpecConstants._KIND, null);
+        String kind = ModelElement.getString(map, SpecConstants.KIND, null);
         if (SpecConstants.NAMESPACE.equals(kind)) {
             return (S)new NamespaceElement(map);
         }

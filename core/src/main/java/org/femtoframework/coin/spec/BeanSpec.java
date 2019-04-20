@@ -69,7 +69,7 @@ public interface BeanSpec extends ModelSpec {
      * @return namespace
      */
     default String getNamespace() { //Default is "current" namespace
-        return CoinConstants.DEFAULT_NAMESPACE;
+        return CoinConstants.NAMESPACE_DEFAULT;
     }
 
     /**

@@ -1,15 +1,11 @@
 package org.femtoframework.coin;
 
 import org.femtoframework.bean.BeanStage;
-import org.femtoframework.bean.NamedBean;
-import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.bean.info.BeanInfo;
-import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.status.BeanStatus;
 
-import javax.naming.Name;
 import java.util.Map;
 
 /**
@@ -20,7 +16,7 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface Component extends NamedBean {
+public interface Component extends CoinObject<BeanSpec, BeanStatus> {
     /**
      * Namespace of this component
      *
@@ -51,7 +47,7 @@ public interface Component extends NamedBean {
      *
      * @return
      */
-    default String getAbsoluteName() {
+    default String getGenerateName() {
         return getName();
     }
 
@@ -68,7 +64,7 @@ public interface Component extends NamedBean {
      * @return Qualified Name
      */
     default String getQualifiedName() {
-        return getNamespace() + CoinConstants.CHAR_COLON + getAbsoluteName();
+        return getNamespace() + CoinConstants.CHAR_COLON + getGenerateName();
     }
 
     /**

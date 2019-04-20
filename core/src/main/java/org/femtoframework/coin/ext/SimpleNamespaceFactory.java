@@ -25,7 +25,7 @@ public class SimpleNamespaceFactory extends BaseResourceFactory<Namespace> imple
         setNamespaceFactory(this);
         createNamespace(CoinConstants.NAMESPACE_NAMESPACE);
         createNamespace(CoinConstants.NAMESPACE_COIN);
-        createNamespace(CoinConstants.DEFAULT_NAMESPACE);
+        createNamespace(CoinConstants.NAMESPACE_DEFAULT);
     }
 
     /**

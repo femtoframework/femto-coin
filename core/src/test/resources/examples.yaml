@@ -1,82 +1,86 @@
-# Namespace
-_version: v1 #optional
-_name: test #optional, default is "default"
-_kind: namespace #required
-_access: PUBLIC
+# Namespace,
+apiVersion: v1 #optional
+kind: Namespace #required
+metadata:
+  name: test #optional, default is "default"
 
 ---
 # First Bean
-_version: v1 #optional
-_namespace: test #optional, default is "default"
-_name: first #required
-_kind: bean #required
-_type: org.femtoframework.coin.FirstBean
-second:
-  ints: [1,2,3]
-  stringList:
-  - abc
-  - bcd
-  - efg
-  stringMap:
-    abc: 4
-    bcd: 5
-    efg: 6
-  intMap:
-    1: 1
-    2: 2
-    3: 3
-  stringSet: !!set
-    ? Jan
-    ? Feb
-    ? Mar
-    ? Apr
-    ? May
-    ? Jun
-    ? Jul
-    ? Aug
-    ? Sep
-    ? Oct
-    ? Nov
-    ? Dec
-  properties:
-    prop1: value1
-    prop2: value2
-  thirds:
-  - name: third1
-    _type: org.femtoframework.coin.ThirdBean
-    integer: 123
-    bool: true
-    string: "Hello world!"
-  - name: third2
-    _type: org.femtoframework.coin.ThirdBean
-    integer: 456
-    bool: false
-    string: "Merry Xmas!"
-parameters:
-  abc: value1
-  bcd: value2
-  cfg: 3
-  timestamp: 1545620324000
-  float: 0.1
-  double: 0.1545620324000
-  boolean: true
-  var: ${first} #In current map
-  env: ${e:JAVA_HOME}
-  prop: ${p:file.separator}
-  current: ${first.second}
-  ref: ${b:third1}
+apiVersion: coin/v1 #optional
+kind: Bean
+metadata:
+  name: first
+  namespace: test #optional, default is "default"
+class: org.femtoframework.coin.FirstBean
+spec:
+  second:
+    ints: [1,2,3]
+    stringList:
+    - abc
+    - bcd
+    - efg
+    stringMap:
+      abc: 4
+      bcd: 5
+      efg: 6
+    intMap:
+      1: 1
+      2: 2
+      3: 3
+    stringSet: !!set
+      ? Jan
+      ? Feb
+      ? Mar
+      ? Apr
+      ? May
+      ? Jun
+      ? Jul
+      ? Aug
+      ? Sep
+      ? Oct
+      ? Nov
+      ? Dec
+    properties:
+      prop1: value1
+      prop2: value2
+    thirds:
+    - name: third1
+      class: org.femtoframework.coin.ThirdBean
+      integer: 123
+      bool: true
+      string: "Hello world!"
+    - name: third2
+      class: org.femtoframework.coin.ThirdBean
+      integer: 456
+      bool: false
+      string: "Merry Xmas!"
+  parameters:
+    abc: value1
+    bcd: value2
+    cfg: 3
+    timestamp: 1545620324000
+    float: 0.1
+    double: 0.1545620324000
+    boolean: true
+    var: ${first} #In current map
+    env: ${e:JAVA_HOME}
+    prop: ${p:file.separator}
+    current: ${first.second}
+    ref: ${b:third1}
 
 ---
 # Config doesn't have the structure information, it has the properties only
-_version: v1 #optional
-_namespace: test #optional, default is "default"
-_kind: config #required
-first:
-  second:
-    intMap:
-      4: 4
-      5: 5
-      6: 6
-  parameters:
-    abc: newValue
-    cfg: 6
+apiVersion: coin/v1 #optional
+kind: Config
+metadata:
+  namespace: test #optional, default is "default"
+spec:
+  first:
+    second:
+      intMap:
+        4: 4
+        5: 5
+        6: 6
+    parameters:
+      abc: newValue
+      cfg: 6
