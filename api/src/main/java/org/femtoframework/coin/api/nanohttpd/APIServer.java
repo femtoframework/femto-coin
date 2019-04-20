@@ -87,7 +87,8 @@ public class APIServer implements LifecycleMBean {
             request.setQueryParams(session.getParameters());
             String method= session.getMethod().name();
             if ("POST".equalsIgnoreCase(method)) {
-                String realMethod = session.getHeaders().get("X-HTTP-Method-Override");
+                //All small case in headers
+                String realMethod = session.getHeaders().get("x-http-method-override");
                 if ("PATCH".equalsIgnoreCase(realMethod)) {
                     method = "PATCH";
                 }
