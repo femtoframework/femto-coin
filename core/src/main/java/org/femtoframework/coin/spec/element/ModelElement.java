@@ -1,11 +1,10 @@
 package org.femtoframework.coin.spec.element;
 
 import org.femtoframework.coin.spec.*;
-import org.femtoframework.util.DataUtil;
 
 import java.util.Map;
 
-import static org.femtoframework.coin.CoinConstants.NAME;
+import static org.femtoframework.coin.CoinConstants.*;
 
 /**
  * Abstract Model Element,
@@ -15,7 +14,7 @@ import static org.femtoframework.coin.CoinConstants.NAME;
  * @author Sheldon Shao
  * @version 1.0
  */
-public abstract class ModelElement extends MapElement<Element> implements ModelSpec, SpecConstants {
+public abstract class ModelElement<SPEC extends MapSpec<Element>> extends MapElement<Element> implements ModelSpec<SPEC> {
 
     public ModelElement() {
     }
@@ -28,14 +27,6 @@ public abstract class ModelElement extends MapElement<Element> implements ModelS
         super(kind);
     }
 
-
-    /**
-     * Version
-     */
-    public String getVersion() {
-        return getString(API_VERSION, ModelSpec.super.getVersion());
-    }
-
     /**
      * Name of the object
      *
@@ -43,43 +34,42 @@ public abstract class ModelElement extends MapElement<Element> implements ModelS
      */
     @Override
     public String getName() {
-        String name = getString(_NAME, null);
-        if (name == null) {
-            name = getString(NAME, null);
-        }
-        return name;
+        return getMetadata().getString(NAME, null);
     }
 
     public void setName(String name) {
-        put(_NAME, new PrimitiveElement<>(CoreKind.STRING, name));
+        getMetadata().put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
     }
 
-    public static String getVersion(Map map) {
-        return getVersion(map, SpecConstants.VERSION_CORE_KIND);
-    }
 
-    public static String getVersion(Map map, String defaultVersion) {
-        return DataUtil.getString(ModelElement.getValue(map, SpecConstants.API_VERSION), defaultVersion);
-    }
-
-    public static Object getValue(Map map, String key) {
-        Element element = (Element)map.get(key);
-        if (element != null) {
-            return element.getValue(null, null);
+    /**
+     * Return Metadata
+     *
+     * @return Metadata
+     */
+    public MetadataSpec<Element> getMetadata() {
+        MapSpec<Element> metadata = (MapSpec<Element>)get(METADATA);
+        if (metadata == null) {
+            metadata = new MetadataElement<>();
+            put(METADATA, metadata);
         }
-        return null;
+        else if (metadata instanceof MetadataElement) {
+            return (MetadataElement)metadata;
+        }
+        else {
+            metadata = new MetadataElement<>(metadata);
+            put(METADATA, metadata);
+        }
+        return (MetadataElement)metadata;
     }
 
-    public static String getString(Map map, String key, String defValue) {
-        return DataUtil.getString(getValue(map, key), defValue);
-    }
-
-    protected Object getValue(String key) {
-        return getValue(this, key);
-    }
-
-    protected String getString(String key, String defaultValue) {
-        return DataUtil.getString(getValue(key), defaultValue);
+    /**
+     * Return Spec
+     *
+     * @return Spec
+     */
+    public SPEC getSpec() {
+        return (SPEC)get(SPEC);
     }
 
 }

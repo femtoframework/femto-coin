@@ -3,10 +3,11 @@ package org.femtoframework.coin.spec.ext;
 import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.*;
-import org.femtoframework.util.DataUtil;
 import org.femtoframework.util.StringUtil;
 
 import java.util.Map;
+
+import static org.femtoframework.coin.CoinConstants.*;
 
 /**
  * Core Kind Spec definition
@@ -21,8 +22,8 @@ public class CoreKindSpec implements KindSpec {
      * @return Version
      */
     @Override
-    public String getVersion() {
-        return SpecConstants.VERSION_CORE_KIND;
+    public String getApiVersion() {
+        return VERSION_COIN_V1;
     }
 
     /**
@@ -42,18 +43,21 @@ public class CoreKindSpec implements KindSpec {
      * @return right spec object
      */
     public <S extends MapSpec> S toSpec(Map map) {
-        String kind = ModelElement.getString(map, SpecConstants.KIND, null);
-        if (SpecConstants.NAMESPACE.equals(kind)) {
+        String kind = MapSpec.getString(map, KIND, null);
+        if (NAMESPACE.equalsIgnoreCase(kind)) {
             return (S)new NamespaceElement(map);
         }
-        else if (SpecConstants.BEAN.equals(kind)) {
+        else if (COMPONENT.equalsIgnoreCase(kind)) {
+            return (S)new ComponentElement(map);
+        }
+        else if (BEAN.equalsIgnoreCase(kind)) {
             return (S)new BeanElement(map);
         }
-        else if (SpecConstants.CONFIG.equals(kind)) {
+        else if (CONFIG.equalsIgnoreCase(kind)) {
             return (S)new ConfigElement(map);
         }
         else if (StringUtil.isInvalid(kind)) {
-            String type = DataUtil.getString(ModelElement.getValue(map, SpecConstants._TYPE), null);
+            String type = MapSpec.getString(map, CLASS, null);
             if (StringUtil.isValid(type)) { //Consider as Bean
                 return (S)new BeanElement(map);
             }
@@ -62,7 +66,7 @@ public class CoreKindSpec implements KindSpec {
             }
         }
         else {
-            throw new SpecSyntaxException("No such kind:" + kind + " in version(" + getVersion() + ") ");
+            throw new SpecSyntaxException("No such kind:" + kind + " in version(" + getApiVersion() + ") ");
         }
     }
 }

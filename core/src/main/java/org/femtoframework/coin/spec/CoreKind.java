@@ -97,12 +97,17 @@ public enum CoreKind implements Kind {
     VAR(false),
 
     /**
-     * NameSpace
+     * NameSpace, K8S style Object
      */
     NAMESPACE(false),
 
     /**
-     * Config
+     * Component, K8S style Object
+     */
+    COMPONENT(false),
+
+    /**
+     * Config, K8S style Object
      */
     CONFIG(false);
 

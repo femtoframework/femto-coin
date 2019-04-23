@@ -6,7 +6,6 @@ import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.*;
 
-
 /**
  * Map Element
  *
@@ -81,5 +80,18 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
 
     public void setKind(CoreKind kind) {
         this.kind = kind;
+    }
+
+
+    public Object getValue(String key) {
+        return MapSpec.getValue(this, key);
+    }
+
+    public Object getValue(String key, Object defValue) {
+        return MapSpec.getValue(this, key, defValue);
+    }
+
+    public String getString(String key, String defaultValue) {
+        return MapSpec.getString(this, key, defaultValue);
     }
 }

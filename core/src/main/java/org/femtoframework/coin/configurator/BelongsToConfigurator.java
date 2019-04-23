@@ -41,9 +41,9 @@ public class BelongsToConfigurator implements Configurator {
      */
     @Override
     public void configure(Component component) {
-        BeanSpec spec = component.getSpec();
-        List<String> belongsTo = spec.getBelongsTo();
+        List<String> belongsTo = component.getBelongsTo();
         if (belongsTo != null && !belongsTo.isEmpty()) {
+            BeanSpec spec = component.getSpec();
             for(String onePart : belongsTo) {
                 link(onePart, spec, component);
             }

@@ -1,6 +1,7 @@
 package org.femtoframework.coin.meta;
 
 import org.femtoframework.bean.NamedBean;
+import org.femtoframework.parameters.Parameters;
 
 public interface ObjectMeta extends NamedBean {
 
@@ -9,7 +10,9 @@ public interface ObjectMeta extends NamedBean {
      *
      * @return generated name
      */
-    String getGenerateName();
+    default String getGenerateName() {
+        return getName();
+    }
 
     /**
      * Return namespace of current object
@@ -24,4 +27,18 @@ public interface ObjectMeta extends NamedBean {
      * @return Creation Timestamp
      */
     long getCreationTimestamp();
+
+    /**
+     * Labels
+     *
+     * @return Labels
+     */
+    Parameters<String> getLabels();
+
+    /**
+     * Annotations
+     *
+     * @return Annotations
+     */
+    Parameters<String> getAnnotations();
 }

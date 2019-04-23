@@ -1,10 +1,11 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.spec.MapSpec;
 import org.femtoframework.coin.spec.NamespaceSpec;
-import org.femtoframework.coin.spec.SpecConstants;
-import org.femtoframework.coin.spec.element.ModelElement;
 import org.femtoframework.lang.reflect.Reflection;
+
+import static org.femtoframework.coin.CoinConstants.*;
 
 /**
  * Namespace ResourceFactory implementation
@@ -19,13 +20,13 @@ public class SimpleNamespaceFactory extends BaseResourceFactory<Namespace> imple
     private CoinModule coinModule;
 
     public SimpleNamespaceFactory(CoinModule module, LifecycleStrategy strategy) {
-        super(null, CoinConstants.NAMESPACE_NAMESPACE);
+        super(null, NAMESPACE_NAMESPACE);
         this.lifecycleStrategy = strategy;
         this.coinModule = module;
         setNamespaceFactory(this);
-        createNamespace(CoinConstants.NAMESPACE_NAMESPACE);
-        createNamespace(CoinConstants.NAMESPACE_COIN);
-        createNamespace(CoinConstants.NAMESPACE_DEFAULT);
+        createNamespace(NAMESPACE_NAMESPACE);
+        createNamespace(NAMESPACE_COIN);
+        createNamespace(NAMESPACE_DEFAULT);
     }
 
     /**
@@ -44,7 +45,7 @@ public class SimpleNamespaceFactory extends BaseResourceFactory<Namespace> imple
             ns = new SimpleNamespace();
         }
         else {
-            String type = ModelElement.getString(spec, SpecConstants._TYPE, null);
+            String type = spec.getString(CLASS, null);
             if (type != null) {
                 ns = (SimpleNamespace)Reflection.newInstance(type);
             }

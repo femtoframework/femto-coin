@@ -5,7 +5,9 @@ import org.femtoframework.parameters.Parameters;
 
 import java.util.*;
 
-public class ConfigElement extends ModelElement implements ConfigSpec, SpecConstants {
+import static org.femtoframework.coin.CoinConstants.NAMESPACE;
+
+public class ConfigElement extends ModelElement implements ConfigSpec {
 
     public ConfigElement() {
         super(CoreKind.CONFIG);
@@ -22,7 +24,7 @@ public class ConfigElement extends ModelElement implements ConfigSpec, SpecConst
     }
 
     public void setNamespace(String namespace) {
-        put(_NAMESPACE, new PrimitiveElement<>(CoreKind.STRING, namespace));
+        put(NAMESPACE, new PrimitiveElement<>(CoreKind.STRING, namespace));
     }
 
     /**
@@ -31,7 +33,7 @@ public class ConfigElement extends ModelElement implements ConfigSpec, SpecConst
      * @return namespace
      */
     public String getNamespace() { //Default is "current" namespace
-        return getString(_NAMESPACE, ConfigSpec.super.getNamespace());
+        return getString(NAMESPACE, ConfigSpec.super.getNamespace());
     }
 
     protected static class ParametersAdapter implements Parameters<Object> {

@@ -21,7 +21,7 @@ public interface KindSpec extends NamedBean {
      * @return Name of the object
      */
     default String getName() {
-        return getVersion();
+        return getApiVersion();
     }
 
     /**
@@ -29,7 +29,7 @@ public interface KindSpec extends NamedBean {
      *
      * @return Version
      */
-    String getVersion();
+    String getApiVersion();
 
     /**
      * The Kind Class it uses

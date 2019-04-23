@@ -1,48 +1,42 @@
 package org.femtoframework.coin.spec.element;
 
+import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.ComponentFactory;
-import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.ComponentSpec;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.Element;
-import org.femtoframework.coin.spec.ModelSpec;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.parameters.ParametersMap;
 
 import java.util.Map;
 
-import static org.femtoframework.coin.CoinConstants.*;
+import static org.femtoframework.coin.CoinConstants.CLASS;
+import static org.femtoframework.coin.CoinConstants.NAMESPACE;
 
-/**
- * Bean Element
- *
- * @author Sheldon Shao
- * @version 1.0
- */
-public class BeanElement extends MapElement<Element> implements BeanSpec {
+public class ComponentElement extends ModelElement<BeanSpec> implements ComponentSpec {
 
-    public BeanElement() {
-        super(CoreKind.BEAN);
+    public ComponentElement() {
+        super(CoreKind.COMPONENT);
     }
 
-    public BeanElement(Map map) {
+    public ComponentElement(Map map) {
         super(map);
-        setKind(CoreKind.BEAN);
+        setKind(CoreKind.COMPONENT);
     }
 
-    public BeanElement(String namespace, String name, Class<?> implClass) {
-        super(CoreKind.BEAN);
+    public ComponentElement(String namespace, String name, Class<?> implClass) {
+        super(CoreKind.COMPONENT);
         setNamespace(namespace);
         setName(name);
         setTypeClass(implClass);
     }
 
     public void setNamespace(String namespace) {
-        put(NAMESPACE, new PrimitiveElement<>(CoreKind.STRING, namespace));
+        getMetadata().put(NAMESPACE, new PrimitiveElement<>(CoreKind.STRING, namespace));
     }
-
 
     public void setType(String type) {
         put(CLASS, new PrimitiveElement<>(CoreKind.STRING, type));
@@ -53,17 +47,28 @@ public class BeanElement extends MapElement<Element> implements BeanSpec {
         this.typeClass = implClass;
     }
 
-    /**
-     * Return generated name
-     *
-     * @return generated name
-     */
-    public String getGenerateName() {
-        return BeanSpec.super.getGenerateName();
-    }
-
     @Ignore
     private transient Class<?> typeClass;
+
+//    /**
+//     * Return belongsTo
+//     * <p>
+//     * belongsTo syntax
+//     *
+//     * @return
+//     */
+//    public List<String> getBelongsTo() {
+//        return DataUtil.getStringList(getValue(LABEL_BELONGS_TO), BeanSpec.super.getBelongsTo());
+//    }
+//
+//    /**
+//     * Set belongsTo
+//     *
+//     * @param belongsTo BelongsTo
+//     */
+//    public void setBelongsTo(String belongsTo) {
+//        put(LABEL_BELONGS_TO, new PrimitiveElement<>(CoreKind.STRING, belongsTo));
+//    }
 
     /**
      * Indicate the kind of this bean
@@ -71,26 +76,7 @@ public class BeanElement extends MapElement<Element> implements BeanSpec {
      * @return
      */
     public String getType() {
-        return getString(CLASS, null);
-    }
-
-    /**
-     * Name of the object
-     *
-     * @return Name of the object
-     */
-    @Override
-    public String getName() {
-        return getString(NAME, null);
-    }
-
-    @Override
-    public String getNamespace() {
-        return getString(NAMESPACE, null);
-    }
-
-    public void setName(String name) {
-        put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
+        return getSpec().getString(CLASS, null);
     }
 
     /**
@@ -116,21 +102,21 @@ public class BeanElement extends MapElement<Element> implements BeanSpec {
     /**
      * Return the value of this element definition
      *
-     * @param expectedType Expected kind
-     * @param parentComponent    Component
+     * @param expectedType    Expected kind
+     * @param parentComponent Component
      * @return the value
      */
     public <T> T getValue(Class<T> expectedType, Component parentComponent) {
         Map values = new ParametersMap();
-        for(Map.Entry<String, Element> entry: entrySet()) {
+        for (Map.Entry<String, Element> entry : getSpec().entrySet()) {
             String key = entry.getKey();
-            if (!key.startsWith("_")) {
-                values.put(key, entry.getValue().getValue(null, parentComponent));
-            }
+//            if (!key.startsWith("_")) {
+            values.put(key, entry.getValue().getValue(null, parentComponent));
+//            }
         }
 
         if (expectedType == null) {
-            expectedType = (Class<T>)getTypeClass();
+            expectedType = (Class<T>) getTypeClass();
         }
 
         ComponentFactory factory = parentComponent.getCurrentComponentFactory();

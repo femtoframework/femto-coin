@@ -3,10 +3,12 @@ package org.femtoframework.coin.spec.element;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.NamespaceAccess;
 import org.femtoframework.coin.spec.NamespaceSpec;
-import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.util.DataUtil;
 
 import java.util.Map;
+
+import static org.femtoframework.coin.CoinConstants.LABEL_ACCESS;
+import static org.femtoframework.coin.CoinConstants.NAME;
 
 /**
  * Namespace Element
@@ -22,7 +24,7 @@ public class NamespaceElement extends ModelElement implements NamespaceSpec {
 
     public NamespaceElement(String name) {
         super(CoreKind.NAMESPACE);
-        put(_NAME, new PrimitiveElement<>(CoreKind.STRING, name));
+        put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
     }
 
     public NamespaceElement(Map map) {
@@ -37,7 +39,10 @@ public class NamespaceElement extends ModelElement implements NamespaceSpec {
      */
     @Override
     public NamespaceAccess getAccess() {
-        Object value = getValue(SpecConstants._ACCESS);
+        Object value = getMetadata().getLabels().getValue(LABEL_ACCESS, NamespaceAccess.LOCAL);
+        if (value instanceof String) {
+            value = ((String)value).toUpperCase();
+        }
         return DataUtil.getEnum(NamespaceAccess.class, value, NamespaceAccess.LOCAL);
     }
 }

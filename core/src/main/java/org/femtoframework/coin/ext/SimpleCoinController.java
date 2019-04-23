@@ -3,10 +3,8 @@ package org.femtoframework.coin.ext;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
 import org.femtoframework.bean.annotation.Ignore;
-import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.*;
-import org.femtoframework.coin.spec.element.ModelElement;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
@@ -21,8 +19,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import static org.femtoframework.coin.CoinConstants.APPLICATION_YAML;
-import static org.femtoframework.coin.CoinConstants.COMPONENT_YAML;
+import static org.femtoframework.coin.CoinConstants.*;
 
 
 /**
@@ -106,18 +103,18 @@ public class SimpleCoinController implements CoinController {
     @Override
     public void create(URI... uris) throws IOException {
         List<LinkedHashMap> maps = toMaps(uris);
-        List<BeanSpec> beanSpecs = createSpecs(maps);
+        List<ComponentSpec> beanSpecs = createSpecs(maps);
         createBeans(beanSpecs);
         keepStage(beanSpecs, BeanStage.CONFIGURE);
         keepStage(beanSpecs, BeanStage.INITIALIZE);
         keepStage(beanSpecs, BeanStage.START);
     }
 
-    protected List<BeanSpec> createSpecs(List<LinkedHashMap> specs) throws IOException {
+    protected List<ComponentSpec> createSpecs(List<LinkedHashMap> specs) throws IOException {
         int index = 1;
-        List<BeanSpec> beanSpecs = new ArrayList<>();
+        List<ComponentSpec> compSpecs = new ArrayList<>();
         for(LinkedHashMap map: specs) {
-            String version = ModelElement.getVersion(map);
+            String version = MapSpec.getApiVersion(map);
             KindSpec kindSpec = kindSpecFactory.get(version);
             if (kindSpec == null) {
                 throw new IOException("Version:" + version + " doesn't support, please make sure " +
@@ -127,7 +124,8 @@ public class SimpleCoinController implements CoinController {
             MapSpec spec = kindSpec.toSpec(map);
             Kind kind = spec.getKind();
             if (kind == CoreKind.NAMESPACE) {
-                String name = ModelElement.getString(spec, SpecConstants._NAME, null);
+                NamespaceSpec namespaceSpec = (NamespaceSpec)spec;
+                String name = namespaceSpec.getName();
                 if (StringUtil.isInvalid(name)) {
                     throw new IOException("No name in kind 'namespace', spec index:" + index);
                 }
@@ -137,19 +135,19 @@ public class SimpleCoinController implements CoinController {
                 }
                 namespaceFactory.createNamespace(name, ((NamespaceSpec)spec));
             }
-            else if (kind == CoreKind.BEAN) {
-                BeanSpec beanSpec = (BeanSpec)spec;
-                String namespace = beanSpec.getNamespace();
+            else if (kind == CoreKind.COMPONENT) {
+                ComponentSpec compSpec = (ComponentSpec)spec;
+                String namespace = compSpec.getNamespace();
                 Namespace ns = namespaceFactory.getNamespace(namespace, true);
-                String name = beanSpec.getName();
-                SpecFactory<BeanSpec> specFactory = ns.getSpecFactory(BeanSpec.class);
-                BeanSpec oldSpec = specFactory.get(name);
+                String name = compSpec.getName();
+                SpecFactory<ComponentSpec> specFactory = ns.getSpecFactory(ComponentSpec.class);
+                ComponentSpec oldSpec = specFactory.get(name);
                 if (oldSpec != null && log.isWarnEnabled()) { //Since application spec is allowing to override the spec within component spec
                     log.warn("A new BeanSpec with same namespace and name has been found, replacing with new one, "
-                            + oldSpec.getQualifiedName());
+                            + oldSpec.getNamespace() + ":" + oldSpec.getName());
                 }
-                specFactory.add(beanSpec);
-                beanSpecs.add(beanSpec);
+                specFactory.add(compSpec);
+                compSpecs.add(compSpec);
             }
             else if (kind == CoreKind.CONFIG) {
                 ConfigSpec configSpec = (ConfigSpec)spec;
@@ -173,11 +171,11 @@ public class SimpleCoinController implements CoinController {
                 throw new IOException("Unsupported kind yet:" + kind);
             }
         }
-        return beanSpecs;
+        return compSpecs;
     }
 
-    protected void createBeans( List<BeanSpec> specs) {
-        for(BeanSpec spec: specs) { //Create all components
+    protected void createBeans(List<ComponentSpec> specs) {
+        for(ComponentSpec spec: specs) { //Create all components
             if (spec.isEnabled()) {
                 String namespace = spec.getNamespace();
                 Namespace ns = namespaceFactory.get(namespace);
@@ -186,8 +184,8 @@ public class SimpleCoinController implements CoinController {
         }
     }
 
-    protected void keepStage(List<BeanSpec> specs, BeanStage stage) {
-        for(BeanSpec spec: specs) { //Configure all beans
+    protected void keepStage(List<ComponentSpec> specs, BeanStage stage) {
+        for(ComponentSpec spec: specs) { //Configure all beans
             if (spec.isEnabled()) {
                 String namespace = spec.getNamespace();
                 Namespace ns = namespaceFactory.get(namespace);
@@ -218,7 +216,7 @@ public class SimpleCoinController implements CoinController {
         int index = 1;
         List<LinkedHashMap> maps = toMaps(uris);
         for(LinkedHashMap map: maps) {
-            String version = ModelElement.getVersion(map);
+            String version = MapSpec.getApiVersion(map);
             KindSpec kindSpec = kindSpecFactory.get(version);
             if (kindSpec == null) {
                 throw new IOException("Version:" + version + " doesn't support, please make sure " +
@@ -228,7 +226,8 @@ public class SimpleCoinController implements CoinController {
             MapSpec spec = kindSpec.toSpec(map);
             Kind kind = spec.getKind();
             if (kind == CoreKind.NAMESPACE) {
-                String name = ModelElement.getString(spec, SpecConstants._NAME, null);
+                NamespaceSpec namespaceSpec = (NamespaceSpec)spec;
+                String name = namespaceSpec.getName();
                 if (StringUtil.isInvalid(name)) {
                     throw new IOException("No name in kind 'namespace', spec index:" + index);
                 }
@@ -238,12 +237,12 @@ public class SimpleCoinController implements CoinController {
                 }
                 //TODO another attribute to update?
             }
-            else if (kind == CoreKind.BEAN) {
-                BeanSpec beanSpec = (BeanSpec)spec;
-                String namespace = beanSpec.getNamespace();
+            else if (kind == CoreKind.COMPONENT) {
+                ComponentSpec componentSpec = (ComponentSpec)spec;
+                String namespace = componentSpec.getNamespace();
                 Namespace ns = namespaceFactory.getNamespace(namespace, true);
-                String name = beanSpec.getName();
-                SpecFactory<BeanSpec> specFactory = ns.getSpecFactory(BeanSpec.class);
+                String name = componentSpec.getName();
+                SpecFactory<ComponentSpec> specFactory = ns.getSpecFactory(ComponentSpec.class);
                 ModelSpec oldSpec = specFactory.get(name);
                 if (oldSpec == null) {
                     throw new IOException("Spec " + namespace + ":" + name + " doesn't exist.");
@@ -255,6 +254,23 @@ public class SimpleCoinController implements CoinController {
 
                 }
             }
+//            else if (kind == CoreKind.BEAN) {
+//                BeanSpec beanSpec = (BeanSpec)spec;
+//                String namespace = beanSpec.getNamespace();
+//                Namespace ns = namespaceFactory.getNamespace(namespace, true);
+//                String name = beanSpec.getName();
+//                SpecFactory<ComponentSpec> specFactory = ns.getSpecFactory(ComponentSpec.class);
+//                ModelSpec oldSpec = specFactory.get(name);
+//                if (oldSpec == null) {
+//                    throw new IOException("Spec " + namespace + ":" + name + " doesn't exist.");
+//                }
+//
+//                //TODO apply new beanSpec
+//                Component component = ns.getComponentFactory().get(name);
+//                if (component != null) {
+//
+//                }
+//            }
             else if (kind == CoreKind.CONFIG) {
                 ConfigSpec configSpec = (ConfigSpec)spec;
                 String namespace = configSpec.getNamespace();
@@ -289,7 +305,7 @@ public class SimpleCoinController implements CoinController {
         int index = 1;
         List<LinkedHashMap> maps = toMaps(uris);
         for(LinkedHashMap map: maps) {
-            String version = ModelElement.getVersion(map);
+            String version = MapSpec.getApiVersion(map);
             KindSpec kindSpec = kindSpecFactory.get(version);
             if (kindSpec == null) {
                 throw new IOException("Version:" + version + " doesn't support, please make sure " +
@@ -299,7 +315,8 @@ public class SimpleCoinController implements CoinController {
             MapSpec spec = kindSpec.toSpec(map);
             Kind kind = spec.getKind();
             if (kind == CoreKind.NAMESPACE) {
-                String name = ModelElement.getString(spec, SpecConstants._NAME, null);
+                NamespaceSpec namespaceSpec = (NamespaceSpec)spec;
+                String name = namespaceSpec.getName();
                 if (StringUtil.isInvalid(name)) {
                     throw new IOException("No name in kind 'namespace', spec index:" + index);
                 }
@@ -309,17 +326,17 @@ public class SimpleCoinController implements CoinController {
                 }
                 namespaceFactory.delete(name);
             }
-            else if (kind == CoreKind.BEAN) {
-                BeanSpec beanSpec = (BeanSpec)spec;
-                String namespace = beanSpec.getNamespace();
+            else if (kind == CoreKind.COMPONENT) {
+                ComponentSpec compSpec = (ComponentSpec)spec;
+                String namespace = compSpec.getNamespace();
                 Namespace ns = namespaceFactory.get(namespace);
                 if (ns == null) {
                     throw new NoSuchNamespaceException("No such namespace:" + namespace + " in spec index:" + index);
                 }
-                String name = beanSpec.getName();
+                String name = compSpec.getName();
 
                 ns.getBeanFactory().delete(name);
-                ns.getSpecFactory(BeanSpec.class).delete(name);
+                ns.getSpecFactory(ComponentSpec.class).delete(name);
                 Component component = ns.getComponentFactory().get(name);
                 if (component != null) {
                     ns.getComponentFactory().delete(name);

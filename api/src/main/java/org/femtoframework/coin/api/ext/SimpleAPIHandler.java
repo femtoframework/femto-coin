@@ -14,7 +14,6 @@ import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.ConfigSpec;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.MapSpec;
-import org.femtoframework.coin.spec.SpecConstants;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.spec.element.SpecParameters;
 import org.femtoframework.coin.spi.CoinModuleAware;
@@ -32,8 +31,6 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.femtoframework.coin.api.APIConstants.*;
-import static org.femtoframework.coin.spec.SpecConstants.NAME;
-import static org.femtoframework.coin.spec.SpecConstants._NAME;
 
 /**
  * API Handler
@@ -208,7 +205,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                                             if (resourceType == ResourceType.SPEC) {
                                                 response.setErrorMessage(405, "Action 'action' is not allowed on resource 'spec' ");
                                             } else {
-                                                String actionName = parameters.getString(_NAME);
+                                                String actionName = parameters.getString(NAME);
                                                 if (StringUtil.isInvalid(actionName)) {
                                                     response.setErrorMessage(301, "No action name '_name'.");
                                                 } else {
@@ -415,10 +412,10 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
             }
             else {
                 Parameters parameters = beanInfo.toParameters(obj);
-                if (name != null && !(parameters.containsKey(NAME) || parameters.containsKey(_NAME))) {
-                    parameters.put(_NAME, name);
+                if (name != null && !(parameters.containsKey(NAME))) {
+                    parameters.put(NAME, name);
                 }
-                parameters.put(SpecConstants._TYPE, clazz.getName());
+                parameters.put(CLASS, clazz.getName());
                 return parameters;
             }
         }

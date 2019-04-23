@@ -10,14 +10,20 @@ It supports limit dependency injections what are good enough for micro-service
 It only has 7 dependencies includes slf4j.
 ### No. 3 FAST It takes only 500ms to launch a tiny service.
 
+# Terms
+### Namespace
+### Component
+  Service or Bean who has independent lifecycle.
+### Bean
+  Object which managed by Coin
+
 # Namespaces
 ## special namespaces
 ### e: System.env
 ### p: System.properties
 ### r: Remote service
 ### c: Configurators
-### s: Bean Specs
-
+### s: Specs
 
 
 # Annotations

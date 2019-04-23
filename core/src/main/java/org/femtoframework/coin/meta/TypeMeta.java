@@ -1,5 +1,7 @@
 package org.femtoframework.coin.meta;
 
+import org.femtoframework.coin.spec.Kind;
+
 /**
  * Type Meta
  *
@@ -12,7 +14,7 @@ public interface TypeMeta {
      *
      * @return Kind
      */
-    String getKind();
+    Kind getKind();
 
     /**
      * API Version

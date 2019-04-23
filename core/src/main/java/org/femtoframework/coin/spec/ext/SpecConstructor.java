@@ -4,7 +4,7 @@ import org.femtoframework.coin.CoinUtil;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.KindSpec;
 import org.femtoframework.coin.spec.KindSpecFactory;
-import org.femtoframework.coin.spec.SpecConstants;
+import org.femtoframework.coin.spec.MapSpec;
 import org.femtoframework.coin.spec.element.*;
 import org.yaml.snakeyaml.constructor.Construct;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -26,7 +26,7 @@ public class SpecConstructor extends SafeConstructor {
 
 
     private static Tag[] tags = new Tag[] {
-            Tag.NULL, Tag.STR, Tag.INT, null,  Tag.FLOAT, Tag.BOOL, Tag.BINARY, Tag.TIMESTAMP, Tag.MAP, Tag.SEQ, Tag.SET, null, null, null, null
+            Tag.NULL, Tag.STR, Tag.INT, null,  Tag.FLOAT, Tag.BOOL, Tag.BINARY, Tag.TIMESTAMP, Tag.MAP, Tag.SEQ, Tag.SET, null, null, null, null, null
     };
 
 
@@ -138,7 +138,7 @@ public class SpecConstructor extends SafeConstructor {
                     return new SetElement<>((Set)value);
                 case MAP:
                     Map map = (Map)value;
-                    String version = ModelElement.getVersion(map);
+                    String version = MapSpec.getApiVersion(map);
                     KindSpecFactory factory = CoinUtil.getKindSpecFactory();
                     KindSpec kindSpec = factory.get(version);
                     if (kindSpec == null) {

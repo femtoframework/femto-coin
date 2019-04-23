@@ -6,6 +6,8 @@ import org.femtoframework.bean.annotation.Coined;
 import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.pattern.ext.BaseFactory;
 
+import static org.femtoframework.coin.CoinConstants.NAMESPACE_COIN;
+
 /**
  * Base ResourceFactory
  *
@@ -59,7 +61,7 @@ public class BaseResourceFactory<B> extends BaseFactory<B> implements ResourceFa
      */
     protected void applyStageToChildren(String namePrefix, BeanStage stage) {
         NamespaceFactory namespaceFactory = getNamespaceFactory();
-        Namespace namespace = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
+        Namespace namespace = namespaceFactory.get(NAMESPACE_COIN);
         ComponentFactory componentFactory = namespace.getComponentFactory();
         for(String name: getNames()) {
             B bean = get(name);

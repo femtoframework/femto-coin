@@ -60,7 +60,7 @@ public interface Namespace extends NamedBean {
             case BEAN:
                 return (ResourceFactory<T>)getBeanFactory();
             case SPEC:
-                return (ResourceFactory<T>)getBeanSpecFactory();
+                return (ResourceFactory<T>) getComponentSpecFactory();
             case CONFIG:
                 return (ResourceFactory<T>)getConfigSpecFactory();
             default:
@@ -74,8 +74,8 @@ public interface Namespace extends NamedBean {
      * @return BeanSpecFactory
      */
     @Property(writable = false)
-    default SpecFactory<BeanSpec> getBeanSpecFactory() {
-        return getSpecFactory(BeanSpec.class);
+    default SpecFactory<ComponentSpec> getComponentSpecFactory() {
+        return getSpecFactory(ComponentSpec.class);
     }
 
     /**

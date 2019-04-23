@@ -105,8 +105,9 @@ public class SimpleNamespace implements Namespace, InitializableMBean {
     public void _doInit() {
         NamespaceFactory namespaceFactory = coinModule.getNamespaceFactory();
 
-        SimpleSpecFactory<BeanSpec> beanSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
+        SimpleSpecFactory<? extends BeanSpec> beanSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
         SimpleSpecFactory<ConfigSpec> configSpecFactory = new SimpleSpecFactory<>(namespaceFactory, name);
+        specFactories.put(ComponentSpec.class, beanSpecFactory);
         specFactories.put(BeanSpec.class, beanSpecFactory);
         specFactories.put(ConfigSpec.class, configSpecFactory);
 

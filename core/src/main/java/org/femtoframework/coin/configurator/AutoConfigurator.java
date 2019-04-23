@@ -4,8 +4,6 @@ import org.femtoframework.annotation.Resources;
 import org.femtoframework.coin.*;
 import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.bean.annotation.Property;
-import org.femtoframework.bean.info.BeanInfo;
-import org.femtoframework.bean.info.PropertyInfo;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.util.CoinNameUtil;
@@ -154,6 +152,9 @@ public class AutoConfigurator implements Configurator {
         if (value == null) {
             Class<?> expectedType = method.getParameterTypes()[0];
             BeanSpec spec = component.getSpec();
+            if (spec instanceof ComponentSpec) {
+                spec = ((ComponentSpec)spec).getSpec();
+            }
 
             Property property = method.getAnnotation(Property.class);
             if (property != null) {
@@ -239,28 +240,6 @@ public class AutoConfigurator implements Configurator {
             else if (element != null) { //Primitive value
                 injection = new Injection(element, targetName, method, expectedType, null);
             }
-            // This is low performance
-//            else {
-//                if (expectedType != null && expectedType.isInterface()) {
-//                    //Search existing beans, whether there is only one bean implements this interface
-//                    BeanSpec foundSpec = null;
-//                    for(BeanSpec beanSpec: component.getCurrentNamespace().getBeanSpecFactory()) {
-//                        if (expectedType.isAssignableFrom(beanSpec.getTypeClass())) {
-//                            if (foundSpec == null) {
-//                                foundSpec = beanSpec;
-//                            }
-//                            else {
-//                                log.warn("Found multiple beans implement this interface:" + expectedType.getSimpleName());
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    if (foundSpec != null) {
-//                        injection = new Injection(foundSpec, targetName, method, expectedType, null);
-//                    }
-//                }
-//            }
-
 
             if (childComponent != null) {
                 injection = new Injection(element, targetName, method, expectedType, childComponent);

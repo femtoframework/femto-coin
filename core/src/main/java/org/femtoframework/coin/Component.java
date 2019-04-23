@@ -4,9 +4,13 @@ import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.bean.info.BeanInfo;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.ComponentSpec;
 import org.femtoframework.coin.status.BeanStatus;
 
+import java.util.List;
 import java.util.Map;
+
+import static org.femtoframework.coin.CoinConstants.*;
 
 /**
  * Component
@@ -16,7 +20,8 @@ import java.util.Map;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface Component extends CoinObject<BeanSpec, BeanStatus> {
+public interface Component extends Model<BeanSpec, BeanStatus> {
+
     /**
      * Namespace of this component
      *
@@ -24,7 +29,10 @@ public interface Component extends CoinObject<BeanSpec, BeanStatus> {
      */
     default String getNamespace() {
         BeanSpec spec = getSpec();
-        return spec != null ? spec.getNamespace() : null;
+        if (spec instanceof ComponentSpec) {
+            return spec.getNamespace();
+        }
+        return null;
     }
 
     /**
@@ -45,7 +53,7 @@ public interface Component extends CoinObject<BeanSpec, BeanStatus> {
      * 2. Level 2 components,
      * name.childName
      *
-     * @return
+     * @return GeneratedName
      */
     default String getGenerateName() {
         return getName();
@@ -218,5 +226,52 @@ public interface Component extends CoinObject<BeanSpec, BeanStatus> {
                 return getBeanInfo();
         }
         throw new IllegalArgumentException("Resource type:" + resourceType + " doesn't support");
+    }
+
+
+    /**
+     * Return belongsTo
+     *
+     * belongsTo syntax
+     *
+     * [NAMESPACE:]&lt;NAME&gt;#&lt;METHOD_NAME&gt;
+     * 1. The method must be declared on an interface
+     * 2. The method must have only one argument
+     * 3. The method argument should be an interface which the current bean implements
+     * 4. NAMESPACE is optional, if it doesn't specify, use the bean's namespace
+     *
+     * @return A list of belongsTo
+     */
+    default List<String> getBelongsTo() {
+        return getLabels().getStringList(LABEL_BELONGS_TO);
+    }
+
+    /**
+     * Is it singleton?
+     * If it is true, then coin will try to create it in singleton pattern first.
+     *
+     * @return Singleton
+     */
+    default boolean isSingleton() {
+        return getLabels().getBoolean(LABEL_SINGLETON);
+    }
+
+    /**
+     * Whether it is default for the specific interface.
+     * If multiple beans set default==true, the last one will be enabled as "default=true" in the factory
+     *
+     * @return is it the default implementation of the interface
+     */
+    default boolean isDefault() {
+        return getLabels().getBoolean(LABEL_DEFAULT);
+    }
+
+    /**
+     * Whether the bean is enabled or not.
+     *
+     * @return Is enabled or not
+     */
+    default boolean isEnabled() {
+        return getLabels().getBoolean(LABEL_ENABLED);
     }
 }

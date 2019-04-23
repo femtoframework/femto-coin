@@ -40,6 +40,10 @@ public interface CoinConstants {
 
     String NAMESPACE = "namespace";
 
+    String LABELS = "labels";
+
+    String ANNOTATIONS = "annotations";
+
     /**
      * If it uses "name" in the spec, that means the name could be part of spec and it also could inject to bean
      */
@@ -48,4 +52,30 @@ public interface CoinConstants {
     String SPEC = "spec";
 
     String API_VERSION = "apiVersion";
+
+
+    String VERSION_K8S_V1 = "v1";
+    String VERSION_COIN_V1 = "coin/v1";
+
+    String BEAN = "bean";
+
+    String COMPONENT = "component";
+
+    String CONFIG = "config";
+
+    String CLASS = "class";
+
+    String LABEL_DEFAULT = "default";
+
+    String LABEL_ENABLED = "enabled";
+
+
+    String LABEL_ACCESS = "access";
+
+    String LABEL_SINGLETON = "singleton";
+
+    /**
+     * Link the current bean to target beans
+     */
+    String LABEL_BELONGS_TO = "belongsTo";
 }

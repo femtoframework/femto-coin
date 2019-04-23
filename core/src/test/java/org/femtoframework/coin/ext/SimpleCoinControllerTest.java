@@ -3,6 +3,7 @@ package org.femtoframework.coin.ext;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.NamespaceAccess;
+import org.femtoframework.coin.spec.ComponentSpec;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.util.nutlet.NutletUtil;
 import org.junit.Test;
@@ -47,8 +48,8 @@ public class SimpleCoinControllerTest {
         assertNotNull(ns);
         assertEquals(NamespaceAccess.PUBLIC, ns.getAccess());
 
-        BeanSpec spec = ns.getSpecFactory(BeanSpec.class).get("first");
-        assertNotNull(spec.get("second"));
+        ComponentSpec spec = ns.getSpecFactory(ComponentSpec.class).get("first");
+        assertNotNull(spec.getSpec().get("second"));
 
         Component component = ns.getComponentFactory().get(spec.getName());
         assertNotNull(component);

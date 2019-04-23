@@ -1,18 +1,20 @@
 # Namespace,
-apiVersion: v1 #optional
+apiVersion: coin/v1 #optional
 kind: Namespace #required
 metadata:
   name: test #optional, default is "default"
+  labels:
+    access: public
 
 ---
 # First Bean
 apiVersion: coin/v1 #optional
-kind: Bean
+kind: Component
 metadata:
   name: first
   namespace: test #optional, default is "default"
-class: org.femtoframework.coin.FirstBean
 spec:
+  class: org.femtoframework.coin.FirstBean
   second:
     ints: [1,2,3]
     stringList:

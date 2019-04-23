@@ -8,8 +8,10 @@ import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.exception.BeanCreationException;
 import org.femtoframework.coin.exception.BeanNotExpectedException;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.ComponentSpec;
 import org.femtoframework.coin.spec.SpecFactory;
 import org.femtoframework.coin.spec.element.BeanElement;
+import org.femtoframework.coin.spec.element.ComponentElement;
 import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.implement.ImplementConfig;
@@ -32,7 +34,7 @@ import java.util.Map;
 public class SimpleComponentFactory extends BaseResourceFactory<Component> implements ComponentFactory {
 
     @Ignore
-    private SpecFactory<BeanSpec> specFactory;
+    private SpecFactory<? extends BeanSpec> specFactory;
 
     @Ignore
     private Logger log = LoggerFactory.getLogger(SimpleComponentFactory.class);
@@ -43,7 +45,7 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
     @Ignore
     private CoinModule module;
 
-    public SimpleComponentFactory(CoinModule module, SpecFactory<BeanSpec> specFactory, LifecycleStrategy strategy) {
+    public SimpleComponentFactory(CoinModule module, SpecFactory<? extends BeanSpec> specFactory, LifecycleStrategy strategy) {
         super(module.getNamespaceFactory(), specFactory.getNamespace());
         this.module = module;
         this.specFactory = specFactory;
@@ -61,7 +63,7 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
     @Override
     public Component create(String name, Class<?> implClass, BeanStage targetStage) {
         name = checkName(name, implClass);
-        BeanSpec spec = new BeanElement(getNamespace(), name, implClass);
+        BeanElement spec = new BeanElement(getNamespace(), name, implClass);
         return doCreate(null, spec, targetStage);
     }
 
@@ -174,7 +176,7 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
 
 
     protected Component doCreate(Object bean, BeanSpec spec, BeanStage targetStage) {
-        SimpleComponent component = new SimpleComponent(module, spec);
+        SimpleComponent component = new SimpleComponent(module, getNamespace(), spec);
         component.setStage(targetStage);
         component.setBean(bean);
         bean = createBean(component);
@@ -236,7 +238,7 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
             return config != null ? config.getImplementationClass() : null;
         }
 
-        Iterator<BeanSpec> it = specFactory.iterator();
+        Iterator<? extends BeanSpec> it = specFactory.iterator();
         BeanSpec found = null;
         while (it.hasNext()) {
             BeanSpec spec = it.next();

@@ -10,6 +10,7 @@ import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.bean.info.BeanInfo;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.ComponentSpec;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.status.BeanStatus;
@@ -27,11 +28,9 @@ import static org.femtoframework.coin.CoinConstants.NAME;
  * @version 1.0
  */
 @Coined
-public class SimpleComponent implements Component, Nameable {
-
-    private BeanSpec spec;
-
-    private BeanStatus status = new SimpleBeanStatus();
+public class SimpleComponent extends SimpleModel<BeanSpec, BeanStatus>
+        implements Component, Nameable
+{
     private BeanStage stage = BeanStage.CREATE;
 
     private transient Object bean;
@@ -42,10 +41,14 @@ public class SimpleComponent implements Component, Nameable {
     @Ignore
     private transient Namespace currentNamespace;
 
-    public SimpleComponent(CoinModule module, BeanSpec spec) {
+    public SimpleComponent(CoinModule module, String namespace, BeanSpec spec) {
+        setNamespace(namespace);
+        setName(spec.getName());
+        setKind(spec instanceof ComponentSpec ? CoreKind.COMPONENT : CoreKind.BEAN);
+        setSpec(spec);
+        setStatus(new SimpleBeanStatus());
         this.module = module;
-        this.spec = spec;
-        this.currentNamespace = module.getNamespaceFactory().get(spec.getNamespace());
+        this.currentNamespace = module.getNamespaceFactory().get(getNamespace());
     }
 
     /**
@@ -55,7 +58,7 @@ public class SimpleComponent implements Component, Nameable {
      */
     @Property(writable = false)
     public String getNamespace() {
-        return Component.super.getNamespace();
+        return super.getNamespace();
     }
 
     /**
@@ -65,7 +68,7 @@ public class SimpleComponent implements Component, Nameable {
      */
     @Property(writable = false)
     public String getName() {
-        return Component.super.getName();
+        return super.getName();
     }
 
     /**
@@ -92,16 +95,6 @@ public class SimpleComponent implements Component, Nameable {
     }
 
     /**
-     * Bean Spec
-     *
-     * @return BeanSpec
-     */
-    @Override
-    public BeanSpec getSpec() {
-        return spec;
-    }
-
-    /**
      * Return current namespace
      *
      * @return Current Namespace
@@ -109,16 +102,6 @@ public class SimpleComponent implements Component, Nameable {
     @Override
     public Namespace getCurrentNamespace() {
         return currentNamespace;
-    }
-
-    /**
-     * Bean Status
-     *
-     * @return BeanStatus
-     */
-    @Override
-    public BeanStatus getStatus() {
-        return status;
     }
 
     /**
@@ -187,8 +170,9 @@ public class SimpleComponent implements Component, Nameable {
      */
     @Override
     public void setName(String name) {
-        if (spec != null) {
-            spec.put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
+        super.setName(name);
+        if (getSpec() != null) {
+            getSpec().put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
         }
     }
 

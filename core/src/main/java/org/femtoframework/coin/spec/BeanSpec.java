@@ -1,9 +1,9 @@
 package org.femtoframework.coin.spec;
 
+import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.CoinConstants;
 
-import java.util.Collections;
-import java.util.List;
+import static org.femtoframework.coin.CoinConstants.NAME;
 
 /**
  * Bean
@@ -13,23 +13,7 @@ import java.util.List;
  * @author Sheldon Shao
  * @version 1.0
  */
-public interface BeanSpec extends ModelSpec {
-    /**
-     * Return belongsTo
-     *
-     * belongsTo syntax
-     *
-     * [NAMESPACE:]&lt;NAME&gt;#&lt;METHOD_NAME&gt;
-     * 1. The method must be declared on an interface
-     * 2. The method must have only one argument
-     * 3. The method argument should be an interface which the current bean implements
-     * 4. NAMESPACE is optional, if it doesn't specify, use the bean's namespace
-     *
-     * @return A list of belongsTo
-     */
-    default List<String> getBelongsTo() {
-        return Collections.emptyList();
-    }
+public interface BeanSpec extends MapSpec<Element>, NamedBean {
 
     /**
      * Indicate the kind of this bean
@@ -50,27 +34,20 @@ public interface BeanSpec extends ModelSpec {
      *
      * @return Bean Name
      */
-    String getName();
-
-
-    /**
-     * Is it singleton?
-     * If it is true, then coin will try to create it in singleton pattern first.
-     *
-     * @return Singleton
-     */
-    default boolean isSingleton() {
-        return false;
+    default String getName() {
+        return getString(NAME, null);
     }
 
     /**
-     * Return namespace of current bean spec
+     * Return generated name
      *
-     * @return namespace
+     * @return generated name
      */
-    default String getNamespace() { //Default is "current" namespace
-        return CoinConstants.NAMESPACE_DEFAULT;
+    default String getGenerateName() {
+        return getName();
     }
+
+    String getNamespace();
 
     /**
      * Qualified Name
@@ -78,29 +55,8 @@ public interface BeanSpec extends ModelSpec {
      * @return Qualified Name
      */
     default String getQualifiedName() {
-        return getNamespace() + ":" + getName();
+        return getNamespace() + CoinConstants.CHAR_COLON + getGenerateName();
     }
-
-    /**
-     * Whether it is default for the specific interface.
-     * If multiple beans set default==true, the last one will be enabled as "default=true" in the factory
-     *
-     * @return is it the default implementation of the interface
-     */
-    default boolean isDefault() {
-        return true;
-    }
-
-    /**
-     * Whether the bean is enabled or not.
-     *
-     * TODO check that in component
-     * @return Is enabled or not
-     */
-    default boolean isEnabled() {
-        return true;
-    }
-
     /**
      * Start visiting this spec
      *

@@ -1,20 +1,20 @@
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
-  name: beans.coin.femtoframework.org # Obligatory field to identify the resource
+  name: namespaces.coin.femtoframework.org # Obligatory field to identify the resource
 spec:
   group: coin # Obligatory field to identify the resource
   versions: # Obligatory field to identify the resource
     - name: v1
       served: true
       storage: true
-  scope: Namespaced
+  scope: cluster-scoped
   names: # Obligatory field to identify the resource
-    plural: beans
-    singular: bean
-    kind: Bean
+    plural: namespaces
+    singular: namespace
+    kind: Namespace
     shortNames:
-      - bn
+      - cns
   validation:
     openAPIV3Schema:
       properties:
@@ -24,8 +24,84 @@ spec:
           type: string
         metadata:
           type: object
-        class:
+          properties:
+            name:
+              type: string
+            labels:
+              type: object
+              properties:
+                access:
+                  type: string
+              additionalProperties:
+                type: object
+            annotations:
+              type: object
+        spec:
+          type: object
+          properties:
+            class:
+              type: string
+          additionalProperties:
+            type: object
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: components.coin.femtoframework.org # Obligatory field to identify the resource
+spec:
+  group: coin # Obligatory field to identify the resource
+  versions: # Obligatory field to identify the resource
+    - name: v1
+      served: true
+      storage: true
+  scope: Namespaced
+  names: # Obligatory field to identify the resource
+    plural: components
+    singular: component
+    kind: Component
+    shortNames:
+      - comp
+      - cmp
+  validation:
+    openAPIV3Schema:
+      properties:
+        apiVersion:
           type: string
+        kind:
+          type: string
+        metadata:
+          type: object
+          properties:
+            name:
+              type: string
+            namespace:
+              type: string
+            labels:
+              type: object
+              properties:
+                belongsTo:
+                  type: array
+                  items:
+                    type: string
+                singleton:
+                  type: boolean
+                enabled:
+                  type: boolean
+                default:
+                  type: boolean
+                additionalProperties:
+                  type: object
+            annotations:
+              type: object
+        spec:
+          type: object
+          properties:
+            class:
+              type: string
+          additionalProperties:
+            type: object
+
 
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
@@ -54,3 +130,14 @@ spec:
           type: string
         metadata:
           type: object
+          properties:
+            name:
+              type: string
+            namespace:
+              type: string
+            labels:
+              type: object
+            annotations:
+              type: object
+      additionalProperties:
+        type: object
