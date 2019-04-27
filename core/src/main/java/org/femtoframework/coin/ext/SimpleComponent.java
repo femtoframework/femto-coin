@@ -9,11 +9,11 @@ import org.femtoframework.bean.annotation.Coined;
 import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.bean.info.BeanInfo;
-import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.ComponentSpec;
-import org.femtoframework.coin.spec.CoreKind;
+import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.status.BeanStatus;
+import org.femtoframework.parameters.Parameters;
+import org.femtoframework.util.CollectionUtil;
 import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.LinkedHashMap;
@@ -175,6 +175,41 @@ public class SimpleComponent extends SimpleModel<BeanSpec, BeanStatus>
             getSpec().put(NAME, new PrimitiveElement<>(CoreKind.STRING, name));
         }
     }
+
+    /**
+     * Labels
+     *
+     * @return Labels
+     */
+    @Override
+    public Parameters<String> getLabels() {
+        BeanSpec spec = getSpec();
+        if (spec instanceof ComponentSpec) {
+            ComponentSpec componentSpec = (ComponentSpec)spec;
+            return new ParametersSpecAdapter(componentSpec.getMetadata().getLabels());
+        }
+        else {
+            return super.getLabels();
+        }
+    }
+
+    /**
+     * Annotations
+     *
+     * @return Annotations
+     */
+    @Override
+    public Parameters<String> getAnnotations() {
+        BeanSpec spec = getSpec();
+        if (spec instanceof ComponentSpec) {
+            ComponentSpec componentSpec = (ComponentSpec)spec;
+            return new ParametersSpecAdapter(componentSpec.getMetadata().getLabels());
+        }
+        else {
+            return super.getAnnotations();
+        }
+    }
+
 
     private Map<String, Component> children = null;
 

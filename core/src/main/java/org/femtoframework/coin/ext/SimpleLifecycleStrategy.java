@@ -77,7 +77,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
         String className = spec.getType();
         if (className == null) {
-            throw new ObjectCreationException("No _type found in bean, " + component.getNamespace() + ":" + beanName);
+            throw new ObjectCreationException("No class found in bean, " + component.getNamespace() + ":" + beanName);
         }
         Class<?> clazz = null;
         try {

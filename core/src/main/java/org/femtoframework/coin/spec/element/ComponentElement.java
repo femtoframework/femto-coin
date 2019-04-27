@@ -3,10 +3,7 @@ package org.femtoframework.coin.spec.element;
 import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.ComponentFactory;
-import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.ComponentSpec;
-import org.femtoframework.coin.spec.CoreKind;
-import org.femtoframework.coin.spec.Element;
+import org.femtoframework.coin.spec.*;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.parameters.ParametersMap;
@@ -41,7 +38,7 @@ public class ComponentElement extends ModelElement<BeanSpec> implements Componen
     }
 
     public void setType(String type) {
-        put(CLASS, new PrimitiveElement<>(CoreKind.STRING, type));
+        getSpec().put(CLASS, new PrimitiveElement<>(CoreKind.STRING, type));
     }
 
     public void setTypeClass(Class<?> implClass) {
@@ -122,5 +119,23 @@ public class ComponentElement extends ModelElement<BeanSpec> implements Componen
         ComponentFactory factory = parentComponent.getCurrentComponentFactory();
         Component component = factory.create(null, this, parentComponent.getStage());
         return component.getBean(expectedType);
+    }
+
+
+    /**
+     * Return Spec
+     *
+     * @return Spec
+     */
+    public BeanSpec getSpec() {
+        MapSpec spec = (MapSpec)get(SPEC);
+        if (spec instanceof BeanSpec) {
+            return ((BeanSpec)spec);
+        }
+        else {
+            BeanElement element = spec != null ? new BeanElement(spec) : new BeanElement();
+            put(SPEC, element);
+            return element;
+        }
     }
 }
