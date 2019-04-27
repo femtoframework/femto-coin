@@ -1,5 +1,8 @@
-_namespace: coin-examples
-_kind: bean
-_name: helloworld
-_type: org.femtoframework.coin.examples.implement.SayHelloImpl
-response: 你好
+apiVersion: coin/v1
+kind: Component
+metadata:
+  namespace: coin-examples
+  name: helloworld
+spec:
+  class: org.femtoframework.coin.examples.implement.SayHelloImpl
+  response: 你好

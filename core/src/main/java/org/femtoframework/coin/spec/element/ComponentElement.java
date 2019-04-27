@@ -110,9 +110,7 @@ public class ComponentElement extends ModelElement<BeanSpec> implements Componen
         Map values = new ParametersMap();
         for (Map.Entry<String, Element> entry : getSpec().entrySet()) {
             String key = entry.getKey();
-//            if (!key.startsWith("_")) {
             values.put(key, entry.getValue().getValue(null, parentComponent));
-//            }
         }
 
         if (expectedType == null) {
