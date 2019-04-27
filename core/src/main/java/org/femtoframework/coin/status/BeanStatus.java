@@ -1,6 +1,8 @@
 package org.femtoframework.coin.status;
 
 import org.femtoframework.bean.BeanPhase;
+import org.femtoframework.parameters.Parameters;
+import org.femtoframework.util.CollectionUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -45,4 +47,14 @@ public interface BeanStatus {
      * @param phase Current phase
      */
     void setPhase(BeanPhase phase);
+
+
+    /**
+     * Attributes associated with this component
+     *
+     * @return Attributes
+     */
+    default Parameters<Object> getAttributes() {
+        return CollectionUtil.emptyParameters();
+    }
 }

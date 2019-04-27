@@ -5,6 +5,8 @@ import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.bean.annotation.Coined;
 import org.femtoframework.coin.status.BeanCondition;
 import org.femtoframework.coin.status.BeanStatus;
+import org.femtoframework.parameters.Parameters;
+import org.femtoframework.parameters.ParametersMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class SimpleBeanStatus implements BeanStatus {
 
     private BeanPhase phase = BeanPhase.DISABLED;
     private List<BeanCondition> conditions = new ArrayList<>(3);
+    private Parameters<Object> attributes = null;
 
     /**
      * Return conditions, container changes will add log information into this field.
@@ -67,5 +70,17 @@ public class SimpleBeanStatus implements BeanStatus {
 
     public void setPhase(BeanPhase phase) {
         this.phase = phase;
+    }
+
+    /**
+     * Attributes associated with this component
+     *
+     * @return Attributes
+     */
+    public Parameters<Object> getAttributes() {
+        if (attributes == null) {
+            attributes = new ParametersMap<>();
+        }
+        return attributes;
     }
 }
