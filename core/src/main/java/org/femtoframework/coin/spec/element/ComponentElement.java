@@ -10,11 +10,13 @@ import org.femtoframework.coin.spec.Element;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.parameters.ParametersMap;
+import org.femtoframework.util.DataUtil;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
-import static org.femtoframework.coin.CoinConstants.CLASS;
-import static org.femtoframework.coin.CoinConstants.NAMESPACE;
+import static org.femtoframework.coin.CoinConstants.*;
 
 public class ComponentElement extends ModelElement<BeanSpec> implements ComponentSpec {
 
@@ -50,25 +52,25 @@ public class ComponentElement extends ModelElement<BeanSpec> implements Componen
     @Ignore
     private transient Class<?> typeClass;
 
-//    /**
-//     * Return belongsTo
-//     * <p>
-//     * belongsTo syntax
-//     *
-//     * @return
-//     */
-//    public List<String> getBelongsTo() {
-//        return DataUtil.getStringList(getValue(LABEL_BELONGS_TO), BeanSpec.super.getBelongsTo());
-//    }
-//
-//    /**
-//     * Set belongsTo
-//     *
-//     * @param belongsTo BelongsTo
-//     */
-//    public void setBelongsTo(String belongsTo) {
-//        put(LABEL_BELONGS_TO, new PrimitiveElement<>(CoreKind.STRING, belongsTo));
-//    }
+    /**
+     * Return belongsTo
+     * <p>
+     * belongsTo syntax
+     *
+     * @return
+     */
+    public List<String> getBelongsTo() {
+        return DataUtil.getStringList(getMetadata().getLabels().getValue(LABEL_BELONGS_TO), Collections.EMPTY_LIST);
+    }
+
+    /**
+     * Set belongsTo
+     *
+     * @param belongsTo BelongsTo
+     */
+    public void setBelongsTo(String belongsTo) {
+        getMetadata().getLabels().put(LABEL_BELONGS_TO, new PrimitiveElement<>(CoreKind.STRING, belongsTo));
+    }
 
     /**
      * Indicate the kind of this bean
