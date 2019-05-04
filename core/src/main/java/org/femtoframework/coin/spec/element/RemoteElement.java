@@ -45,8 +45,8 @@ public class RemoteElement extends BeanElement implements RemoteSpec {
      * @return Interfaces
      */
     @Override
-    public List<String> getInterfaces() {
-        return DataUtil.getStringList(getValue(INTERFACES));
+    public String[] getInterfaces() {
+        return DataUtil.getStrings(getValue(INTERFACES), null);
     }
 
     /**
@@ -70,7 +70,7 @@ public class RemoteElement extends BeanElement implements RemoteSpec {
         RemoteGenerator generator = ImplementUtil.getInstance(RemoteGenerator.class);
 
         ComponentFactory factory = parentComponent.getCurrentComponentFactory();
-        Object bean = generator.generate(expectedType != null ? expectedType.getName() : Object.class.getName(), getInterfaces(), getUri());
+        Object bean = generator.generate(expectedType != null ? expectedType.getName() : Object.class.getName(), getUri(), getInterfaces());
         Component component = factory.create(null, bean, parentComponent.getStage());
         return component.getBean(expectedType);
     }

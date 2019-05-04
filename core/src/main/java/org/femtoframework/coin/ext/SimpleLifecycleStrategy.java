@@ -70,8 +70,8 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
             eventSupport.fireEvent(BeanPhase.ENABLED, component);
             eventSupport.fireEvent(BeanPhase.CREATING, component);
-            bean = generator.generate(Object.class.getName(),
-                    remoteSpec.getInterfaces(), remoteSpec.getUri());
+            bean = generator.generate(Object.class.getName(), remoteSpec.getUri(),
+                    remoteSpec.getInterfaces());
             eventSupport.fireEvent(BeanPhase.CREATED, component);
         }
         else {

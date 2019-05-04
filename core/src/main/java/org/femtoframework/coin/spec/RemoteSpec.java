@@ -12,7 +12,7 @@ public interface RemoteSpec extends BeanSpec {
      *
      * @return Interfaces
      */
-    List<String> getInterfaces();
+    String[] getInterfaces();
 
     /**
      * URI of this remote reference

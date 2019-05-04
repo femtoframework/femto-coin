@@ -18,12 +18,12 @@ public interface RemoteGenerator {
          * Generate object
          *
          * @param expectedType Expected Type
-         * @param interfaces   Interfaces the generated bean should have, could be null, if there is no interface
          * @param uri          Remote URI
+         * @param interfaces   Interfaces the generated bean should have, could be null, if there is no interface
          * @return Generated Object
          */
         @Override
-        public Object generate(String expectedType, List<String> interfaces, String uri) {
+        public Object generate(String expectedType, String uri, String... interfaces) {
             return null;
         }
     };
@@ -32,9 +32,10 @@ public interface RemoteGenerator {
      * Generate object
      *
      * @param expectedType Expected Type
-     * @param interfaces Interfaces the generated bean should have, could be null, if there is no interface
-     * @param uri Remote URI
+     * @param uri          Remote URI
+     * @param interfaces   Interfaces the generated bean should have, could be null, if there is no interface
      * @return Generated Object
      */
-    Object generate(String expectedType, List<String> interfaces, String uri);
+    Object generate(String expectedType, String uri, String... interfaces);
+
 }
