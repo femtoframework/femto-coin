@@ -70,4 +70,13 @@ public interface ElementVisitor {
     default void visitVariable(VariableSpec variableSpec) {
 
     }
+
+    /**
+     * Visit Remote Spec
+     *
+     * @param remoteSpec VariableSpec
+     */
+    default void visitRemote(RemoteSpec remoteSpec) {
+
+    }
 }

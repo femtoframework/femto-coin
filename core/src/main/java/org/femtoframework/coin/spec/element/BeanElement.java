@@ -6,7 +6,6 @@ import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.spec.BeanSpec;
 import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.Element;
-import org.femtoframework.coin.spec.ModelSpec;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.parameters.ParametersMap;
@@ -28,12 +27,20 @@ public class BeanElement extends MapElement<Element> implements BeanSpec {
     }
 
     public BeanElement(Map map) {
-        super(map);
-        setKind(CoreKind.BEAN);
+        this(CoreKind.BEAN, map);
     }
 
     public BeanElement(String namespace, String name, Class<?> implClass) {
-        super(CoreKind.BEAN);
+        this(CoreKind.BEAN, namespace, name, implClass);
+    }
+
+    protected BeanElement(CoreKind kind, Map map) {
+        super(map);
+        setKind(kind);
+    }
+
+    protected BeanElement(CoreKind kind, String namespace, String name, Class<?> implClass) {
+        super(kind);
         setNamespace(namespace);
         setName(name);
         setTypeClass(implClass);
@@ -49,7 +56,9 @@ public class BeanElement extends MapElement<Element> implements BeanSpec {
     }
 
     public void setTypeClass(Class<?> implClass) {
-        setType(implClass.getName());
+        if (implClass != null) {
+            setType(implClass.getName());
+        }
         this.typeClass = implClass;
     }
 

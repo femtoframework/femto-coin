@@ -1,19 +1,3 @@
-/**
- * Licensed to the FemtoFramework under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.*;
@@ -21,7 +5,10 @@ import org.femtoframework.coin.*;
 import org.femtoframework.coin.configurator.AutoConfigurator;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.event.BeanEventSupport;
+import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.RemoteSpec;
+import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.NoSuchClassException;
 import org.femtoframework.lang.reflect.ObjectCreationException;
 import org.femtoframework.lang.reflect.Reflection;
@@ -53,6 +40,8 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
     private BeanEventSupport eventSupport;
 
+    private RemoteGenerator generator = RemoteGenerator.NONE;
+
 
     public SimpleLifecycleStrategy(ConfiguratorFactory configuratorFactory) {
         this.configuratorFactory = configuratorFactory;
@@ -75,53 +64,60 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         String beanName = component.getName();
         BeanSpec spec = component.getSpec();
 
-        String className = spec.getType();
-        if (className == null) {
-            throw new ObjectCreationException("No class found in bean, " + component.getNamespace() + ":" + beanName);
-        }
-        Class<?> clazz = null;
-        try {
-            clazz = Reflection.getClass(className);
-        }
-        catch (ClassNotFoundException cnfe) {
-            throw new NoSuchClassException("Load class " + className + " error:", cnfe);
-        }
-        catch (NoClassDefFoundError ndfe) {
-            throw new NoSuchClassException("Load class " + className + " error:", ndfe);
-        }
+        Object bean = null;
+        if (spec instanceof RemoteSpec) {
+            RemoteSpec remoteSpec = (RemoteSpec)spec;
 
-        eventSupport.fireEvent(BeanPhase.ENABLED, component);
+            eventSupport.fireEvent(BeanPhase.ENABLED, component);
+            eventSupport.fireEvent(BeanPhase.CREATING, component);
+            bean = generator.generate(Object.class.getName(),
+                    remoteSpec.getInterfaces(), remoteSpec.getUri());
+            eventSupport.fireEvent(BeanPhase.CREATED, component);
+        }
+        else {
+            String className = spec.getType();
+            if (className == null) {
+                throw new ObjectCreationException("No class found in bean, " + component.getNamespace() + ":" + beanName);
+            }
+            Class<?> clazz = null;
+            try {
+                clazz = Reflection.getClass(className);
+            } catch (ClassNotFoundException cnfe) {
+                throw new NoSuchClassException("Load class " + className + " error:", cnfe);
+            } catch (NoClassDefFoundError ndfe) {
+                throw new NoSuchClassException("Load class " + className + " error:", ndfe);
+            }
 
-        if (beanName == null) {
-            //Try to get name from Annotation
-            ManagedBean mb = clazz.getAnnotation(ManagedBean.class);
-            if (mb != null) {
-                int index;
-                String qName = mb.value();
-                if ((index = qName.indexOf(':')) > 0) {
-                    beanName = qName.substring(index + 1);
-                    if (component instanceof Nameable) {
-                        ((Nameable)component).setName(beanName);
+            eventSupport.fireEvent(BeanPhase.ENABLED, component);
+
+            if (beanName == null) {
+                //Try to get name from Annotation
+                ManagedBean mb = clazz.getAnnotation(ManagedBean.class);
+                if (mb != null) {
+                    int index;
+                    String qName = mb.value();
+                    if ((index = qName.indexOf(':')) > 0) {
+                        beanName = qName.substring(index + 1);
+                        if (component instanceof Nameable) {
+                            ((Nameable) component).setName(beanName);
+                        }
                     }
                 }
             }
-        }
 
-        eventSupport.fireEvent(BeanPhase.CREATING, component);
+            eventSupport.fireEvent(BeanPhase.CREATING, component);
 
-        Object bean;
-        try {
-            bean = Reflection.newInstance(clazz);
-        }
-        catch (ReflectionException re) {
-            throw new ObjectCreationException("Create object exception:" + clazz.getName(), re);
+            try {
+                bean = Reflection.newInstance(clazz);
+            } catch (ReflectionException re) {
+                throw new ObjectCreationException("Create object exception:" + clazz.getName(), re);
 
-        }
-        catch (Throwable t) {
-            if (log.isErrorEnabled()) {
-                log.error("Create new instance error:", t);
+            } catch (Throwable t) {
+                if (log.isErrorEnabled()) {
+                    log.error("Create new instance error:", t);
+                }
+                throw new ObjectCreationException("Create object exception:" + clazz.getName(), t);
             }
-            throw new ObjectCreationException("Create object exception:" + clazz.getName(), t);
         }
 
         eventSupport.fireEvent(BeanPhase.CREATED, component);
@@ -432,5 +428,13 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
     @Override
     public void _doInit() {
         eventSupport.init();
+
+        try {
+            generator = ImplementUtil.getInstance(RemoteGenerator.class);
+        }
+        catch(Exception ex) {
+            log.warn("No remote generator, using RemoteGenerator.NONE instead");
+            generator = RemoteGenerator.NONE;
+        }
     }
 }

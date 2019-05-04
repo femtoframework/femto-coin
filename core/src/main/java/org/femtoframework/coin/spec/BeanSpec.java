@@ -57,6 +57,7 @@ public interface BeanSpec extends MapSpec<Element>, NamedBean {
     default String getQualifiedName() {
         return getNamespace() + CoinConstants.CHAR_COLON + getGenerateName();
     }
+
     /**
      * Start visiting this spec
      *

@@ -1,22 +1,6 @@
-/**
- * Licensed to the FemtoFramework under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.femtoframework.coin.remote;
 
-import org.femtoframework.coin.Component;
+import java.util.List;
 
 /**
  * Remote Generator
@@ -28,14 +12,29 @@ import org.femtoframework.coin.Component;
  */
 public interface RemoteGenerator {
 
+    RemoteGenerator NONE = new RemoteGenerator() {
+
+        /**
+         * Generate object
+         *
+         * @param expectedType Expected Type
+         * @param interfaces   Interfaces the generated bean should have, could be null, if there is no interface
+         * @param uri          Remote URI
+         * @return Generated Object
+         */
+        @Override
+        public Object generate(String expectedType, List<String> interfaces, String uri) {
+            return null;
+        }
+    };
+
     /**
      * Generate object
      *
      * @param expectedType Expected Type
-     * @param component Component
-     * @param interfaces Interfaces the generated bean should have
+     * @param interfaces Interfaces the generated bean should have, could be null, if there is no interface
      * @param uri Remote URI
      * @return Generated Object
      */
-    Object generate(String expectedType, Component component, String[] interfaces, String uri);
+    Object generate(String expectedType, List<String> interfaces, String uri);
 }

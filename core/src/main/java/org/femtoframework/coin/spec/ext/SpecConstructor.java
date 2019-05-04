@@ -26,7 +26,7 @@ public class SpecConstructor extends SafeConstructor {
 
 
     private static Tag[] tags = new Tag[] {
-            Tag.NULL, Tag.STR, Tag.INT, null,  Tag.FLOAT, Tag.BOOL, Tag.BINARY, Tag.TIMESTAMP, Tag.MAP, Tag.SEQ, Tag.SET, null, null, null, null, null
+            Tag.NULL, Tag.STR, Tag.INT, null,  Tag.FLOAT, Tag.BOOL, Tag.BINARY, Tag.TIMESTAMP, Tag.MAP, Tag.SEQ, Tag.SET, null, null, null, null, null, null, null
     };
 
 
@@ -146,7 +146,6 @@ public class SpecConstructor extends SafeConstructor {
                                 "your KindSpec implementation has been put in your jar " +
                                 "file /META-INF/spec/implements.properties");
                     }
-//                    SpecConstructor.this.version = version;
                     return kindSpec.toSpec(map);
                 case LIST:
                     return new ListElement<>((List)value);

@@ -57,9 +57,17 @@ public interface CoinConstants {
     String VERSION_K8S_V1 = "v1";
     String VERSION_COIN_V1 = "coin/v1";
 
+    String URI = "uri";
+
+    String INTERFACES = "interfaces";
+
     String BEAN = "bean";
 
+    String REMOTE = "remote";
+
     String COMPONENT = "component";
+
+    String REMOTE_COMPONENT = "RemoteComponent";
 
     String CONFIG = "config";
 

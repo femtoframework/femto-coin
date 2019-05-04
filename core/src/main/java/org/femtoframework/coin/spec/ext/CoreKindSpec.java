@@ -5,6 +5,7 @@ import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.*;
 import org.femtoframework.util.StringUtil;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.femtoframework.coin.CoinConstants.*;
@@ -50,8 +51,14 @@ public class CoreKindSpec implements KindSpec {
         else if (COMPONENT.equalsIgnoreCase(kind)) {
             return (S)new ComponentElement(map);
         }
+        else if (REMOTE_COMPONENT.equalsIgnoreCase(kind)) {
+            return (S)new ComponentElement(map);
+        }
         else if (BEAN.equalsIgnoreCase(kind)) {
             return (S)new BeanElement(map);
+        }
+        else if (REMOTE.equalsIgnoreCase(kind)) {
+            return (S)new RemoteElement(map);
         }
         else if (CONFIG.equalsIgnoreCase(kind)) {
             return (S)new ConfigElement(map);
@@ -62,7 +69,14 @@ public class CoreKindSpec implements KindSpec {
                 return (S)new BeanElement(map);
             }
             else {
-                return (S)new MapElement(map);
+                String uri = MapSpec.getString(map, URI, null);
+                List<String> strings = (List<String>)MapSpec.getValue(map, INTERFACES, null);
+                if (StringUtil.isValid(uri) && strings != null) {
+                    return (S)new RemoteElement(map);
+                }
+                else {
+                    return (S) new MapElement(map);
+                }
             }
         }
         else {

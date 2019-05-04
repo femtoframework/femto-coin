@@ -109,7 +109,12 @@ public enum CoreKind implements Kind {
     /**
      * Config, K8S style Object
      */
-    CONFIG(false);
+    CONFIG(false),
+
+    /**
+     * Remote, Reference to bean in remote JVM
+     */
+    REMOTE(false);
 
     private boolean primitive;
 
