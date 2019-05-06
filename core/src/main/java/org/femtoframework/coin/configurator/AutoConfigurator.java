@@ -245,15 +245,15 @@ public class AutoConfigurator implements Configurator {
                 injection = new Injection(element, targetName, method, expectedType, childComponent);
             }
             else {
-                Component defaultComponent = component.getModule().getDefaultComponentFactory().get(expectedType.getName());
-                if (defaultComponent != null) {
-                    injection = new Injection(element, targetName != null? targetName : propertyName, method, expectedType, defaultComponent);
+//                Component defaultComponent = component.getModule().getDefaultComponentFactory().get(expectedType.getName());
+//                if (defaultComponent != null) {
+//                    injection = new Injection(element, targetName != null? targetName : propertyName, method, expectedType, defaultComponent);
+//                }
+//                else {
+                if (log.isTraceEnabled()) {
+                    log.trace("Not able to create component:" + targetName + " class:" + clazz + " expected Type:" + expectedType);
                 }
-                else {
-                    if (log.isTraceEnabled()) {
-                        log.trace("Not able to create component:" + targetName + " class:" + clazz + " expected Type:" + expectedType);
-                    }
-                }
+//                }
             }
 
             if (injection != null) {

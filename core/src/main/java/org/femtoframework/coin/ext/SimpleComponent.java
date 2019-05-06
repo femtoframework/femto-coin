@@ -13,7 +13,6 @@ import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.parameters.Parameters;
-import org.femtoframework.util.CollectionUtil;
 import org.femtoframework.util.convert.ConverterUtil;
 
 import java.util.LinkedHashMap;

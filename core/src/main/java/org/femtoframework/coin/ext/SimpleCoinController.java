@@ -167,7 +167,6 @@ public class SimpleCoinController implements CoinController {
                 specFactory.add(configSpec);
             }
             else {
-                //TODO CUSTOM Spec
                 throw new IOException("Unsupported kind yet:" + kind);
             }
         }

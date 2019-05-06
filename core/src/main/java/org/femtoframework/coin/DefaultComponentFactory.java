@@ -7,6 +7,8 @@ import java.util.Set;
 /**
  * Some interfaces, like DataSource, need to have a default implementation for components
  * who don't have particular implementation.
+ *
+ * TODO: AutoConfig
  */
 public interface DefaultComponentFactory extends Factory<Component> {
 

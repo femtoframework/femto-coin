@@ -51,16 +51,16 @@ public interface ComponentSpec extends BeanSpec, ModelSpec<BeanSpec> {
         return true;
     }
 
-    /**
-     * Check whether the component is default for specific Interface
-     *
-     * @return Class of the interface
-     */
-    default List<String> getDefaultFor() {
-        MapSpec<Element> annotations = getMetadata().getAnnotations();
-        if (annotations != null) {
-            return DataUtil.getStringList(annotations.getValue(ANNOTATIONS_DEFAULT_FOR, null));
-        }
-        return null;
-    }
+//    /**
+//     * Check whether the component is default for specific Interface
+//     *
+//     * @return Class of the interface
+//     */
+//    default List<String> getDefaultFor() {
+//        MapSpec<Element> annotations = getMetadata().getAnnotations();
+//        if (annotations != null) {
+//            return DataUtil.getStringList(annotations.getValue(ANNOTATIONS_DEFAULT_FOR, null));
+//        }
+//        return null;
+//    }
 }

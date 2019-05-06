@@ -27,12 +27,12 @@ public interface CoinModule {
     NamespaceFactory getNamespaceFactory();
 
 
-    /**
-     * Return default component factory
-     *
-     * @return Default Component Factory
-     */
-    DefaultComponentFactory getDefaultComponentFactory();
+//    /**
+//     * Return default component factory
+//     *
+//     * @return Default Component Factory
+//     */
+//    DefaultComponentFactory getDefaultComponentFactory();
 
     /**
      * Return KindSpecFactory
