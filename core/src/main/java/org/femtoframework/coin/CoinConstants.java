@@ -85,7 +85,7 @@ public interface CoinConstants {
     /**
      * Specify the component is default for specify interface
      */
-    String LABEL_DEFAULT_FOR = "defaultFor";
+    String ANNOTATIONS_DEFAULT_FOR = "defaultFor";
 
     /**
      * Link the current bean to target beans

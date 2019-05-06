@@ -57,9 +57,9 @@ public interface ComponentSpec extends BeanSpec, ModelSpec<BeanSpec> {
      * @return Class of the interface
      */
     default List<String> getDefaultFor() {
-        MapSpec<Element> labels = getMetadata().getLabels();
-        if (labels != null) {
-            return DataUtil.getStringList(labels.getValue(LABEL_DEFAULT_FOR, null));
+        MapSpec<Element> annotations = getMetadata().getAnnotations();
+        if (annotations != null) {
+            return DataUtil.getStringList(annotations.getValue(ANNOTATIONS_DEFAULT_FOR, null));
         }
         return null;
     }
