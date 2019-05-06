@@ -8,22 +8,18 @@ import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.exception.BeanCreationException;
 import org.femtoframework.coin.exception.BeanNotExpectedException;
 import org.femtoframework.coin.spec.BeanSpec;
-import org.femtoframework.coin.spec.ComponentSpec;
 import org.femtoframework.coin.spec.SpecFactory;
 import org.femtoframework.coin.spec.element.BeanElement;
-import org.femtoframework.coin.spec.element.ComponentElement;
 import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.implement.ImplementConfig;
 import org.femtoframework.implement.ImplementUtil;
-import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.ManagedBean;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,14 +43,14 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
     @Ignore
     private CoinModule module;
 
-
-    @Ignore
-    private DefaultComponentFactory defaultComponentFactory;
+//
+//    @Ignore
+//    private DefaultComponentFactory defaultComponentFactory;
 
     public SimpleComponentFactory(CoinModule module, SpecFactory<? extends BeanSpec> specFactory, LifecycleStrategy strategy) {
         super(module.getNamespaceFactory(), specFactory.getNamespace());
         this.module = module;
-        this.defaultComponentFactory = module.getDefaultComponentFactory();
+//        this.defaultComponentFactory = module.getDefaultComponentFactory();
         this.specFactory = specFactory;
         this.strategy = strategy;
     }
@@ -193,20 +189,20 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
             component.getCurrentNamespace().getBeanFactory().add(component.getName(), bean);
         }
 
-        if (spec instanceof ComponentSpec) {
-            List<String> defaultFor = ((ComponentSpec)spec).getDefaultFor();
-            if (defaultFor != null) {
-                for(String clazz : defaultFor) {
-                    Class<?> defaultForClass = null;
-                    try {
-                        defaultForClass = Reflection.loadClass(clazz);
-                        defaultComponentFactory.add(defaultForClass, component);
-                    } catch (ClassNotFoundException cnfe) {
-                        log.error("The 'defaultFor' interface is not found:" + clazz, cnfe);
-                    }
-                }
-            }
-        }
+//        if (spec instanceof ComponentSpec) {
+//            List<String> defaultFor = ((ComponentSpec)spec).getDefaultFor();
+//            if (defaultFor != null) {
+//                for(String clazz : defaultFor) {
+//                    Class<?> defaultForClass = null;
+//                    try {
+//                        defaultForClass = Reflection.loadClass(clazz);
+//                        defaultComponentFactory.add(defaultForClass, component);
+//                    } catch (ClassNotFoundException cnfe) {
+//                        log.error("The 'defaultFor' interface is not found:" + clazz, cnfe);
+//                    }
+//                }
+//            }
+//        }
         return component;
     }
 
