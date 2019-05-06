@@ -2,6 +2,8 @@ package org.femtoframework.coin.spec;
 
 import org.femtoframework.util.DataUtil;
 
+import java.util.List;
+
 import static org.femtoframework.coin.CoinConstants.*;
 
 /**
@@ -54,10 +56,10 @@ public interface ComponentSpec extends BeanSpec, ModelSpec<BeanSpec> {
      *
      * @return Class of the interface
      */
-    default String getDefaultFor() {
+    default List<String> getDefaultFor() {
         MapSpec<Element> labels = getMetadata().getLabels();
         if (labels != null) {
-            return labels.getString(LABEL_DEFAULT_FOR, null);
+            return DataUtil.getStringList(labels.getValue(LABEL_DEFAULT_FOR, null));
         }
         return null;
     }

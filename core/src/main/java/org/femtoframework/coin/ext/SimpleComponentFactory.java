@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.ManagedBean;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -193,15 +194,16 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
         }
 
         if (spec instanceof ComponentSpec) {
-            String defaultFor = ((ComponentSpec)spec).getDefaultFor();
+            List<String> defaultFor = ((ComponentSpec)spec).getDefaultFor();
             if (defaultFor != null) {
-                Class<?> defaultForClass = null;
-                try {
-                    defaultForClass = Reflection.loadClass(defaultFor);
-                    defaultComponentFactory.add(defaultForClass, component);
-                }
-                catch(ClassNotFoundException cnfe) {
-                    log.error("The 'defaultFor' interface is not found:" + defaultFor, cnfe);
+                for(String clazz : defaultFor) {
+                    Class<?> defaultForClass = null;
+                    try {
+                        defaultForClass = Reflection.loadClass(clazz);
+                        defaultComponentFactory.add(defaultForClass, component);
+                    } catch (ClassNotFoundException cnfe) {
+                        log.error("The 'defaultFor' interface is not found:" + clazz, cnfe);
+                    }
                 }
             }
         }
