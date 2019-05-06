@@ -13,6 +13,7 @@ public interface CoinConstants {
     String NAME_LOOKUP = "lookupBean";
     String NAME_VARIABLE_RESOLVER_FACTORY = "variable_resolver_factory";
     String NAME_CONFIGURATOR_FACTORY = "configurator_factory";
+    String NAME_DEFAULT_COMPONENT_FACTORY = "default_component_factory";
     String NAME_LIFECYCLE_STRATEGY = "lifecycle_strategy";
     String NAME_NAMESPACE_FACTORY = "namespace_factory";
     String NAME_KIND_SPEC_FACTORY = "kind_spec_factory";
@@ -77,10 +78,14 @@ public interface CoinConstants {
 
     String LABEL_ENABLED = "enabled";
 
-
     String LABEL_ACCESS = "access";
 
     String LABEL_SINGLETON = "singleton";
+
+    /**
+     * Specify the component is default for specify interface
+     */
+    String LABEL_DEFAULT_FOR = "defaultFor";
 
     /**
      * Link the current bean to target beans

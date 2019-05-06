@@ -23,6 +23,7 @@ import static org.femtoframework.coin.CoinConstants.*;
  */
 public class SimpleCoinModule implements CoinModule, InitializableMBean {
 
+    private DefaultComponentFactory defaultComponentFactory = new SimpleDefaultComponentFactory();
 
     private SimpleKindSpecFactory kindSpecFactory = new SimpleKindSpecFactory();
 
@@ -69,6 +70,16 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
     @Override
     public NamespaceFactory getNamespaceFactory() {
         return namespaceFactory;
+    }
+
+    /**
+     * Return default component factory
+     *
+     * @return Default Component Factory
+     */
+    @Override
+    public DefaultComponentFactory getDefaultComponentFactory() {
+        return defaultComponentFactory;
     }
 
     /**
@@ -181,6 +192,7 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
         componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_DEFAULT_COMPONENT_FACTORY, defaultComponentFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_VARIABLE_RESOLVER_FACTORY, variableResolverFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);

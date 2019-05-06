@@ -16,6 +16,7 @@ import org.femtoframework.coin.status.BeanStatus;
 import org.femtoframework.coin.util.CoinNameUtil;
 import org.femtoframework.implement.ImplementConfig;
 import org.femtoframework.implement.ImplementUtil;
+import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +46,14 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
     @Ignore
     private CoinModule module;
 
+
+    @Ignore
+    private DefaultComponentFactory defaultComponentFactory;
+
     public SimpleComponentFactory(CoinModule module, SpecFactory<? extends BeanSpec> specFactory, LifecycleStrategy strategy) {
         super(module.getNamespaceFactory(), specFactory.getNamespace());
         this.module = module;
+        this.defaultComponentFactory = module.getDefaultComponentFactory();
         this.specFactory = specFactory;
         this.strategy = strategy;
     }
@@ -185,6 +191,20 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
             add(component);
             component.getCurrentNamespace().getBeanFactory().add(component.getName(), bean);
         }
+
+        if (spec instanceof ComponentSpec) {
+            String defaultFor = ((ComponentSpec)spec).getDefaultFor();
+            if (defaultFor != null) {
+                Class<?> defaultForClass = null;
+                try {
+                    defaultForClass = Reflection.loadClass(defaultFor);
+                    defaultComponentFactory.add(defaultForClass, component);
+                }
+                catch(ClassNotFoundException cnfe) {
+                    log.error("The 'defaultFor' interface is not found:" + defaultFor, cnfe);
+                }
+            }
+        }
         return component;
     }
 
@@ -230,6 +250,8 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
                 }
             }
         }
+
+
 
         implClass = ImplementUtil.getImplement(interfaceClass);
         if (implClass == null && StringUtil.isValid(name)) {

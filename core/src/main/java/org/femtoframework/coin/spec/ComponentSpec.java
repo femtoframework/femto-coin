@@ -48,4 +48,17 @@ public interface ComponentSpec extends BeanSpec, ModelSpec<BeanSpec> {
         }
         return true;
     }
+
+    /**
+     * Check whether the component is default for specific Interface
+     *
+     * @return Class of the interface
+     */
+    default String getDefaultFor() {
+        MapSpec<Element> labels = getMetadata().getLabels();
+        if (labels != null) {
+            return labels.getString(LABEL_DEFAULT_FOR, null);
+        }
+        return null;
+    }
 }

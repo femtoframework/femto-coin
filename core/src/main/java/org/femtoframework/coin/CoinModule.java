@@ -28,6 +28,13 @@ public interface CoinModule {
 
 
     /**
+     * Return default component factory
+     *
+     * @return Default Component Factory
+     */
+    DefaultComponentFactory getDefaultComponentFactory();
+
+    /**
      * Return KindSpecFactory
      *
      * @return KindSpecFactory

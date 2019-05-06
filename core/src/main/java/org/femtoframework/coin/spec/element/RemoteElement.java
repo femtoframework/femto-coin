@@ -9,7 +9,6 @@ import org.femtoframework.coin.spec.RemoteSpec;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.util.DataUtil;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.femtoframework.coin.CoinConstants.INTERFACES;
