@@ -21,6 +21,7 @@
     <module>codec</module>
     <module>api</module>
     <module>examples</module>
+    <module>cron</module>
   </modules>
 
   <scm>
