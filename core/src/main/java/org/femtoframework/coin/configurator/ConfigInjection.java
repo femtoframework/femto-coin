@@ -39,7 +39,7 @@ public class ConfigInjection implements Configurator {
         }
     }
 
-    protected void inject(Component component, Parameters<Object> config) {
+    public void inject(Component component, Parameters<Object> config) {
         BeanInfo beanInfo = component.getBeanInfo();
         for(String key: config.keySet()) {
             String propertyName = NamingConvention.parse(key, false);

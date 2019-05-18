@@ -29,6 +29,14 @@ public interface NamespaceFactory extends ResourceFactory<Namespace> {
     Namespace createNamespace(String name, NamespaceSpec spec);
 
     /**
+     * Apply Spec on existing Namespace
+     *
+     * @param namespace Existing Namespace
+     * @param spec NamespaceSpec
+     */
+    void apply(Namespace namespace, NamespaceSpec spec);
+
+    /**
      * Gets namespace with given name
      *
      * @param name Name

@@ -3,9 +3,11 @@ package org.femtoframework.coin.ext;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.*;
 import org.femtoframework.bean.annotation.Ignore;
+import org.femtoframework.coin.configurator.ConfigInjection;
 import org.femtoframework.coin.exception.NoSuchNamespaceException;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.implement.ImplementUtil;
+import org.femtoframework.parameters.Parameters;
 import org.femtoframework.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +16,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.femtoframework.coin.CoinConstants.*;
 
@@ -214,6 +213,8 @@ public class SimpleCoinController implements CoinController {
     public void apply(URI... uris) throws IOException {
         int index = 1;
         List<LinkedHashMap> maps = toMaps(uris);
+        LinkedHashMap<ConfigSpec, Namespace> newConfigSpecs = new LinkedHashMap<>();
+
         for(LinkedHashMap map: maps) {
             String version = MapSpec.getApiVersion(map);
             KindSpec kindSpec = kindSpecFactory.get(version);
@@ -234,7 +235,8 @@ public class SimpleCoinController implements CoinController {
                 if (ns == null) { //No such namespace already
                     throw new NoSuchNamespaceException("No such namespace:" + name + " in spec index:" + index);
                 }
-                //TODO another attribute to update?
+
+                namespaceFactory.apply(ns, namespaceSpec);
             }
             else if (kind == CoreKind.COMPONENT) {
                 ComponentSpec componentSpec = (ComponentSpec)spec;
@@ -247,29 +249,11 @@ public class SimpleCoinController implements CoinController {
                     throw new IOException("Spec " + namespace + ":" + name + " doesn't exist.");
                 }
 
-                //TODO apply new beanSpec
                 Component component = ns.getComponentFactory().get(name);
                 if (component != null) {
-
+                    ns.getComponentFactory().apply(component, componentSpec);
                 }
             }
-//            else if (kind == CoreKind.BEAN) {
-//                BeanSpec beanSpec = (BeanSpec)spec;
-//                String namespace = beanSpec.getNamespace();
-//                Namespace ns = namespaceFactory.getNamespace(namespace, true);
-//                String name = beanSpec.getName();
-//                SpecFactory<ComponentSpec> specFactory = ns.getSpecFactory(ComponentSpec.class);
-//                ModelSpec oldSpec = specFactory.get(name);
-//                if (oldSpec == null) {
-//                    throw new IOException("Spec " + namespace + ":" + name + " doesn't exist.");
-//                }
-//
-//                //TODO apply new beanSpec
-//                Component component = ns.getComponentFactory().get(name);
-//                if (component != null) {
-//
-//                }
-//            }
             else if (kind == CoreKind.CONFIG) {
                 ConfigSpec configSpec = (ConfigSpec)spec;
                 String namespace = configSpec.getNamespace();
@@ -281,15 +265,26 @@ public class SimpleCoinController implements CoinController {
                     throw new IOException("Spec " + namespace + ":" + name + " doesn't exist.");
                 }
 
-                //TODO apply new configSpec
-                Component component = ns.getComponentFactory().get(name);
-                if (component != null) {
-
-                }
+                ns.getConfigSpecFactory().add(configSpec);
+                newConfigSpecs.put(configSpec, ns);
             }
             else {
-                //TODO CUSTOM Spec
                 throw new IOException("Unsupported kind yet:" + kind);
+            }
+        }
+
+        if (!newConfigSpecs.isEmpty()) {
+            //Apply this to all components in same namespace
+            ConfigInjection injection = new ConfigInjection();
+            for(Map.Entry<ConfigSpec, Namespace> entry: newConfigSpecs.entrySet()) {
+                Parameters<Object> parameters = entry.getKey().getParameters();
+
+                for(Component component : entry.getValue().getComponentFactory()) {
+                    Parameters<Object> configForThisBean = parameters.getParameters(component.getName());
+                    if (configForThisBean != null && !configForThisBean.isEmpty()) {
+                        injection.inject(component, configForThisBean);
+                    }
+                }
             }
         }
     }

@@ -8,6 +8,7 @@ import org.femtoframework.bean.annotation.Ignore;
 import org.femtoframework.coin.exception.BeanCreationException;
 import org.femtoframework.coin.exception.BeanNotExpectedException;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.ComponentSpec;
 import org.femtoframework.coin.spec.SpecFactory;
 import org.femtoframework.coin.spec.element.BeanElement;
 import org.femtoframework.coin.status.BeanStatus;
@@ -118,6 +119,21 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
         checkName(name, bean.getClass());
         BeanSpec spec = new BeanElement(getNamespace(), name, bean.getClass());
         return doCreate(bean, spec, targetStage);
+    }
+
+    /**
+     * Apply Spec on existing Component
+     *
+     * @param component Component
+     * @param spec      ComponentSpec
+     */
+    @Override
+    public void apply(Component component, ComponentSpec spec) {
+        if (component instanceof SimpleComponent) {
+            ((SimpleComponent)component).setSpec(spec);
+        }
+        //Reconfigure only
+        strategy.configure(component);
     }
 
     /**

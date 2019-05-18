@@ -64,6 +64,21 @@ public class SimpleNamespaceFactory extends BaseResourceFactory<Namespace> imple
     }
 
     /**
+     * Apply Spec on existing Namespace
+     *
+     * @param namespace Existing Namespace
+     * @param spec      NamespaceSpec
+     */
+    @Override
+    public void apply(Namespace namespace, NamespaceSpec spec) {
+        if (namespace instanceof SimpleNamespace) {
+            SimpleNamespace ns = (SimpleNamespace)namespace;
+            ns.setSpec(spec);
+            ns.init();
+        }
+    }
+
+    /**
      * Get namespace with given name
      *
      * @param name       Name

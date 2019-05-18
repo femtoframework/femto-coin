@@ -3,6 +3,7 @@ package org.femtoframework.coin;
 import org.femtoframework.bean.BeanPhase;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.ComponentSpec;
 
 /**
  * Component ResourceFactory
@@ -40,6 +41,14 @@ public interface ComponentFactory extends ResourceFactory<Component> {
      */
     Component create(String name, Object bean, BeanStage targetStage);
 
+
+    /**
+     * Apply Spec on existing Component
+     *
+     * @param component Component
+     * @param spec ComponentSpec
+     */
+    void apply(Component component, ComponentSpec spec);
 
     /**
      * Keep component in the given stage
