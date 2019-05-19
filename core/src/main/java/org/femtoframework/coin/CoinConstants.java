@@ -17,6 +17,7 @@ public interface CoinConstants {
     String NAME_LIFECYCLE_STRATEGY = "lifecycle_strategy";
     String NAME_NAMESPACE_FACTORY = "namespace_factory";
     String NAME_KIND_SPEC_FACTORY = "kind_spec_factory";
+    String NAME_RELOADER = "reloader";
 
     String NAMESPACE_COIN = "coin";
 

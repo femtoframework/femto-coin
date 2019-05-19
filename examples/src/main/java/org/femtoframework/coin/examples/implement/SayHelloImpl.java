@@ -1,7 +1,5 @@
 package org.femtoframework.coin.examples.implement;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.femtoframework.bean.annotation.Action;
 import org.femtoframework.coin.examples.service.SayHello;
 
@@ -17,13 +15,19 @@ import org.femtoframework.coin.examples.service.SayHello;
  */
 public class SayHelloImpl implements SayHello {
 
-    @Getter
-    @Setter
     private String response = "Hello";
 
     @Override
     @Action
     public String sayHello(String message) {
         return response + " " + message + "!";
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 }

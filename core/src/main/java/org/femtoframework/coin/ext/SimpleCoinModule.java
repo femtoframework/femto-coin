@@ -29,7 +29,6 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
 
     private SimpleCoinController coinController = new SimpleCoinController();
 
-
     private SimpleConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
 
 
@@ -60,6 +59,9 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
      * Bean Info ResourceFactory
      */
     private BeanInfoFactory beanInfoFactory = BeanInfoUtil.getBeanInfoFactory();
+
+
+    private SimpleCoinReloader reloader;
 
     /**
      * Return namespace factory
@@ -187,15 +189,16 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
     @Override
     public void _doInit() {
         namespaceCoin = namespaceFactory.get(CoinConstants.NAMESPACE_COIN);
+        reloader = new SimpleCoinReloader(coinController);
 
         ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
         componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
-//        componentFactory.create(NAME_DEFAULT_COMPONENT_FACTORY, defaultComponentFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_VARIABLE_RESOLVER_FACTORY, variableResolverFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
+        componentFactory.create(NAME_RELOADER, reloader, BeanStage.START);
         componentFactory.create(NAME_LOOKUP, lookup, BeanStage.INITIALIZE);
         componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
     }

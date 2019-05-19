@@ -27,7 +27,7 @@ import static org.femtoframework.coin.CoinConstants.*;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleCoinController implements CoinController {
+public class SimpleCoinController implements CoinController, CoinReloader {
 
     //Object Mapper is thread safe
     private KindSpecFactory kindSpecFactory;
@@ -41,6 +41,11 @@ public class SimpleCoinController implements CoinController {
      */
     @Ignore
     private Logger log = LoggerFactory.getLogger(SimpleCoinController.class);
+
+    /**
+     * URIs
+     */
+    private Set<URI> uris = new HashSet<>();
 
     /**
      * Get all component yaml files in given class loader
@@ -85,6 +90,16 @@ public class SimpleCoinController implements CoinController {
         }
     }
 
+    /**
+     * All the URIs which passed through #create
+     *
+     * @return URIs
+     */
+    @Override
+    public Set<java.net.URI> getUris() {
+        return uris;
+    }
+
     protected URI toURI(URL url) throws URISyntaxException {
         if (url == null) {
             return null;
@@ -107,6 +122,8 @@ public class SimpleCoinController implements CoinController {
         keepStage(beanSpecs, BeanStage.CONFIGURE);
         keepStage(beanSpecs, BeanStage.INITIALIZE);
         keepStage(beanSpecs, BeanStage.START);
+
+        this.uris.addAll(Arrays.asList(uris));
     }
 
     protected List<ComponentSpec> createSpecs(List<LinkedHashMap> specs) throws IOException {
@@ -368,5 +385,15 @@ public class SimpleCoinController implements CoinController {
 
     public void setSpecParser(SpecParser specParser) {
         this.specParser = specParser;
+    }
+
+    /**
+     * Reload specs
+     *
+     * @param force Reload anyway if it is true, otherwise follow the strategies
+     */
+    @Override
+    public void reload(boolean force) {
+
     }
 }

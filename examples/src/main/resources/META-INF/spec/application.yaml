@@ -5,4 +5,5 @@ metadata:
   name: helloworld
 spec:
   class: org.femtoframework.coin.examples.implement.SayHelloImpl
-  response: 你好
+  response: 您好！世界！
+

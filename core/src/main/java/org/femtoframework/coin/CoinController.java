@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Coin Control
@@ -31,6 +32,13 @@ public interface CoinController {
      * @throws IOException
      */
     URI getApplicationYaml(ClassLoader classLoader) throws IOException;
+
+    /**
+     * All the URIs which passed through #create
+     *
+     * @return URIs
+     */
+    Set<URI> getUris();
 
     /**
      * Create beans by specs;
