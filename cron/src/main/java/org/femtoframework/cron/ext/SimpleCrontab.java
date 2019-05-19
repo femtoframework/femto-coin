@@ -1,13 +1,10 @@
 package org.femtoframework.cron.ext;
 
 import org.femtoframework.cron.Cron;
-import org.femtoframework.cron.CrontabFile;
+import org.femtoframework.cron.Crontab;
 import org.femtoframework.pattern.ext.BaseFactory;
-import org.femtoframework.util.StringUtil;
 
-import java.io.File;
 import java.util.Collection;
-
 
 /**
  * Cron对象的管理器
@@ -15,40 +12,39 @@ import java.util.Collection;
  * @author renex
  * @version 1.00  14:35:51 2003-7-7
  */
-public class SimpleCrontab extends BaseFactory<Cron> implements CrontabFile {
+public class SimpleCrontab extends BaseFactory<Cron> implements Crontab {
     private String name;
 
     private static int NAME_SEEK = 0;
 
-    protected boolean reload = false;
+//    protected boolean reload = false;
+//
+//    protected String descFile;
 
-    protected String descFile;
+//    protected long lastModified;
 
-    protected long lastModified;
+//    public SimpleCrontab() {
+//    }
 
-    public SimpleCrontab() {
-    }
+//    public void setFile(String file) {
+////        this.descFile = file;
+//        File f = new File(file);
+//        lastModified = f.lastModified();
+//    }
 
-    public void setFile(String file) {
-        this.descFile = file;
-        File f = new File(file);
-        lastModified = f.lastModified();
-    }
-
-    public String getFile() {
-        if (StringUtil.isInvalid(descFile)) {
-            descFile = getNextName();
-        }
-        return descFile;
-    }
-
-    public void setReload(boolean reload) {
-        this.reload = reload;
-    }
-
-    public boolean isReload() {
-        return reload;
-    }
+//    public String getFile() {
+//        if (StringUtil.isInvalid(descFile)) {
+//            descFile = getNextName();
+//        }
+//        return descFile;
+//    }
+//    public void setReload(boolean reload) {
+//        this.reload = reload;
+//    }
+//
+//    public boolean isReload() {
+//        return reload;
+//    }
 
     public void addCron(Cron cron) {
         super.add(cron);
@@ -70,10 +66,10 @@ public class SimpleCrontab extends BaseFactory<Cron> implements CrontabFile {
         map.clear();
     }
 
-    public boolean isNeedUpdate() {
-        File file = new File(this.descFile);
-        return file.lastModified() > lastModified;
-    }
+//    public boolean isNeedUpdate() {
+//        File file = new File(this.descFile);
+//        return file.lastModified() > lastModified;
+//    }
 
     private static String getNextName() {
         NAME_SEEK++;

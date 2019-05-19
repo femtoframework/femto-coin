@@ -13,13 +13,6 @@ import java.util.Collection;
 public interface CrontabManager<CT extends Crontab> extends Factory<CT>
 {
     /**
-     * 添加一个Crontab以xml定义
-     *
-     * @param descFile CrontabManager 描述文件
-     */
-    void addCrontab(String descFile);
-
-    /**
      * 添加一个Crontab
      *
      * @param crontab crontab
@@ -29,10 +22,10 @@ public interface CrontabManager<CT extends Crontab> extends Factory<CT>
     /**
      * 获取指定名称的CronManager
      *
-     * @param file 名称
+     * @param name 名称
      * @return Crontab
      */
-    CT getCrontab(String file);
+    CT getCrontab(String name);
 
     /**
      * 获得所有的Crontab
