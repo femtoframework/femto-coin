@@ -1,5 +1,6 @@
 package org.femtoframework.coin.ext;
 
+import org.femtoframework.bean.AbstractLifecycle;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.bean.info.BeanInfoUtil;
@@ -21,7 +22,7 @@ import static org.femtoframework.coin.CoinConstants.*;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class SimpleCoinModule implements CoinModule, InitializableMBean {
+public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
 
 //    private DefaultComponentFactory defaultComponentFactory = new SimpleDefaultComponentFactory();
 
@@ -198,8 +199,15 @@ public class SimpleCoinModule implements CoinModule, InitializableMBean {
         componentFactory.create(NAME_VARIABLE_RESOLVER_FACTORY, variableResolverFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_LIFECYCLE_STRATEGY, lifecycleStrategy, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
-        componentFactory.create(NAME_RELOADER, reloader, BeanStage.START);
         componentFactory.create(NAME_LOOKUP, lookup, BeanStage.INITIALIZE);
         componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
+    }
+
+    /**
+     * Start internally
+     */
+    public void _doStart() {
+        ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
+        componentFactory.create(NAME_RELOADER, reloader, BeanStage.START);
     }
 }
