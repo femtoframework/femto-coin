@@ -1,13 +1,6 @@
 package org.femtoframework.coin.spec;
 
 import org.femtoframework.coin.Component;
-import org.femtoframework.coin.spec.element.ModelElement;
-import org.femtoframework.util.DataUtil;
-
-import java.util.Map;
-
-import static org.femtoframework.coin.CoinConstants.API_VERSION;
-import static org.femtoframework.coin.CoinConstants.VERSION_COIN_V1;
 
 /**
  * Element

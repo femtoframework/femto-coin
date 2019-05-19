@@ -1,7 +1,6 @@
 package org.femtoframework.coin.naming;
 
 import org.femtoframework.coin.CoinConstants;
-import org.femtoframework.util.CollectionUtil;
 import org.femtoframework.util.StringUtil;
 
 import javax.naming.InvalidNameException;

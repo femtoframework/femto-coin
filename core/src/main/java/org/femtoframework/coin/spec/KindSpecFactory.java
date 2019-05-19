@@ -15,5 +15,5 @@ public interface KindSpecFactory extends ResourceFactory<KindSpec> {
      *
      * @return Core Kind Spec
      */
-    KindSpec getCoreKindSpec();
+    KindSpec getKindSpec();
 }

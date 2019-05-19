@@ -1,7 +1,6 @@
 package org.femtoframework.coin.ext;
 
 import org.femtoframework.coin.*;
-import org.femtoframework.coin.spec.MapSpec;
 import org.femtoframework.coin.spec.NamespaceSpec;
 import org.femtoframework.lang.reflect.Reflection;
 

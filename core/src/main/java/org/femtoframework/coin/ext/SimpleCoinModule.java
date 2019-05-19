@@ -2,7 +2,6 @@ package org.femtoframework.coin.ext;
 
 import org.femtoframework.bean.AbstractLifecycle;
 import org.femtoframework.bean.BeanStage;
-import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.bean.info.BeanInfoUtil;
 import org.femtoframework.coin.*;
 import org.femtoframework.coin.event.BeanEventListeners;

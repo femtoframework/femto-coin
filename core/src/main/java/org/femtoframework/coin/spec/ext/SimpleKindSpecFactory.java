@@ -60,7 +60,7 @@ public class SimpleKindSpecFactory extends BaseResourceFactory<KindSpec> impleme
      * @return Core Kind Spec
      */
     @Override
-    public KindSpec getCoreKindSpec() {
+    public KindSpec getKindSpec() {
         return get(VERSION_COIN_V1);
     }
 }

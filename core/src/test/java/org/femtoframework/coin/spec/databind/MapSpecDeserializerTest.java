@@ -40,7 +40,7 @@ public class MapSpecDeserializerTest {
 //        List<LinkedHashMap> list = objectMapper.readValues(parser, LinkedHashMap.class).readAll();
 //        System.out.println(list);
 //
-//        KindSpec kindSpec = CoinUtil.getKindSpecFactory().getCoreKindSpec();
+//        KindSpec kindSpec = CoinUtil.getKindSpecFactory().getKindSpec();
 //        BeanSpec spec = kindSpec.toSpec(list.get(1));
 //
 //        System.out.println(objectMapper.writeValueAsString(spec));
