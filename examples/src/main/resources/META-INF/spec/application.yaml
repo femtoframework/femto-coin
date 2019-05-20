@@ -17,6 +17,6 @@ spec:
   componentName: helloworld
   componentType: action
   action: sayHello
-  second: 30
+  second: 60/10
   arguments:
     1: CronTest
