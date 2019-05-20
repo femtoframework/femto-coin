@@ -1,6 +1,7 @@
-package org.femtoframework.cron;
+package org.femtoframework.coin.cron;
 
 import org.femtoframework.bean.NamedBean;
+import org.femtoframework.parameters.Parameters;
 
 import java.util.Calendar;
 
@@ -15,6 +16,13 @@ import java.util.Calendar;
 public interface Cron extends NamedBean
 {
     /**
+     * Namespace
+     *
+     * @return Namespace
+     */
+    String getNamespace();
+
+    /**
      * 获取执行的组件名称
      *
      * @return 组件名称
@@ -22,7 +30,7 @@ public interface Cron extends NamedBean
     String getComponentName();
 
     /**
-     * 组件类型，如"runnable", "method","event"等等
+     * 组件类型，如"runnable", "action","event"等等
      *
      * @return 组件类型
      */
@@ -131,4 +139,11 @@ public interface Cron extends NamedBean
      * @return Date
      */
     Calendar next(Calendar cal);
+
+    /**
+     * Return arguments
+     *
+     * @return arguments
+     */
+    Parameters getArguments();
 }

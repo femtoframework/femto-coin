@@ -1,9 +1,11 @@
-package org.femtoframework.cron.ext;
+package org.femtoframework.coin.cron.ext;
 
 import org.femtoframework.bean.Nameable;
 import org.femtoframework.bean.NamedBean;
 import org.femtoframework.bean.annotation.Ignore;
-import org.femtoframework.cron.Cron;
+import org.femtoframework.coin.Namespace;
+import org.femtoframework.coin.cron.Cron;
+import org.femtoframework.coin.spi.NamespaceAware;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.parameters.ParametersMap;
 import org.femtoframework.util.timer.CronEntry;
@@ -18,21 +20,21 @@ import java.util.Iterator;
  * @version 2.00  2005-11-10
  */
 public class SimpleCron
-    implements Cron, Nameable, NamedBean
+    implements Cron, Nameable, NamedBean, NamespaceAware
 {
-    private static final String TYPE_BEAN = "bean";
-    private static final String TYPE_RUNNABLE = "runnable";
-
-    private static final String ACTION_RUN = "run";
+    static final String TYPE_ACTION = "action";
+    static final String TYPE_RUNNABLE = "runnable";
+    static final String ACTION_RUN = "run";
 
     @Ignore
     private CronEntry entry = new CronEntry();
 
+    private String namespace = null;
     private String name = null;
     private String componentName = null;
-    private String componentType = TYPE_RUNNABLE;
+    private String componentType;
 
-    private String action = ACTION_RUN;
+    private String action;
 
     private Parameters arguments;
 
@@ -42,6 +44,16 @@ public class SimpleCron
 
     public String getName() {
         return name;
+    }
+
+    /**
+     * Namespace
+     *
+     * @return Namespace
+     */
+    @Override
+    public String getNamespace() {
+        return namespace;
     }
 
     /**
@@ -189,6 +201,7 @@ public class SimpleCron
         final StringBuilder sb = new StringBuilder();
         sb.append("SimpleCron");
         sb.append("[entry=").append(entry);
+        sb.append(",namespace=").append(namespace);
         sb.append(",name=").append(name);
         sb.append(",componentName=").append(componentName);
         sb.append(",componentType=").append(componentType);
@@ -229,5 +242,15 @@ public class SimpleCron
 
     public void setArguments(Parameters arguments) {
         this.arguments = arguments;
+    }
+
+    /**
+     * Current Namespace
+     *
+     * @param namespace Current Namespace
+     */
+    @Override
+    public void setNamespace(Namespace namespace) {
+        this.namespace = namespace.getName();
     }
 }

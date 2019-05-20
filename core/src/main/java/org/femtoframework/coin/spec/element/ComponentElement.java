@@ -22,8 +22,12 @@ public class ComponentElement extends ModelElement<BeanSpec> implements Componen
     }
 
     public ComponentElement(Map map) {
+        this(CoreKind.COMPONENT, map);
+    }
+
+    public ComponentElement(CoreKind kind, Map map) {
         super(map);
-        setKind(CoreKind.COMPONENT);
+        setKind(kind);
     }
 
     public ComponentElement(String namespace, String name, Class<?> implClass) {
@@ -133,7 +137,16 @@ public class ComponentElement extends ModelElement<BeanSpec> implements Componen
             return ((BeanSpec)spec);
         }
         else {
-            BeanElement element = spec != null ? new BeanElement(spec) : new BeanElement();
+            BeanElement element = null;
+            if (getKind() == CoreKind.REMOTE_COMPONENT) {
+                if (spec == null) {
+                    throw new IllegalStateException("RemoteComponent must have a RemoteSpec");
+                }
+                element = new RemoteElement(spec);
+            }
+            else {
+                element = spec != null ? new BeanElement(spec) : new BeanElement();
+            }
             put(SPEC, element);
             return element;
         }

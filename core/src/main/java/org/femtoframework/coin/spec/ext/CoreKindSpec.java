@@ -1,5 +1,6 @@
 package org.femtoframework.coin.spec.ext;
 
+import org.femtoframework.coin.cron.ext.SimpleCron;
 import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.coin.spec.element.*;
@@ -52,10 +53,15 @@ public class CoreKindSpec implements KindSpec {
             return (S)new ComponentElement(map);
         }
         else if (REMOTE_COMPONENT.equalsIgnoreCase(kind)) {
-            return (S)new ComponentElement(map);
+            return (S)new ComponentElement(CoreKind.REMOTE_COMPONENT, map);
         }
         else if (BEAN.equalsIgnoreCase(kind)) {
             return (S)new BeanElement(map);
+        }
+        else if (CRON.equalsIgnoreCase(kind)) {
+            ComponentElement componentElement = new ComponentElement(map);
+            componentElement.setTypeClass(SimpleCron.class);
+            return (S)componentElement;
         }
         else if (REMOTE.equalsIgnoreCase(kind)) {
             return (S)new RemoteElement(map);

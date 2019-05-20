@@ -4,6 +4,7 @@ import org.femtoframework.bean.AbstractLifecycle;
 import org.femtoframework.bean.BeanStage;
 import org.femtoframework.bean.info.BeanInfoUtil;
 import org.femtoframework.coin.*;
+import org.femtoframework.coin.cron.ext.SimpleCronController;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.bean.info.BeanInfoFactory;
 import org.femtoframework.coin.remote.RemoteGenerator;
@@ -32,7 +33,9 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
     private SimpleConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
 
 
-    private SimpleLifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(configuratorFactory);
+    private SimpleCronController cronController = new SimpleCronController(this);
+
+    private SimpleLifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(this, configuratorFactory);
 
 
     private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory(this, lifecycleStrategy);
@@ -62,6 +65,7 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
 
 
     private SimpleCoinReloader reloader;
+
 
     /**
      * Return namespace factory
@@ -160,29 +164,6 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
         return beanInfoFactory;
     }
 
-
-    private boolean initialized = false;
-
-    /**
-     * Return whether it is initialized
-     *
-     * @return whether it is initialized
-     */
-    @Override
-    public boolean isInitialized() {
-        return initialized;
-    }
-
-    /**
-     * Initialized setter for internal
-     *
-     * @param initialized BeanPhase
-     */
-    @Override
-    public void _doSetInitialized(boolean initialized) {
-        this.initialized = initialized;
-    }
-
     /**
      * Initiliaze internally
      */
@@ -200,6 +181,7 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
         componentFactory.create(NAME_CONTROLLER, coinController, BeanStage.INITIALIZE);
         componentFactory.create(NAME_LOOKUP, lookup, BeanStage.INITIALIZE);
         componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
+        componentFactory.create(NAME_CRON_CONTROLLER, cronController, BeanStage.INITIALIZE);
     }
 
     /**
@@ -208,5 +190,6 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
     public void _doStart() {
         ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
         componentFactory.create(NAME_RELOADER, reloader, BeanStage.START);
+        componentFactory.create(NAME_CRON_CONTROLLER, cronController, BeanStage.START);
     }
 }

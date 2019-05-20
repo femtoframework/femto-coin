@@ -1,4 +1,4 @@
-package org.femtoframework.cron;
+package org.femtoframework.coin.cron;
 
 /**
  * CronInvokeException

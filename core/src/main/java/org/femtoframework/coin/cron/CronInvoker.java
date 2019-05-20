@@ -1,4 +1,6 @@
-package org.femtoframework.cron;
+package org.femtoframework.coin.cron;
+
+import org.femtoframework.coin.Component;
 
 /**
  * Cron执行器，根据类型来选择
@@ -13,8 +15,9 @@ public interface CronInvoker
     /**
      * 执行Cron
      *
+     * @param component Component
      * @param cron Cron
      * @throws CronInvokeException
      */
-    void invoke(Cron cron) throws CronInvokeException;
+    void invoke(Component component, Cron cron) throws CronInvokeException;
 }

@@ -112,9 +112,19 @@ public enum CoreKind implements Kind {
     CONFIG(false),
 
     /**
+     * Component, K8S style Object
+     */
+    REMOTE_COMPONENT(false),
+
+    /**
      * Remote, Reference to bean in remote JVM
      */
-    REMOTE(false);
+    REMOTE(false),
+
+    /**
+     * Cron
+     */
+    CRON(false);
 
     private boolean primitive;
 

@@ -4,9 +4,10 @@ package org.femtoframework.coin.event;
 import org.femtoframework.bean.InitializableMBean;
 import org.femtoframework.coin.BeanFactory;
 import org.femtoframework.bean.BeanPhase;
+import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.Component;
+import org.femtoframework.coin.spi.CoinModuleAware;
 import org.femtoframework.implement.ImplementUtil;
-import org.femtoframework.implement.InstanceFunction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,11 @@ import java.util.List;
  * @author Sheldon Shao
  * @version 1.0
  */
-public class BeanEventSupport implements BeanEventListeners, BeanEventListener, InitializableMBean {
+public class BeanEventSupport implements BeanEventListeners, BeanEventListener, InitializableMBean, CoinModuleAware {
     
     private List<BeanEventListener> listeners = new ArrayList<>(2);
+
+    private CoinModule coinModule;
     
     /**
      * Handle bean event
@@ -52,6 +55,9 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener, 
      */
     public void addListener(BeanEventListener listener)
     {
+        if (listener instanceof CoinModuleAware) {
+            ((CoinModuleAware)listener).setCoinModule(coinModule);
+        }
         List<BeanEventListener> newListeners = new ArrayList<>(this.listeners);
         newListeners.add(listener);
         this.listeners = newListeners;
@@ -136,6 +142,11 @@ public class BeanEventSupport implements BeanEventListeners, BeanEventListener, 
      */
     @Override
     public void _doInit() {
-        ImplementUtil.applyInstances(BeanEventListener.class, (InstanceFunction<BeanEventListener>) listeners::add);
+        ImplementUtil.applyInstances(BeanEventListener.class, this::addListener);
+    }
+
+    @Override
+    public void setCoinModule(CoinModule module) {
+        this.coinModule = module;
     }
 }

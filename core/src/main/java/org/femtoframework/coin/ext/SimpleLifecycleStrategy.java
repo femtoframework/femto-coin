@@ -43,9 +43,10 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
     private RemoteGenerator generator = RemoteGenerator.NONE;
 
 
-    public SimpleLifecycleStrategy(ConfiguratorFactory configuratorFactory) {
+    public SimpleLifecycleStrategy(CoinModule coinModule, ConfiguratorFactory configuratorFactory) {
         this.configuratorFactory = configuratorFactory;
         this.eventSupport = new BeanEventSupport();
+        eventSupport.setCoinModule(coinModule);
         this.eventSupport.addListener(new SimpleStatusUpdater());
     }
 

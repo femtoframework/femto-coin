@@ -18,6 +18,7 @@ public interface CoinConstants {
     String NAME_NAMESPACE_FACTORY = "namespace_factory";
     String NAME_KIND_SPEC_FACTORY = "kind_spec_factory";
     String NAME_RELOADER = "reloader";
+    String NAME_CRON_CONTROLLER = "cron_controller";
 
     String NAMESPACE_COIN = "coin";
 
@@ -72,6 +73,9 @@ public interface CoinConstants {
     String REMOTE_COMPONENT = "RemoteComponent";
 
     String CONFIG = "config";
+
+    String CRON = "cron";
+
 
     String CLASS = "class";
 

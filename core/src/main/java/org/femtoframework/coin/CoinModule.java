@@ -1,6 +1,7 @@
 package org.femtoframework.coin;
 
 import org.femtoframework.annotation.ImplementedBy;
+import org.femtoframework.coin.cron.CronController;
 import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.bean.info.BeanInfoFactory;
 import org.femtoframework.coin.remote.RemoteGenerator;

@@ -1,6 +1,6 @@
-package org.femtoframework.cron.ext;
+package org.femtoframework.coin.cron.ext;
 
-import org.femtoframework.cron.Cron;
+import org.femtoframework.coin.cron.Cron;
 
 import java.util.Comparator;
 
