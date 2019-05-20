@@ -36,8 +36,9 @@ public class ActionInvoker implements CronInvoker
             Parameters parameters = cron.getArguments();
             List<ArgumentInfo> argumentInfos = actionInfo.getArguments();
             try {
+                Object result = null;
                 if (argumentInfos == null || argumentInfos.isEmpty()) {
-                    actionInfo.invoke(resource);
+                    result = actionInfo.invoke(resource);
                 } else {
                     int size = argumentInfos.size();
                     Object[] arguments = new Object[size];
@@ -45,7 +46,11 @@ public class ActionInvoker implements CronInvoker
                         ArgumentInfo argumentInfo = argumentInfos.get(i);
                         arguments[i] = argumentInfo.toValue(parameters.get(argumentInfo.getName()));
                     }
-                    actionInfo.invoke(resource, arguments);
+                    result = actionInfo.invoke(resource, arguments);
+                }
+
+                if (result != null && log.isDebugEnabled()) {
+                    log.debug("Invoked " + cron.getComponentName() + "#" + cron.getAction() + " Result:" + result);
                 }
             }
             catch (Exception ex) {

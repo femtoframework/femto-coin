@@ -7,3 +7,16 @@ spec:
   class: org.femtoframework.coin.examples.implement.SayHelloImpl
   response: 您好！世界！
 
+---
+apiVersion: coin/v1
+kind: Cron
+metadata:
+  namespace: coin-examples
+  name: helloworld-cron
+spec:
+  componentName: helloworld
+  componentType: action
+  action: sayHello
+  second: 30
+  arguments:
+    1: CronTest

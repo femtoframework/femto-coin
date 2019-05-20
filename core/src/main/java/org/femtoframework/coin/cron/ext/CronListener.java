@@ -25,7 +25,7 @@ public class CronListener implements BeanEventListener, CoinModuleAware {
     @Override
     public void handleEvent(BeanEvent event) {
         if (event.getPhase().isAfterOrCurrent(BeanPhase.STARTED)) {
-            Object bean = event.getSource();
+            Object bean = event.getTarget();
             if (bean instanceof Cron) {
                 CronController cronController = (CronController)coinModule.getLookup().lookupBean(name);
                 if (cronController != null) {
@@ -34,7 +34,7 @@ public class CronListener implements BeanEventListener, CoinModuleAware {
             }
         }
         else if (event.getPhase().isAfterOrCurrent(BeanPhase.STOPPING)) {
-            Object bean = event.getSource();
+            Object bean = event.getTarget();
             if (bean instanceof Cron) {
                 CronController cronController = (CronController)coinModule.getLookup().lookupBean(name);
                 if (cronController != null) {
