@@ -96,12 +96,6 @@ public class SimpleCoinController implements CoinController, CoinReloader {
             if (uri != null) {
                 uris.add(uri);
             }
-            currentEnv = "META-INF/spec/"
-                    + SystemUtil.getEnvironment().name() + "/application.yaml";
-            uri = toURI(classLoader.getResource(currentEnv));
-            if (uri != null) {
-                uris.add(uri);
-            }
             return uris;
         } catch (URISyntaxException e) {
             throw new IOException("URI syntax error", e);
