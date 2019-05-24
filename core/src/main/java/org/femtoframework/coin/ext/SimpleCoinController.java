@@ -9,6 +9,7 @@ import org.femtoframework.coin.spec.*;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.util.StringUtil;
+import org.femtoframework.util.SystemUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,16 +76,33 @@ public class SimpleCoinController implements CoinController, CoinReloader {
      * Get application yaml files in given class loader
      *
      * @param classLoader Class Loader
-     * @return All "META-INF/spec/application.yaml" in classpaths
+     * @return "META-INF/spec/application.yaml" and "META-INF/spec/{ENV}/application.yaml" in classpaths {ENV} is the current environment
      * @throws IOException
      */
-    @Override
-    public URI getApplicationYaml(ClassLoader classLoader) throws IOException {
+    public List<URI> getApplicationYamls(ClassLoader classLoader) throws IOException {
         if (classLoader == null) {
             classLoader = Thread.currentThread().getContextClassLoader();
         }
+        List<URI> uris = new ArrayList<>(2);
         try {
-            return toURI(classLoader.getResource(APPLICATION_YAML));
+            URI uri = toURI(classLoader.getResource(APPLICATION_YAML));
+            if (uri != null) {
+                uris.add(uri);
+            }
+
+            String currentEnv = "META-INF/spec/"
+                    + SystemUtil.getEnvironment().name().toLowerCase() + "/application.yaml";
+            uri = toURI(classLoader.getResource(currentEnv));
+            if (uri != null) {
+                uris.add(uri);
+            }
+            currentEnv = "META-INF/spec/"
+                    + SystemUtil.getEnvironment().name() + "/application.yaml";
+            uri = toURI(classLoader.getResource(currentEnv));
+            if (uri != null) {
+                uris.add(uri);
+            }
+            return uris;
         } catch (URISyntaxException e) {
             throw new IOException("URI syntax error", e);
         }
@@ -147,9 +165,11 @@ public class SimpleCoinController implements CoinController, CoinReloader {
                 }
                 Namespace ns = namespaceFactory.getNamespace(name, false);
                 if (ns != null) {
-                    throw new IOException("Namespace existing already:" + name);
+                    namespaceFactory.apply(ns, ((NamespaceSpec)spec));
                 }
-                namespaceFactory.createNamespace(name, ((NamespaceSpec)spec));
+                else {
+                    namespaceFactory.createNamespace(name, ((NamespaceSpec) spec));
+                }
             }
             else if (kind == CoreKind.COMPONENT) {
                 ComponentSpec compSpec = (ComponentSpec)spec;

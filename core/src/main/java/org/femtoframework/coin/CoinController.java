@@ -28,10 +28,10 @@ public interface CoinController {
      * Get application yaml files in given class loader
      *
      * @param classLoader Class Loader
-     * @return All "META-INF/spec/application.yaml" in classpaths
+     * @return "META-INF/spec/application.yaml" and "META-INF/spec/{ENV}/application.yaml" in classpaths {ENV} is the current environment
      * @throws IOException
      */
-    URI getApplicationYaml(ClassLoader classLoader) throws IOException;
+    List<URI> getApplicationYamls(ClassLoader classLoader) throws IOException;
 
     /**
      * All the URIs which passed through #create

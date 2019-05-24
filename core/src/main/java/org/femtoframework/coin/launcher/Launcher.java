@@ -40,12 +40,12 @@ public class Launcher {
         CoinModule module = CoinUtil.getModule();
         CoinController controller = module.getController();
         List<URI> componentYamls = controller.getComponentYamls(null);
-        URI applicationYaml = controller.getApplicationYaml(null);
+        List<URI> applicationYamls = controller.getApplicationYamls(null);
 
         List<URI> allUris = new ArrayList<>(componentYamls.size() + 1 + args.length);
         allUris.addAll(componentYamls);
-        if (applicationYaml != null) {
-            allUris.add(applicationYaml);
+        if (applicationYamls != null) {
+            allUris.addAll(applicationYamls);
         }
         for (String arg : args) {
             allUris.add(new File(arg).toURI());
