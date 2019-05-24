@@ -11,7 +11,7 @@
 
   <groupId>org.femtoframework.coin</groupId>
   <artifactId>femto-coin</artifactId>
-  <version>7.0.0</version>
+  <version>7.1.0-SNAPSHOT</version>
   <name>femto-coin</name>
   <packaging>pom</packaging>
 
@@ -60,7 +60,7 @@
     <slf4j-version>1.7.7</slf4j-version>
     <nanohttpd.version>2.3.1</nanohttpd.version>
     <logback.version>1.2.3</logback.version>
-    <coin.version>7.0.0</coin.version>
+    <coin.version>7.1.0-SNAPSHOT</coin.version>
   </properties>
 
   <dependencyManagement>
