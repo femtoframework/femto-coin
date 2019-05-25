@@ -1,5 +1,6 @@
 package org.femtoframework.coin.spec.element;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.parameters.Parameters;
 
@@ -36,8 +37,8 @@ public class ConfigElement extends ModelElement implements ConfigSpec {
         return getString(NAMESPACE, ConfigSpec.super.getNamespace());
     }
 
-
-    private transient ParametersSpecAdapter adapter = null;
+    @Ignore
+    private transient ParametersSpecAdapter parameters = null;
 
     /**
      * Return the parameter values only
@@ -46,9 +47,9 @@ public class ConfigElement extends ModelElement implements ConfigSpec {
      */
     @Override
     public <V> Parameters<V> getParameters() {
-        if (adapter == null) {
-            adapter = new ParametersSpecAdapter(this);
+        if (parameters == null) {
+            parameters = new ParametersSpecAdapter(getSpec());
         }
-        return (Parameters<V>)adapter;
+        return (Parameters<V>)parameters;
     }
 }

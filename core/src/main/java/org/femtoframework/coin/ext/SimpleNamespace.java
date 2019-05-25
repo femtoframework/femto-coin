@@ -31,8 +31,10 @@ public class SimpleNamespace implements Namespace, InitializableMBean {
     @Ignore
     private BeanFactory beanFactory;
 
+    @Ignore
     private CoinModule coinModule;
 
+    @Ignore
     private LifecycleStrategy lifecycleStrategy;
 
     /**
