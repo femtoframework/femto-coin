@@ -102,7 +102,7 @@ public class ParametersSpecAdapter<V> implements Parameters<V> {
 
     @Override
     public V remove(Object key) {
-        throw new UnsupportedOperationException("Unsupported");
+        return null;
     }
 
     @Override
@@ -112,7 +112,6 @@ public class ParametersSpecAdapter<V> implements Parameters<V> {
 
     @Override
     public void clear() {
-        throw new UnsupportedOperationException("Unsupported");
     }
 
     @Override
@@ -122,11 +121,19 @@ public class ParametersSpecAdapter<V> implements Parameters<V> {
 
     @Override
     public Collection<V> values() {
-        throw new UnsupportedOperationException("Unsupported");
+        List<V> list = new ArrayList<>(element.size());
+        for(Entry<String, Element> entry: element.entrySet()) {
+            list.add((V)toValue(entry.getValue()));
+        }
+        return list;
     }
 
     @Override
     public Set<Entry<String, V>> entrySet() {
-        throw new UnsupportedOperationException("Unsupported");
+        Map<String, V> map = new HashMap<>();
+        for(Entry<String, Element> entry: element.entrySet()) {
+            map.put(entry.getKey(), (V)toValue(entry.getValue()));
+        }
+        return map.entrySet();
     }
 }

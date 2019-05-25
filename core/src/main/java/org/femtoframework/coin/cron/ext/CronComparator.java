@@ -54,7 +54,7 @@ public class CronComparator implements Comparator<Cron>
      */
     @Override
     public int compare(Cron cron1, Cron cron2) {
-        long time = cron2.getNextRunningTime() - cron1.getNextRunningTime();
+        long time = cron1.getNextRunningTime() - cron2.getNextRunningTime();
         if (time == 0) {
             return 0;
         }

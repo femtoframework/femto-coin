@@ -6,6 +6,7 @@ import com.jsoniter.spi.JsonException;
 import org.femtoframework.coin.json.CoinCompatibilityMode;
 import org.femtoframework.coin.exception.SpecSyntaxException;
 import org.femtoframework.coin.spec.SpecParser;
+import org.femtoframework.io.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -54,7 +56,9 @@ public class SimpleSpecParser implements SpecParser {
         String lowerCase = path.toLowerCase();
         if (lowerCase.endsWith(".yaml") || lowerCase.endsWith(".yml")) { //Yaml
             Yaml yaml = new Yaml(new SpecConstructor());
-            try (InputStream input = uri.toURL().openStream()) {
+            InputStream input = null;
+            try {
+                input = uri.toURL().openStream();
                 Iterable<Object> iterable = yaml.loadAll(input);
                 ArrayList<LinkedHashMap> list = new ArrayList<>();
                 for (Object item :iterable) {
@@ -62,9 +66,18 @@ public class SimpleSpecParser implements SpecParser {
                 }
                 return list;
             }
+            catch(IOException ioe) {
+                logger.warn("Loading yaml exception:" + uri.toString(), ioe);
+                return Collections.emptyList();
+            }
+            finally {
+                IOUtil.close(input);
+            }
         }
         else if (lowerCase.endsWith(".json")) {
-            try (InputStream input = uri.toURL().openStream()) {
+            InputStream input = null;
+            try {
+                input = uri.toURL().openStream();
                 JsonIterator iter = JsonIteratorPool.borrowJsonIterator();
                 iter.configCache = CoinCompatibilityMode.DEFAULT;
                 iter.reset(input);
@@ -77,6 +90,13 @@ public class SimpleSpecParser implements SpecParser {
                 } finally {
                     JsonIteratorPool.returnJsonIterator(iter);
                 }
+            }
+            catch(IOException ioe) {
+                logger.warn("Loading json exception:" + uri.toString(), ioe);
+                return Collections.emptyList();
+            }
+            finally {
+                IOUtil.close(input);
             }
         }
         else {

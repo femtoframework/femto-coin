@@ -19,6 +19,14 @@ public interface CronController {
      */
     void removeCron(Cron cron);
 
+
+    /**
+     * Apply cron, if configuration changed
+     *
+     * @param cron Cron
+     */
+    void applyCron(Cron cron);
+
     /**
      * 执行Cron
      *

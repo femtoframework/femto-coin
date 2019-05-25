@@ -38,7 +38,9 @@ public class SimpleCronController extends LifecycleThread
      */
     @Override
     public void addCron(Cron cron) {
-        cronList.add(cron);
+        synchronized (cronList) {
+            cronList.add(cron);
+        }
     }
 
     /**
@@ -48,7 +50,22 @@ public class SimpleCronController extends LifecycleThread
      */
     @Override
     public void removeCron(Cron cron) {
-        cronList.remove(cron);
+        synchronized (cronList) {
+            cronList.remove(cron);
+        }
+    }
+
+    /**
+     * Apply cron, if configuration changed
+     *
+     * @param cron Cron
+     */
+    @Override
+    public void applyCron(Cron cron) {
+        synchronized (cronList) {
+            removeCron(cron);
+            addCron(cron);
+        }
     }
 
     /**
@@ -145,10 +162,7 @@ public class SimpleCronController extends LifecycleThread
             now = System.currentTimeMillis();
         }
 
-        long sleep = next - now;
-        if (sleep < getCheckInterval()) {
-            sleep = getCheckInterval();
-        }
+        long sleep = getCheckInterval();
 
         synchronized (cronList) {
             try {
