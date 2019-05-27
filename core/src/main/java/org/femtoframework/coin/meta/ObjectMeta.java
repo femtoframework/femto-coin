@@ -22,6 +22,13 @@ public interface ObjectMeta extends NamedBean {
     String getNamespace();
 
     /**
+     * System generated UID
+     *
+     * @return UID
+     */
+    String getUid();
+
+    /**
      * Creation timestamp
      *
      * @return Creation Timestamp

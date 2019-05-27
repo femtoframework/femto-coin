@@ -88,6 +88,8 @@ public class APIRequest {
 
     private String method;
 
+    private String body;
+
 
     /**
      * Resource Types
@@ -105,14 +107,14 @@ public class APIRequest {
         this.type = type;
     }
 
-    /**
-     * Return action, when the method is "PATCH", "POST" or "PUT"
-     *
-     * @return Action of this request
-     */
-    public String getAction() {
-        return parameters != null ? parameters.getString(APIConstants._ACTION) : null;
-    }
+//    /**
+//     * Return action, when the method is "PATCH", "POST" or "PUT"
+//     *
+//     * @return Action of this request
+//     */
+//    public String getAction() {
+//        return parameters != null ? parameters.getString(APIConstants._ACTION) : null;
+//    }
 
     /**
      * If namespace is null means all namespaces.
@@ -192,5 +194,13 @@ public class APIRequest {
 
     public void setMethod(String method) {
         this.method = method;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }

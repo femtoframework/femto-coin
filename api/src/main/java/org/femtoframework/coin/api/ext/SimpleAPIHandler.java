@@ -2,19 +2,14 @@ package org.femtoframework.coin.api.ext;
 
 import org.femtoframework.bean.NamedBean;
 import org.femtoframework.coin.*;
-import org.femtoframework.bean.annotation.Action;
-import org.femtoframework.coin.api.APIHandler;
-import org.femtoframework.coin.api.APIRequest;
-import org.femtoframework.coin.api.APIResponse;
+import org.femtoframework.coin.api.*;
 import org.femtoframework.coin.codec.Encoder;
 import org.femtoframework.coin.codec.json.JsonCodec;
 import org.femtoframework.coin.codec.yaml.YamlCodec;
 import org.femtoframework.bean.info.*;
 import org.femtoframework.coin.naming.CoinName;
 import org.femtoframework.coin.spec.ConfigSpec;
-import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.MapSpec;
-import org.femtoframework.coin.spec.element.PrimitiveElement;
 import org.femtoframework.coin.spec.element.SpecParameters;
 import org.femtoframework.coin.spi.CoinModuleAware;
 import org.femtoframework.parameters.Parameters;
@@ -45,6 +40,8 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
     private CoinLookup coinLookup;
 
     private BeanInfoFactory beanInfoFactory;
+
+    private APIPatch apiPatch;
 
     /**
      * Handle API Request
@@ -101,6 +98,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         return response;
     }
 
+
     protected void doPatch(NamespaceFactory namespaceFactory, ResourceType resourceType,
                          APIRequest request, APIResponse response,
                          Encoder<Object, OutputStream> encoder, ByteArrayOutputStream baos, int offset, int limit)
@@ -113,7 +111,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                 response.setErrorMessage(405, "Method not allowed on this resource type " + resourceType);
                 break;
             case BEAN:
-            case SPEC:
+//            case SPEC:
             case CONFIG:
                 String ns = request.getNamespace();
                 Namespace namespace = namespaceFactory.get(ns);
@@ -124,7 +122,7 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                     ResourceFactory factory = namespace.getFactory(resourceType);
                     if (request.isAll()) {
                         response.setCode(405);
-                        response.setMessage("PATCH has to be applied to '/namespace/NAMESPACE/RESOURCE_TYPE/NAME'");
+                        response.setMessage("PATCH has to be applied to '/namespaces/NAMESPACE/RESOURCE_TYPE/NAME'");
                     } else {
                         String name = request.getName();
                         Object obj = factory.get(name);
@@ -146,14 +144,13 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                                     if (next == null) {
                                         response.setErrorMessage(404, "Resource " + ns + ":" + name + " not found");
                                     } else {
-                                        String action = request.getAction();
-                                        Parameters parameters = request.getParameters();
-                                        String propertyName = parameters.getString(_PROPERTY);
-                                        Object value = parameters.get(_VALUE);
-                                        if (ACTION_SET.equals(action)) {
-                                            if (propertyName != null) {
-                                                next.put(propertyName, value);
-                                            }
+                                        String body = request.getBody();
+                                        Parameters<Object> patch = apiPatch.parsePatch(body);
+                                        try {
+                                            apiPatch.apply(resourceType, next, patch);
+                                        }
+                                        catch(APIPatchException ape) {
+                                            response.setErrorMessage(301, "Invoking setter exception:" + ape.getMessage());
                                         }
                                     }
                                 }
@@ -176,77 +173,13 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
                                         response.setErrorMessage(404, "Resource " + ns + ":" + StringUtil.toString(paths, '/') + " not found");
                                     }
                                     else {
-                                        String action = request.getAction();
-                                        Parameters parameters = request.getParameters();
-                                        if (ACTION_SET.equals(action)) { //Invoke setter on spec or bean
-                                            String propertyName = parameters.getString(_PROPERTY);
-                                            Object value = parameters.get(_VALUE);
-                                            if (propertyName != null) {
-                                                if (resource instanceof MapSpec) {
-                                                    ((MapSpec) resource).put(propertyName, new PrimitiveElement<>(CoreKind.STRING, value));
-                                                } else if (resource instanceof Map) {
-                                                    ((Map) resource).put(propertyName, value);
-                                                } else {
-                                                    BeanInfo beanInfo = beanInfoFactory.getBeanInfo(resource.getClass(), true);
-                                                    PropertyInfo propertyInfo = beanInfo.getProperty(propertyName);
-                                                    if (propertyInfo == null || !propertyInfo.isWritable()) {
-                                                        response.setErrorMessage(405, "No such property '" + propertyName + "' or it is not allowed. ");
-                                                    } else {
-                                                        try {
-                                                            propertyInfo.invokeSetter(resource, value);
-                                                        } catch (Exception ex) {
-                                                            response.setErrorMessage(502, "Invoking setter exception:" + ex.getMessage());
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                        String body = request.getBody();
+                                        Parameters<Object> patch = apiPatch.parsePatch(body);
+                                        try {
+                                            apiPatch.apply(ResourceType.BEAN, resource, patch);
                                         }
-                                        else if (ACTION_ACTION.equals(action)) { //Invoke action on bean
-                                            if (resourceType == ResourceType.SPEC) {
-                                                response.setErrorMessage(405, "Action 'action' is not allowed on resource 'spec' ");
-                                            } else {
-                                                String actionName = parameters.getString(NAME);
-                                                if (StringUtil.isInvalid(actionName)) {
-                                                    response.setErrorMessage(301, "No action name '_name'.");
-                                                } else {
-                                                    BeanInfo beanInfo = beanInfoFactory.getBeanInfo(resource.getClass(), true);
-                                                    ActionInfo actionInfo = beanInfo.getAction(actionName);
-                                                    if (actionInfo == null) {
-                                                        response.setErrorMessage(405, "No such action '" + actionName + "' at resource:" + resource.getClass());
-                                                    }
-                                                    else { // Invoke action
-                                                        List<ArgumentInfo> argumentInfos = actionInfo.getArguments();
-                                                        try {
-                                                            Object returnValue = null;
-                                                            if (argumentInfos == null || argumentInfos.isEmpty()) {
-                                                                returnValue = actionInfo.invoke(resource);
-                                                            } else {
-                                                                int size = argumentInfos.size();
-                                                                Object[] arguments = new Object[size];
-                                                                for(int i = 0; i < size; i ++) {
-                                                                    ArgumentInfo argumentInfo = argumentInfos.get(i);
-                                                                    arguments[i] = argumentInfo.toValue(parameters.get(argumentInfo.getName()));
-                                                                }
-                                                                returnValue = actionInfo.invoke(resource, arguments);
-                                                            }
-
-                                                            if (returnValue != null) { // Return the value if the returnValue is not null and the action specified as "INFO" or "ACTION_INFO"
-                                                                Action.Impact impact = actionInfo.getImpact();
-                                                                if (Action.Impact.ACTION_INFO == impact || Action.Impact.INFO == impact) {
-                                                                    encoder.encode(toVisible(null, returnValue), baos);
-                                                                }
-                                                            }
-                                                        }
-                                                        catch (Exception ex) {
-                                                            response.setErrorMessage(502, "Invoking action '" + actionName + "' exception at resource:"
-                                                                    + resource.getClass() + " " + ex.getMessage());
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            response.setErrorMessage(405, "Action '" + action + "' is not allowed.");
+                                        catch(APIPatchException ape) {
+                                            response.setErrorMessage(502, "Invoking setter exception:" + ape.getMessage());
                                         }
                                     }
                                 }
@@ -457,5 +390,6 @@ public class SimpleAPIHandler implements APIHandler, CoinModuleAware {
         this.coinLookup = module.getLookup();
         this.beanInfoFactory = module.getBeanInfoFactory();
         yamlCodec.setBeanInfoFactory(beanInfoFactory);
+        this.apiPatch = new YamlPatch(beanInfoFactory);
     }
 }

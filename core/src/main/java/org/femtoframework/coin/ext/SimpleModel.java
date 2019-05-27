@@ -5,6 +5,8 @@ import org.femtoframework.coin.spec.Kind;
 import org.femtoframework.parameters.Parameters;
 import org.femtoframework.util.CollectionUtil;
 
+import java.util.UUID;
+
 public class SimpleModel<SPEC, STATUS> implements Model<SPEC, STATUS> {
 
     private SPEC spec;
@@ -14,6 +16,11 @@ public class SimpleModel<SPEC, STATUS> implements Model<SPEC, STATUS> {
     private long creationTimestamp;
     private String apiVersion;
     private Kind kind;
+    private String uid;
+
+    public SimpleModel() {
+        this.uid = UUID.randomUUID().toString().toLowerCase();
+    }
 
     /**
      * Return the SPEC of COIN Object
@@ -53,6 +60,16 @@ public class SimpleModel<SPEC, STATUS> implements Model<SPEC, STATUS> {
     @Override
     public String getNamespace() {
         return namespace;
+    }
+
+    /**
+     * System generated UID
+     *
+     * @return UID
+     */
+    @Override
+    public String getUid() {
+        return uid;
     }
 
     /**

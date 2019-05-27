@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.io.*;
 
 public class APIServer implements LifecycleMBean {
 
@@ -91,6 +88,19 @@ public class APIServer implements LifecycleMBean {
                 String realMethod = session.getHeaders().get("x-http-method-override");
                 if ("PATCH".equalsIgnoreCase(realMethod)) {
                     method = "PATCH";
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    try {
+                        IOUtil.copy(session.getInputStream(), baos);
+                    } catch (IOException e) {
+                        return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/html",
+                                "Reading request body exception:" + e.getMessage());
+                    }
+                    try {
+                        request.setBody(baos.toString("utf8"));
+                    } catch (UnsupportedEncodingException e) {
+                        //Never
+                    }
                 }
             }
             request.setMethod(method);
@@ -119,12 +129,12 @@ public class APIServer implements LifecycleMBean {
             }
 
             boolean invalidPath = false;
-            if (ResourceType.NAMESPACE.getName().equals(paths[0])) {
+            if (ResourceType.NAMESPACE.getPluralName().equals(paths[0])) {
                 if (paths.length == 1) {
                     request.setAll(true);
                     request.setType(ResourceType.NAMESPACE);
                 }
-                else if (paths.length == 2 && ResourceType.NAMESPACE.getName().equals(paths[0])) {
+                else if (paths.length == 2 && ResourceType.NAMESPACE.getPluralName().equals(paths[0])) {
                     request.setAll(false);
                     request.setType(ResourceType.NAMESPACE);
                     request.setNamespace(paths[1]);

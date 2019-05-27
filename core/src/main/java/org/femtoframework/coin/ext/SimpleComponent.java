@@ -47,7 +47,9 @@ public class SimpleComponent extends SimpleModel<BeanSpec, BeanStatus>
         setSpec(spec);
         setStatus(new SimpleBeanStatus());
         this.module = module;
-        this.currentNamespace = module.getNamespaceFactory().get(getNamespace());
+        if (module != null) {
+            this.currentNamespace = module.getNamespaceFactory().get(getNamespace());
+        }
     }
 
     /**

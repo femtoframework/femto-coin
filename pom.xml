@@ -20,6 +20,7 @@
     <module>codec</module>
     <module>api</module>
     <module>examples</module>
+    <module>metrics</module>
   </modules>
 
   <scm>

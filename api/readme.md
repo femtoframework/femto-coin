@@ -13,32 +13,30 @@ It is designed similar as [K8s API](https://kubernetes.io/docs/reference/using-a
 ### Namespaces
 
 - GET /namespaces     - Returns all namespaces
-- GET /namespace/NAMESPACE - Returns the namespace with 'NAMESPACE'
+- GET /namespaces/NAMESPACE - Returns the namespace with 'NAMESPACE'
 
 ### Resources
 - component
   - GET /components - Returns all components from all namespaces
-  - GET /namespace/NAMESPACE/components - Returns all components under namespace 'NAMESPACE'
-  - GET /namespace/NAMESPACE/component/NAME - Returns the component with given name under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/components - Returns all components under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/components/NAME - Returns the component with given name under namespace 'NAMESPACE'
 - spec
   - GET /specs - Returns all specs from all namespaces
-  - GET /namespace/NAMESPACE/specs - Returns all specs under namespace 'NAMESPACE'
-  - GET /namespace/NAMESPACE/spec/NAME - Returns the spec with given name under namespace 'NAMESPACE'
-  - PATCH /namespace/NAMESPACE/spec/NAME - Applies patch configuration on bean spec
+  - GET /namespaces/NAMESPACE/specs - Returns all specs under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/specs/NAME - Returns the spec with given name under namespace 'NAMESPACE'
 - config
   - GET /configs - Returns all configs from all namespaces
-  - GET /namespace/NAMESPACE/configs - Returns all configs under namespace 'NAMESPACE'
-  - GET /namespace/NAMESPACE/config/NAME - Returns the config with given name under namespace 'NAMESPACE'
-  - PATCH /namespace/NAMESPACE/config/NAME - Applies patch properties on config
+  - GET /namespaces/NAMESPACE/configs - Returns all configs under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/configs/NAME - Returns the config with given name under namespace 'NAMESPACE'
 - info
   - GET /infos - Returns all infos from all namespaces
-  - GET /namespace/NAMESPACE/infos - Returns all infos under namespace 'NAMESPACE'
-  - GET /namespace/NAMESPACE/info/NAME - Returns the info with given name under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/infos - Returns all infos under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/infos/NAME - Returns the info with given name under namespace 'NAMESPACE'
 - bean
   - GET /beans - Returns all beans from all namespaces
-  - GET /namespace/NAMESPACE/beans - Returns all beans under namespace 'NAMESPACE'
-  - GET /namespace/NAMESPACE/bean/NAME - Returns the bean with given name under namespace 'NAMESPACE'
-  - PATCH /namespace/NAMESPACE/bean/NAME - Takes one action on the resource
+  - GET /namespaces/NAMESPACE/beans - Returns all beans under namespace 'NAMESPACE'
+  - GET /namespaces/NAMESPACE/beans/NAME - Returns the bean with given name under namespace 'NAMESPACE'
+  - PATCH /namespaces/NAMESPACE/beans/NAME - Takes one action on the resource
   
 NAME could be the name of the component or multiple paths for child component.
 For examples,
@@ -55,20 +53,26 @@ For examples,
 - offset=0
 
 ### PATCH
-- _action Action of this PATCH
-  - "action" Invoke @Action method
-  - "set" Invoke setter method
-- _name
-  - actionName @Action method name
-  - property  Property Name for setter
-- Other arguments
-  - spec PATCH
-    - {_action:"set", _property:"property", _value:"NewPropertyValue"} 
-  - config PATCH
-    - {_action:"set", _property:"property", _value:"NewPropertyValue"}
-  - bean PATCH
-    - {_action:"set", _property:"property", _value:"NewPropertyValue"}
-    - {_action:"action", _name:"doSomeThing1", "1":"value1", "2":"value2"}
-    - {_action:"action", _name:"doSomeThing2", value:"ArgumentValue"}
+
+Content-Type: application/strategic-merge-patch+json
+[Strategic Merge Patch](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-api-machinery/strategic-merge-patch.md)
 
 
+- PATCH /namespaces/NAMESPACE/beans/NAME - Takes one action on the resource
+```$yaml
+PATCH /coin/api/v1/namespaces/cron/beans/test
+minute: 10         #setMinute(int)
+```
+
+```$yaml
+PATCH /coin/api/v1/namespaces/cron/beans/test
+$invoke/doSomeThing1:
+  - value1
+  - value2           #doSomeThing1(String, String)
+```
+
+```$yaml
+PATCH /coin/api/v1/namespaces/cron/beans/test
+$invoke/doSomeThing2:
+  - value           #doSomeThing2(String)
+```
