@@ -109,13 +109,26 @@ public class YamlPatch implements APIPatch {
                             if (argumentInfos == null || argumentInfos.isEmpty()) {
                                 returnValue = actionInfo.invoke(resource);
                             } else {
+                                Object value = patch.get(key);
                                 int size = argumentInfos.size();
-                                Object[] arguments = new Object[size];
-                                for(int i = 0; i < size; i ++) {
-                                    ArgumentInfo argumentInfo = argumentInfos.get(i);
-                                    arguments[i] = argumentInfo.toValue(patch.get(argumentInfo.getName()));
+                                Object[] values = null;
+                                if (value instanceof Object[]) {
+                                    values = (Object[])value;
                                 }
-                                returnValue = actionInfo.invoke(resource, arguments);
+                                else if (size == 1) {
+                                    values = new Object[] { value };
+                                }
+                                if (values != null && values.length == size) {
+                                    Object[] arguments = new Object[size];
+                                    for (int i = 0; i < size; i++) {
+                                        ArgumentInfo argumentInfo = argumentInfos.get(i);
+                                        arguments[i] = argumentInfo.toValue(values[i]);
+                                    }
+                                    returnValue = actionInfo.invoke(resource, arguments);
+                                }
+                                else {
+                                    throw new APIPatchException("Arguments doesn't match the action:" + key);
+                                }
                             }
 
                             if (returnValue != null) {
