@@ -59,6 +59,7 @@ Content-Type: application/strategic-merge-patch+json
 
 
 - PATCH /namespaces/NAMESPACE/beans/NAME - Takes one action on the resource
+
 ```$yaml
 PATCH /coin/api/v1/namespaces/cron/beans/test
 minute: 10         #setMinute(int)

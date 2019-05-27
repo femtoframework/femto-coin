@@ -3,6 +3,7 @@ package org.femtoframework.coin.cron.ext;
 import org.femtoframework.bean.Nameable;
 import org.femtoframework.bean.NamedBean;
 import org.femtoframework.bean.annotation.Ignore;
+import org.femtoframework.bean.annotation.Property;
 import org.femtoframework.coin.Namespace;
 import org.femtoframework.coin.cron.Cron;
 import org.femtoframework.coin.spi.NamespaceAware;
@@ -96,6 +97,7 @@ public class SimpleCron
         entry.setSecond(second);
     }
 
+    @Property
     public String getSecond() {
         return entry.getSecond();
     }
@@ -104,6 +106,7 @@ public class SimpleCron
         entry.setMinute(minute);
     }
 
+    @Property
     public String getMinute() {
         return entry.getMinute();
     }
@@ -112,6 +115,7 @@ public class SimpleCron
         entry.setHour(hour);
     }
 
+    @Property
     public String getHour() {
         return entry.getHour();
     }
@@ -120,6 +124,7 @@ public class SimpleCron
         entry.setDayOfMonth(dom);
     }
 
+    @Property
     public String getDayOfMonth() {
         return entry.getDayOfMonth();
     }
@@ -128,6 +133,7 @@ public class SimpleCron
         entry.setMonth(moy);
     }
 
+    @Property
     public String getMonth() {
         return entry.getMonth();
     }
@@ -136,6 +142,7 @@ public class SimpleCron
         entry.setYear(year);
     }
 
+    @Property
     public String getYear() {
         return entry.getYear();
     }
@@ -144,6 +151,7 @@ public class SimpleCron
         entry.setDayOfWeek(dow);
     }
 
+    @Property
     public String getDayOfWeek() {
         return entry.getDayOfWeek();
     }

@@ -9,6 +9,7 @@ import org.femtoframework.coin.api.APIHandler;
 import org.femtoframework.coin.api.APIRequest;
 import org.femtoframework.coin.api.APIResponse;
 import org.femtoframework.io.IOUtil;
+import org.femtoframework.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,10 +89,14 @@ public class APIServer implements LifecycleMBean {
                 String realMethod = session.getHeaders().get("x-http-method-override");
                 if ("PATCH".equalsIgnoreCase(realMethod)) {
                     method = "PATCH";
-
+                }
+            }
+            if ("PATCH".equalsIgnoreCase(method)) {
+                int bodySize = DataUtil.getInt(session.getHeaders().get("content-length"), 0);
+                if (bodySize > 0) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     try {
-                        IOUtil.copy(session.getInputStream(), baos);
+                        IOUtil.copy(session.getInputStream(), baos, bodySize);
                     } catch (IOException e) {
                         return newFixedLengthResponse(Response.Status.INTERNAL_ERROR, "text/html",
                                 "Reading request body exception:" + e.getMessage());
@@ -101,6 +106,9 @@ public class APIServer implements LifecycleMBean {
                     } catch (UnsupportedEncodingException e) {
                         //Never
                     }
+                }
+                else {
+                    request.setBody("");
                 }
             }
             request.setMethod(method);

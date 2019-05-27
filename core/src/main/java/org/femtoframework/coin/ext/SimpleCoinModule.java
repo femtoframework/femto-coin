@@ -136,7 +136,12 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
     @Override
     public RemoteGenerator getRemoteGenerator() {
         if (remoteGenerator == null) {
-            remoteGenerator = ImplementUtil.getInstance(RemoteGenerator.class);
+            try {
+                remoteGenerator = ImplementUtil.getInstance(RemoteGenerator.class);
+            }
+            catch(Exception ex) {
+                //TODO
+            }
         }
         return remoteGenerator;
     }
