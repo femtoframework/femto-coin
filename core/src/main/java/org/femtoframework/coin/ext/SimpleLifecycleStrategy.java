@@ -154,17 +154,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
         Object bean = component.getBean();
         if (!isChild) {
-            if (bean instanceof InitializableMBean) {
-                InitializableMBean mBean = (InitializableMBean) bean;
-                if (!mBean.isInitialized()) {
-                    mBean.init();
-                }
-            } else if (bean instanceof Initializable) {
-                ((Initializable) bean).init();
-            } else {
-                Class<?> clazz = bean.getClass();
-                invokeByAnnotation(clazz, bean, PostConstruct.class);
-            }
+            ensure(bean, BeanStage.INITIALIZE);
         }
         else {
             // The parent bean needs to control the lifecycle of the child,
@@ -215,14 +205,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
         Object bean = component.getBean();
         if (!isChild) {
-            if (bean instanceof LifecycleMBean) {
-                LifecycleMBean mBean = (LifecycleMBean) bean;
-                if (mBean.getBeanPhase().ordinal() < BeanPhase.STARTING.ordinal()) {
-                    mBean.start();
-                }
-            } else if (bean instanceof Startable) {
-                ((Startable) bean).start();
-            }
+            ensure(bean, BeanStage.START);
         }
         else {
             // The parent bean needs to control the lifecycle of the child,
@@ -269,14 +252,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
         Object bean = component.getBean();
         if (!isChild) {
-            if (bean instanceof LifecycleMBean) {
-                LifecycleMBean mBean = (LifecycleMBean) bean;
-                if (mBean.getBeanPhase().ordinal() < BeanPhase.STOPPING.ordinal()) {
-                    mBean.stop();
-                }
-            } else if (bean instanceof Stoppable) {
-                ((Stoppable) bean).stop();
-            }
+            ensure(bean, BeanStage.STOP);
         }
         else {
             // The parent bean needs to control the lifecycle of the child,
@@ -351,11 +327,47 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
         doDestroy(component, false);
     }
 
-    protected void doDestroy(Component component, boolean isChild) {
-        eventSupport.fireEvent(BeanPhase.DESTROYING,component);
-
-        Object bean = component.getBean();
-        if (!isChild) {
+    /**
+     * Ensure the Bean in given stage
+     *
+     * @param bean  Bean
+     * @param stage Target Stage
+     */
+    @Override
+    public void ensure(Object bean, BeanStage stage) {
+        if (stage == BeanStage.INITIALIZE) {
+            if (bean instanceof InitializableMBean) {
+                InitializableMBean mBean = (InitializableMBean) bean;
+                if (!mBean.isInitialized()) {
+                    mBean.init();
+                }
+            } else if (bean instanceof Initializable) {
+                ((Initializable) bean).init();
+            } else {
+                Class<?> clazz = bean.getClass();
+                invokeByAnnotation(clazz, bean, PostConstruct.class);
+            }
+        } else if (stage == BeanStage.START) {
+            if (bean instanceof LifecycleMBean) {
+                LifecycleMBean mBean = (LifecycleMBean) bean;
+                if (mBean.getBeanPhase().ordinal() < BeanPhase.STARTING.ordinal()) {
+                    mBean.start();
+                }
+            } else if (bean instanceof Startable) {
+                ((Startable) bean).start();
+            }
+        }
+        else if (stage == BeanStage.STOP) {
+            if (bean instanceof LifecycleMBean) {
+                LifecycleMBean mBean = (LifecycleMBean) bean;
+                if (mBean.getBeanPhase().ordinal() < BeanPhase.STOPPING.ordinal()) {
+                    mBean.stop();
+                }
+            } else if (bean instanceof Stoppable) {
+                ((Stoppable) bean).stop();
+            }
+        }
+        else if (stage == BeanStage.DESTROY) {
             if (bean instanceof LifecycleMBean) {
                 LifecycleMBean mBean = (LifecycleMBean) bean;
                 if (mBean.getBeanPhase().ordinal() < BeanPhase.DESTROYING.ordinal()) {
@@ -367,6 +379,15 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
                 Class<?> clazz = bean.getClass();
                 invokeByAnnotation(clazz, bean, PreDestroy.class);
             }
+        }
+    }
+
+    protected void doDestroy(Component component, boolean isChild) {
+        eventSupport.fireEvent(BeanPhase.DESTROYING,component);
+
+        Object bean = component.getBean();
+        if (!isChild) {
+            ensure(bean, BeanStage.DESTROY);
         }
         else {
             // The parent bean needs to control the lifecycle of the child,

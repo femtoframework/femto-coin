@@ -1,5 +1,7 @@
 package org.femtoframework.coin;
 
+import org.femtoframework.bean.BeanStage;
+
 /**
  * Bean Lifecycle Strategy
  *
@@ -38,14 +40,21 @@ public interface LifecycleStrategy extends Configurator {
      * @param component Component
      * @throws org.femtoframework.coin.exception.BeanLifecycleException
      */
-    default void stop(Component component) {
+    void stop(Component component);
 
-    }
+    /**
+     * Destroy component
+     *
+     * @param component Component
+     */
+    void destroy(Component component);
 
-
-    default void destroy(Component component) {
-
-    }
-
+    /**
+     * Ensure the Bean in given stage
+     *
+     * @param bean Bean
+     * @param stage Target Stage
+     */
+    void ensure(Object bean, BeanStage stage);
 
 }
