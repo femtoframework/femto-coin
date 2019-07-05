@@ -1,5 +1,8 @@
 package org.femtoframework.coin.spec.element;
 
+import org.femtoframework.bean.info.BeanInfo;
+import org.femtoframework.bean.info.BeanInfoUtil;
+import org.femtoframework.bean.info.PropertyInfo;
 import org.femtoframework.coin.Component;
 import org.femtoframework.coin.spec.*;
 import org.femtoframework.util.convert.ConverterUtil;
@@ -66,12 +69,35 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
      * @return the value
      */
     public <T> T getValue(Class<T> expectedType, Component component) {
-        Map values = new HashMap(size());
+        Map<String, Object> values = new HashMap<>(size());
         for(Map.Entry<String, E> entry: entrySet()) {
             values.put(entry.getKey(), entry.getValue().getValue(null, component));
         }
         if (expectedType != null) {
-            return ConverterUtil.convertToType(values, expectedType);
+            Object value = ConverterUtil.convertToType(values, expectedType);
+            if (value != null) {
+                return (T)value;
+            }
+            else {
+                BeanInfo beanInfo = BeanInfoUtil.getBeanInfo(expectedType);
+                if (beanInfo != null) {
+                    try {
+                        value = expectedType.newInstance();
+                        for(Map.Entry<String, Object> entry: values.entrySet()) {
+                            if (entry.getValue() != null) {
+                                PropertyInfo propertyInfo = beanInfo.getProperty(entry.getKey());
+                                if (propertyInfo != null) {
+                                    propertyInfo.invokeSetter(value, entry.getValue());
+                                }
+                            }
+                        }
+                        return (T)value;
+                    } catch (Exception x) {
+                        return null;
+                    }
+                }
+                return null;
+            }
         }
         else {
             return (T)values;
