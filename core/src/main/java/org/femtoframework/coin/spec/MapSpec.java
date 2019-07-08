@@ -1,6 +1,5 @@
 package org.femtoframework.coin.spec;
 
-import org.femtoframework.coin.spec.element.ModelElement;
 import org.femtoframework.util.DataUtil;
 
 import java.util.Map;
@@ -40,7 +39,7 @@ public interface MapSpec<E extends Element> extends Element, Map<String, E> {
     static Object getValue(Map map, String key, Object defValue) {
         Element element = (Element)map.get(key);
         if (element != null) {
-            Object value = element.getValue((Class<?>)null, null);
+            Object value = element.getValue((Class<?>)null, null, null);
             return value != null ? value : defValue;
         }
         return defValue;

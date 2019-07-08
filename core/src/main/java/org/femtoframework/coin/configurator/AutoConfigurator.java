@@ -17,6 +17,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -104,19 +106,21 @@ public class AutoConfigurator implements Configurator {
         String targetName;
         Method method;
         Class<?> expectedType;
+        ParameterizedType genericType;
         Component childComponent;
 
-        public Injection(Element element, String name, Method method, Class<?> expectedType, Component childComponent) {
+        public Injection(Element element, String name, Method method, Class<?> expectedType, Component childComponent, ParameterizedType genericType) {
             this.element = element;
             this.targetName = name;
             this.method = method;
             this.expectedType = expectedType;
             this.childComponent = childComponent;
+            this.genericType = genericType;
         }
 
         public void inject(Object parent, Component parentComponent) {
             Object value = childComponent != null ? childComponent.getBean(expectedType) :
-                    element.getValue(expectedType, parentComponent);
+                    element.getValue(expectedType, genericType, parentComponent);
             AutoConfigurator.this.invoke(value, parent, targetName, parentComponent, method);
         }
     }
@@ -150,7 +154,16 @@ public class AutoConfigurator implements Configurator {
 
         String propertyName = null;
         if (value == null) {
-            Class<?> expectedType = method.getParameterTypes()[0];
+            Class<?> expectedType = null;
+            Type parameterType = method.getGenericParameterTypes()[0];
+            ParameterizedType parameterizedType = null;
+            if (parameterType instanceof Class) {
+                expectedType = (Class<?>)parameterType;
+            }
+            else if (parameterType instanceof ParameterizedType) {
+                parameterizedType = (ParameterizedType)parameterType;
+                expectedType = (Class<?>)parameterizedType.getRawType();
+            }
             BeanSpec spec = component.getSpec();
             if (spec instanceof ComponentSpec) {
                 spec = ((ComponentSpec)spec).getSpec();
@@ -182,15 +195,15 @@ public class AutoConfigurator implements Configurator {
                 }
                 else if (element instanceof SetSpec) {
                     if (Set.class.isAssignableFrom(expectedType)) {
-                        injection = new Injection(element, targetName, method, expectedType, null);
+                        injection = new Injection(element, targetName, method, expectedType, null, parameterizedType);
                     }
                 }
                 else if (element instanceof MapSpec) {
                     if (Map.class.isAssignableFrom(expectedType)) {
-                        injection = new Injection(element, targetName, method, expectedType, null);
+                        injection = new Injection(element, targetName, method, expectedType, null, parameterizedType);
                     }
                     else if (Set.class.isAssignableFrom(expectedType)) {
-                        injection = new Injection(element, targetName, method, expectedType, null);
+                        injection = new Injection(element, targetName, method, expectedType, null, parameterizedType);
                     }
                     else {
                         childSpec = new BeanElement((MapSpec) element);
@@ -202,11 +215,11 @@ public class AutoConfigurator implements Configurator {
                 }
                 else if (element instanceof ListSpec) {
                     if (List.class.isAssignableFrom(expectedType)) {
-                        injection = new Injection(element, targetName, method, expectedType, null);
+                        injection = new Injection(element, targetName, method, expectedType, null, parameterizedType);
                     }
                 }
                 else if (element instanceof VariableSpec) {
-                    injection = new Injection(element, targetName, method, expectedType, null);
+                    injection = new Injection(element, targetName, method, expectedType, null, parameterizedType);
                 }
 
                 Class<?> expectedClass = childSpec != null ? childSpec.getTypeClass() : null;
@@ -238,11 +251,11 @@ public class AutoConfigurator implements Configurator {
                 }
             }
             else if (element != null) { //Primitive value
-                injection = new Injection(element, targetName, method, expectedType, null);
+                injection = new Injection(element, targetName, method, expectedType, null, parameterizedType);
             }
 
             if (childComponent != null) {
-                injection = new Injection(element, targetName, method, expectedType, childComponent);
+                injection = new Injection(element, targetName, method, expectedType, childComponent, parameterizedType);
             }
             else {
 //                Component defaultComponent = component.getModule().getDefaultComponentFactory().get(expectedType.getName());

@@ -9,7 +9,9 @@ public interface LauncherListener extends EventListener {
     /**
      * On Before Starting
      */
-    void onBeforeStarting();
+    default void onBeforeStarting() {
+
+    }
 
     /**
      * On Yaml Files Found
@@ -17,12 +19,16 @@ public interface LauncherListener extends EventListener {
      * @param yamlFiles Yaml Files
      * @return URI List
      */
-    List<URI> onYamlFilesFound(List<URI> yamlFiles);
+    default List<URI> onYamlFilesFound(List<URI> yamlFiles) {
+        return yamlFiles;
+    }
 
     /**
      * On After Loading Yaml Files
      *
      * @param yamlFiles Yaml Files
      */
-    void onAfterLoadingYamlFiles(List<URI> yamlFiles);
+    default void onAfterLoadingYamlFiles(List<URI> yamlFiles) {
+
+    }
 }

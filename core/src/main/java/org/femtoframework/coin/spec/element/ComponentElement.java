@@ -9,6 +9,7 @@ import org.femtoframework.lang.reflect.Reflection;
 import org.femtoframework.parameters.ParametersMap;
 import org.femtoframework.util.DataUtil;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -106,15 +107,16 @@ public class ComponentElement extends ModelElement<BeanSpec> implements Componen
      * Return the value of this element definition
      *
      * @param expectedType    Expected kind
+     * @param genericType
      * @param parentComponent Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, Component parentComponent) {
-        Map values = new ParametersMap();
-        for (Map.Entry<String, Element> entry : getSpec().entrySet()) {
-            String key = entry.getKey();
-            values.put(key, entry.getValue().getValue(null, parentComponent));
-        }
+    public <T> T getValue(Class<T> expectedType, Type genericType, Component parentComponent) {
+//        Map values = new ParametersMap();
+//        for (Map.Entry<String, Element> entry : getSpec().entrySet()) {
+//            String key = entry.getKey();
+//            values.put(key, entry.getValue().getValue(null, null, parentComponent));
+//        }
 
         if (expectedType == null) {
             expectedType = (Class<T>) getTypeClass();

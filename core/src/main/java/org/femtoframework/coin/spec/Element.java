@@ -2,6 +2,8 @@ package org.femtoframework.coin.spec;
 
 import org.femtoframework.coin.Component;
 
+import java.lang.reflect.Type;
+
 /**
  * Element
  *
@@ -44,10 +46,11 @@ public interface Element
      * Return the value of this spec definition
      *
      * @param expectedType Expected kind
+     * @param genericType
      * @param parentComponent  Component
      * @return the value
      */
-    <T> T getValue(Class<T> expectedType, Component parentComponent);
+    <T> T getValue(Class<T> expectedType, Type genericType, Component parentComponent);
 
     /**
      * Start visiting this spec

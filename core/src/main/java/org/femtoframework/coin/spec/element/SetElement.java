@@ -23,6 +23,7 @@ import org.femtoframework.coin.spec.Kind;
 import org.femtoframework.coin.spec.SetSpec;
 import org.femtoframework.util.convert.ConverterUtil;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -71,13 +72,14 @@ public class SetElement<E extends Element> extends HashSet<E> implements SetSpec
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
+     * @param genericType
      * @param component    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, Component component) {
+    public <T> T getValue(Class<T> expectedType, Type genericType, Component component) {
         Set values = new LinkedHashSet(size());
         for(Element element : this) {
-            values.add(element.getValue(null, component));
+            values.add(element.getValue(null, null, component));
         }
         if (expectedType != null) {
             return ConverterUtil.convertToType(values, expectedType);

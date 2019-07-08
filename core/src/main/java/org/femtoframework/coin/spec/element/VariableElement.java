@@ -6,6 +6,8 @@ import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.VariableResolverFactory;
 import org.femtoframework.coin.spec.VariableSpec;
 
+import java.lang.reflect.Type;
+
 /**
  * Variable Element
  *
@@ -66,10 +68,11 @@ public class VariableElement extends PrimitiveElement<Object> implements Variabl
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
+     * @param genericType
      * @param component      Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, Component component)
+    public <T> T getValue(Class<T> expectedType, Type genericType, Component component)
     {
         VariableResolverFactory vr = component.getModule().getVariableResolverFactory();
         return vr.resolve(this, expectedType, component);

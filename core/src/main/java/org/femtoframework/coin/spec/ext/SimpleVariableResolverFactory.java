@@ -73,7 +73,7 @@ public class SimpleVariableResolverFactory extends BaseResourceFactory<VariableR
         }
         VariableResolver vr = get(prefix);
         if (vr == null) {
-            throw new SpecSyntaxException("No such prefix;" + prefix +" in variable:" + var.getName());
+            vr = get("b");
         }
         return vr.resolve(var, expectedType, component);
     }

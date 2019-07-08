@@ -8,6 +8,8 @@ import org.femtoframework.coin.spec.CoreKind;
 import org.femtoframework.coin.spec.PrimitiveSpec;
 import org.femtoframework.util.convert.ConverterUtil;
 
+import java.lang.reflect.Type;
+
 /**
  * PrimitiveSpec Element
  *
@@ -32,10 +34,11 @@ public class PrimitiveElement<E> extends AbstractElement implements PrimitiveSpe
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
+     * @param genericType
      * @param component    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, Component component) {
+    public <T> T getValue(Class<T> expectedType, Type genericType, Component component) {
         if (kind == CoreKind.NULL) {
             return null;
         }

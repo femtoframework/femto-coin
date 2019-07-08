@@ -9,6 +9,7 @@ import org.femtoframework.coin.spec.RemoteSpec;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.util.DataUtil;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import static org.femtoframework.coin.CoinConstants.INTERFACES;
@@ -62,10 +63,11 @@ public class RemoteElement extends BeanElement implements RemoteSpec {
      * Return the value of this element definition
      *
      * @param expectedType Expected kind
+     * @param genericType
      * @param parentComponent    Component
      * @return the value
      */
-    public <T> T getValue(Class<T> expectedType, Component parentComponent) {
+    public <T> T getValue(Class<T> expectedType, Type genericType, Component parentComponent) {
         RemoteGenerator generator = ImplementUtil.getInstance(RemoteGenerator.class);
 
         ComponentFactory factory = parentComponent.getCurrentComponentFactory();
