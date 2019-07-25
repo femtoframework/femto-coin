@@ -9,6 +9,8 @@ import org.femtoframework.coin.spec.BeanSpec;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,10 +54,10 @@ public class BelongsToConfigurator implements Configurator {
 
         String method = belongsTo.getMethod();
         Class<?> parentTypeClass = parent.getSpec().getTypeClass();
-        Class[] parentTypeInterfaces = parentTypeClass.getInterfaces();
+        List<Class> parentTypeInterfaces = getAllInterfaces(parentTypeClass);
 
         Class<?> typeClass = spec.getTypeClass();
-        Class[] typeInterfaces = typeClass.getInterfaces();
+        List<Class> typeInterfaces = getAllInterfaces(typeClass);
 
 
         for(Class parentTypeInterface : parentTypeInterfaces) {
@@ -74,10 +76,21 @@ public class BelongsToConfigurator implements Configurator {
                 }
             }
         }
-
     }
 
-    private Method match(String method, Class<?> parentTypeInterface, Class[] typeInterfaces) {
+    protected List<Class> getAllInterfaces(Class<?> typeClass) {
+        List<Class> list = new ArrayList<>(4);
+        while(typeClass != null && typeClass != Object.class) {
+            Class[] interfaces = typeClass.getInterfaces();
+            if (interfaces != null && interfaces.length > 0) {
+                list.addAll(Arrays.asList(interfaces));
+            }
+            typeClass = typeClass.getSuperclass();
+        }
+        return list;
+    }
+
+    private Method match(String method, Class<?> parentTypeInterface, List<Class> typeInterfaces) {
         Method[] declaredMethods = parentTypeInterface.getDeclaredMethods();
         for(Method m: declaredMethods) {
             if (m.getParameterCount() == 1 && m.getName().equals(method)) {
@@ -89,7 +102,7 @@ public class BelongsToConfigurator implements Configurator {
         return null;
     }
 
-    private boolean isMatch(Class<?> argumentInterface, Class[] typeInterfaces) {
+    private boolean isMatch(Class<?> argumentInterface, List<Class> typeInterfaces) {
         for(Class clazz : typeInterfaces) {
             if (argumentInterface.isAssignableFrom(clazz)) {
                 return true;

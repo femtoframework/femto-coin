@@ -1,7 +1,5 @@
 package org.femtoframework.coin.remote;
 
-import java.util.List;
-
 /**
  * Remote Generator
  *

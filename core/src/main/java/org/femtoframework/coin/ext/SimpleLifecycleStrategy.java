@@ -329,7 +329,7 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
 
     protected void ensure(Object bean, BeanStage stage, boolean forward) {
-        if (BeanStage.INITIALIZE.isAfterOrCurrent(stage)) {
+        if ((forward && BeanStage.INITIALIZE.isBeforeOrCurrent(stage)) || BeanStage.INITIALIZE == stage) {
             if (bean instanceof InitializableMBean) {
                 InitializableMBean mBean = (InitializableMBean) bean;
                 if (!mBean.isInitialized()) {
@@ -341,12 +341,8 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
                 Class<?> clazz = bean.getClass();
                 invokeByAnnotation(clazz, bean, PostConstruct.class);
             }
-
-            if (!forward) {
-                return;
-            }
         }
-        if (BeanStage.START.isAfterOrCurrent(stage)) {
+        if ((forward && BeanStage.START.isBeforeOrCurrent(stage)) || BeanStage.START == stage) {
             if (bean instanceof LifecycleMBean) {
                 LifecycleMBean mBean = (LifecycleMBean) bean;
                 if (mBean.getBeanPhase().ordinal() < BeanPhase.STARTING.ordinal()) {
@@ -355,11 +351,8 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             } else if (bean instanceof Startable) {
                 ((Startable) bean).start();
             }
-            if (!forward) {
-                return;
-            }
         }
-        if (BeanStage.STOP.isAfterOrCurrent(stage)) {
+        if ((forward && BeanStage.STOP.isBeforeOrCurrent(stage)) || BeanStage.STOP == stage) {
             if (bean instanceof LifecycleMBean) {
                 LifecycleMBean mBean = (LifecycleMBean) bean;
                 if (mBean.getBeanPhase().ordinal() < BeanPhase.STOPPING.ordinal()) {
@@ -368,11 +361,8 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             } else if (bean instanceof Stoppable) {
                 ((Stoppable) bean).stop();
             }
-            if (!forward) {
-                return;
-            }
         }
-        if (BeanStage.DESTROY.isAfterOrCurrent(stage)) {
+        if ((forward && BeanStage.DESTROY.isBeforeOrCurrent(stage)) || BeanStage.DESTROY == stage) {
             if (bean instanceof LifecycleMBean) {
                 LifecycleMBean mBean = (LifecycleMBean) bean;
                 if (mBean.getBeanPhase().ordinal() < BeanPhase.DESTROYING.ordinal()) {

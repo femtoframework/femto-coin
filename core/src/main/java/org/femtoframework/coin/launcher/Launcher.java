@@ -63,5 +63,7 @@ public class Launcher {
         launcherListener.onAfterLoadingYamlFiles(allUris);
 
         ((Startable)module).start();
+
+        System.setProperty("cube.system.launched", "true");
     }
 }

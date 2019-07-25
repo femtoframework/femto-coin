@@ -1,5 +1,6 @@
 package org.femtoframework.coin;
 
+import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.KindSpecFactory;
 import org.femtoframework.implement.ImplementUtil;
 
@@ -49,5 +50,32 @@ public class CoinUtil {
      */
     public static KindSpecFactory getKindSpecFactory() {
         return getModule().getKindSpecFactory();
+    }
+
+
+    /**
+     * Generate object
+     *
+     * @param expectedType Expected Type
+     * @param uri          Remote URI
+     * @param interfaces   Interfaces the generated bean should have, could be null, if there is no interface
+     * @return Generated Object
+     */
+    public <T> T generate(Class<T> expectedType, String uri, Class... interfaces) {
+        RemoteGenerator remoteGenerator = getModule().getRemoteGenerator();
+        if (remoteGenerator != null) {
+            String[] interfaceNames = interfaces != null ? new String[interfaces.length] : null;
+            if (interfaceNames != null) {
+                int i = 0;
+                for(Class clazz : interfaces) {
+                    interfaceNames[i++] = clazz.getName();
+                }
+                return (T)remoteGenerator.generate(expectedType.getName(), uri, interfaceNames);
+            }
+            else {
+                return (T)remoteGenerator.generate(expectedType.getName(), uri);
+            }
+        }
+        return null;
     }
 }
