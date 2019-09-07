@@ -61,7 +61,7 @@ public class CoinUtil {
      * @param interfaces   Interfaces the generated bean should have, could be null, if there is no interface
      * @return Generated Object
      */
-    public <T> T generate(Class<T> expectedType, String uri, Class... interfaces) {
+    public static <T> T generate(Class<T> expectedType, String uri, Class... interfaces) {
         RemoteGenerator remoteGenerator = getModule().getRemoteGenerator();
         if (remoteGenerator != null) {
             String[] interfaceNames = interfaces != null ? new String[interfaces.length] : null;
