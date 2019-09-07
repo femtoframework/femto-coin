@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -11,7 +10,7 @@
 
   <groupId>org.femtoframework.coin</groupId>
   <artifactId>femto-coin</artifactId>
-  <version>7.1.0-SNAPSHOT</version>
+  <version>7.1.0</version>
   <name>femto-coin</name>
   <packaging>pom</packaging>
 
@@ -27,7 +26,7 @@
     <connection>scm:git:git@github.com:femtoframework/femto-coin.git</connection>
     <developerConnection>scm:git:git@github.com:femtoframework/femto-coin.git</developerConnection>
     <url>https://github.com/femtoframework/femto-coin</url>
-    <tag>HEAD</tag>
+    <tag>v7.1.0</tag>
   </scm>
 
   <organization>
@@ -61,7 +60,7 @@
     <slf4j-version>1.7.7</slf4j-version>
     <nanohttpd.version>2.3.1</nanohttpd.version>
     <logback.version>1.2.3</logback.version>
-    <coin.version>7.1.0-SNAPSHOT</coin.version>
+    <coin.version>7.1.0</coin.version>
   </properties>
 
   <dependencyManagement>
