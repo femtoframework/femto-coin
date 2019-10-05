@@ -45,6 +45,10 @@ public interface MapSpec<E extends Element> extends Element, Map<String, E> {
         return defValue;
     }
 
+    static Boolean getBoolean(Map map, String key, boolean defValue) {
+        return DataUtil.getBoolean(getValue(map, key), defValue);
+    }
+
     static String getString(Map map, String key, String defValue) {
         return DataUtil.getString(getValue(map, key), defValue);
     }

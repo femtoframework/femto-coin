@@ -7,6 +7,8 @@ import org.femtoframework.coin.event.BeanEventListeners;
 import org.femtoframework.coin.event.BeanEventSupport;
 import org.femtoframework.coin.remote.RemoteGenerator;
 import org.femtoframework.coin.spec.BeanSpec;
+import org.femtoframework.coin.spec.ComponentSpec;
+import org.femtoframework.coin.spec.MapSpec;
 import org.femtoframework.coin.spec.RemoteSpec;
 import org.femtoframework.implement.ImplementUtil;
 import org.femtoframework.lang.reflect.NoSuchClassException;
@@ -80,6 +82,8 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
             if (className == null) {
                 throw new ObjectCreationException("No class found in bean, " + component.getNamespace() + ":" + beanName);
             }
+
+
             Class<?> clazz = null;
             try {
                 clazz = Reflection.getClass(className);
@@ -108,21 +112,48 @@ public class SimpleLifecycleStrategy implements LifecycleStrategy, Initializable
 
             eventSupport.fireEvent(BeanPhase.CREATING, component);
 
-            try {
-                bean = Reflection.newInstance(clazz);
-            } catch (ReflectionException re) {
-                throw new ObjectCreationException("Create object exception:" + clazz.getName(), re);
+            boolean singleton = false;
+            if (spec instanceof ComponentSpec) {
+                singleton = MapSpec.getBoolean(((ComponentSpec)spec).getMetadata().getAnnotations(), "singleton", false);
+            }
+            if (singleton) {
+                bean = newSingleton(clazz);
+            }
+            else {
+                try {
+                    bean = Reflection.newInstance(clazz);
+                } catch (ReflectionException re) {
+                    throw new ObjectCreationException("Create object exception:" + clazz.getName(), re);
 
-            } catch (Throwable t) {
-                if (log.isErrorEnabled()) {
-                    log.error("Create new instance error:", t);
+                } catch (Throwable t) {
+                    if (log.isErrorEnabled()) {
+                        log.error("Create new instance error:", t);
+                    }
+                    throw new ObjectCreationException("Create object exception:" + clazz.getName(), t);
                 }
-                throw new ObjectCreationException("Create object exception:" + clazz.getName(), t);
             }
         }
 
         eventSupport.fireEvent(BeanPhase.CREATED, component);
         return bean;
+    }
+
+    public static <T> T newSingleton(Class<T> clazz) {
+        if (Enum.class.isAssignableFrom(clazz)) {
+            Class<? extends Enum> enumClass = (Class<? extends Enum>)clazz;
+            return (T)Enum.valueOf(enumClass, "INSTANCE");
+        } else {
+            try {
+                Method method = clazz.getDeclaredMethod("getInstance");
+                if (Modifier.isStatic(method.getModifiers())) {
+                    return (T)Reflection.invoke((Object)null, (Method)method);
+                }
+            } catch (NoSuchMethodException var2) {
+            } catch (ReflectionException var3) {
+            }
+
+            return Reflection.newInstance(clazz);
+        }
     }
 
     /**

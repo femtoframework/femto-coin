@@ -73,18 +73,19 @@ public class SimpleComponentFactory extends BaseResourceFactory<Component> imple
 
     protected String checkName(String name, Class<?> implClass) {
         String newBeanName = name;
-        ManagedBean mb = implClass.getAnnotation(ManagedBean.class);
-        if (mb != null) {
-            String[] names = CoinNameUtil.splitName(mb.value());
-            newBeanName = names[1];
-            String newBeanNamespace = names[0];
-            if (StringUtil.isValid(newBeanNamespace) && !StringUtil.equals(newBeanNamespace, getNamespace())) {
-                throw new BeanNotExpectedException("The expected namespace is " + getNamespace()
-                        + ", but declared namespace is " + newBeanNamespace);
-            }
-            else if (StringUtil.isValid(newBeanName)){
-                if (!StringUtil.equals(newBeanName, name)) {
-                    throw new BeanNotExpectedException(name, newBeanName);
+        if (implClass != null) {
+            ManagedBean mb = implClass.getAnnotation(ManagedBean.class);
+            if (mb != null) {
+                String[] names = CoinNameUtil.splitName(mb.value());
+                newBeanName = names[1];
+                String newBeanNamespace = names[0];
+                if (StringUtil.isValid(newBeanNamespace) && !StringUtil.equals(newBeanNamespace, getNamespace())) {
+                    throw new BeanNotExpectedException("The expected namespace is " + getNamespace()
+                            + ", but declared namespace is " + newBeanNamespace);
+                } else if (StringUtil.isValid(newBeanName)) {
+                    if (!StringUtil.equals(newBeanName, name)) {
+                        throw new BeanNotExpectedException(name, newBeanName);
+                    }
                 }
             }
         }
