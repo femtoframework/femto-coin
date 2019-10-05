@@ -113,7 +113,7 @@ public class PrometheusEndpoint extends AbstractLifecycle {
             httpd.start(getTimeout(), isDaemon());
 
             String h = "*".equals(getHost()) || "0.0.0.0".equals(getHost()) ? "127.0.0.1" : getHost();
-            logger.info("COIN API Server started, http://" + h + ":" + getPort() + "/metrics");
+            logger.info("COIN Prometheus Endpoint started, http://" + h + ":" + getPort() + "/metrics");
         } catch (IOException e) {
             logger.error("Start nano httpd exception", e);
         }
