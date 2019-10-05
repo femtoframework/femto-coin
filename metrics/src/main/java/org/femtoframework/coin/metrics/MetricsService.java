@@ -15,61 +15,38 @@
 */
 package org.femtoframework.coin.metrics;
 
+import io.micrometer.core.instrument.binder.MeterBinder;
 import org.femtoframework.bean.AbstractLifecycle;
-import org.femtoframework.coin.BeanFactory;
 import org.femtoframework.coin.metrics.export.prometheus.PrometheusEndpoint;
 import org.femtoframework.coin.metrics.export.prometheus.PrometheusProperties;
 import org.femtoframework.coin.metrics.export.prometheus.PrometheusPropertiesConfigAdapter;
 import io.micrometer.core.instrument.Clock;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
-import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
-import io.micrometer.core.instrument.binder.system.FileDescriptorMetrics;
-import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
-import io.micrometer.core.instrument.binder.system.UptimeMetrics;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.CollectorRegistry;
-import org.femtoframework.coin.spi.BeanFactoryAware;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  * @author Jon Schneider
  */
-public class MetricsService extends AbstractLifecycle implements BeanFactoryAware {
+public class MetricsService extends AbstractLifecycle {
 
     private Clock micrometerClock = Clock.SYSTEM;
-    private MeterRegistryPostProcessor meterRegistryPostProcessor;
     private MetricsProperties metricsProperties = new MetricsProperties();
 
-//    @Bean
-//    public Clock micrometerClock() {
-//        return Clock.SYSTEM;
-//    }
-//
-//    @Bean
-//    public static MeterRegistryPostProcessor meterRegistryPostProcessor() {
-//        return new MeterRegistryPostProcessor();
-//    }
-//
-//    @Bean
-//    public MetricsProperties metricsProperties() {
-//        return new MetricsProperties();
-//    }
+    private List<MeterBinder> meterBinders = new ArrayList<>();
+
+    private List<MeterRegistry> registries = new ArrayList<>();
+
+    private List<MeterFilter> meterFilters = new ArrayList<>();
 
     private PrometheusProperties prometheusProperties = new PrometheusProperties();
-
-//    @Bean
-//    public PrometheusProperties prometheusProperties() {
-//        return getPrometheusProperties()
-//    }
-
 
     private PropertiesMeterFilter propertiesMeterFilter;
 
@@ -77,29 +54,9 @@ public class MetricsService extends AbstractLifecycle implements BeanFactoryAwar
 
     private PrometheusMeterRegistry prometheusMeterRegistry;
 
-    private CollectorRegistry collectorRegistry = new CollectorRegistry(true);
+    private List<MeterRegistryCustomizer<?>> customizers = new ArrayList<>();
 
-//    @Bean
-//    @Order(0)
-//    public PropertiesMeterFilter propertiesMeterFilter(MetricsProperties properties) {
-//        return new PropertiesMeterFilter(properties);
-//    }
-//
-//
-//    @Bean
-//    public PrometheusConfig prometheusConfig() {
-//        return new PrometheusPropertiesConfigAdapter(getPrometheusProperties());
-//    }
-//    @Bean
-//    public PrometheusMeterRegistry prometheusMeterRegistry(PrometheusConfig config, CollectorRegistry collectorRegistry,
-//                                                           Clock clock) {
-//
-//    }
-//
-//    @Bean
-//    public CollectorRegistry collectorRegistry() {
-//        return new CollectorRegistry(true);
-//    }
+    private CollectorRegistry collectorRegistry = new CollectorRegistry(true);
 
     private MeterFilter metricsHttpServerUriTagFilter;
 
@@ -113,68 +70,15 @@ public class MetricsService extends AbstractLifecycle implements BeanFactoryAwar
 
     private CompositeMeterRegistry noOpMeterRegistry = null;
 
-//    @Bean
     public CompositeMeterRegistry noOpMeterRegistry(Clock clock) {
         return new CompositeMeterRegistry(clock);
     }
 
-//    @Bean
-//    @Primary
     private CompositeMeterRegistry compositeMeterRegistry;
 
     public CompositeMeterRegistry compositeMeterRegistry(Clock clock, List<MeterRegistry> registries) {
         return new CompositeMeterRegistry(clock, registries);
     }
-
-    private UptimeMetrics uptimeMetrics = new UptimeMetrics();
-
-//    @Bean
-//    public UptimeMetrics uptimeMetrics() {
-//        return new UptimeMetrics();
-//    }
-
-    private ProcessorMetrics processorMetrics = new ProcessorMetrics();
-
-//    @Bean
-//    public ProcessorMetrics processorMetrics() {
-//        return new ProcessorMetrics();
-//    }
-
-    private FileDescriptorMetrics fileDescriptorMetrics = new FileDescriptorMetrics();
-
-//    @Bean
-//    public FileDescriptorMetrics fileDescriptorMetrics() {
-//        return new FileDescriptorMetrics();
-//    }
-
-
-    private JvmGcMetrics jvmGcMetrics = new JvmGcMetrics();
-    //JVM
-//    @Bean
-//    public JvmGcMetrics jvmGcMetrics() {
-//        return new JvmGcMetrics();
-//    }
-
-    private JvmMemoryMetrics jvmMemoryMetrics = new JvmMemoryMetrics();
-
-//    @Bean
-//    public JvmMemoryMetrics jvmMemoryMetrics() {
-//        return new JvmMemoryMetrics();
-//    }
-
-    private JvmThreadMetrics jvmThreadMetrics = new JvmThreadMetrics();
-
-//    @Bean
-//    public JvmThreadMetrics jvmThreadMetrics() {
-//        return new JvmThreadMetrics();
-//    }
-
-    private ClassLoaderMetrics classLoaderMetrics = new ClassLoaderMetrics();
-
-//    @Bean
-//    public ClassLoaderMetrics classLoaderMetrics() {
-//        return new ClassLoaderMetrics();
-//    }
 
     public Clock getMicrometerClock() {
         return micrometerClock;
@@ -184,32 +88,33 @@ public class MetricsService extends AbstractLifecycle implements BeanFactoryAwar
         return metricsProperties;
     }
 
-    public MeterRegistryPostProcessor getMeterRegistryPostProcessor() {
-        return meterRegistryPostProcessor;
-    }
-
     public PrometheusProperties getPrometheusProperties() {
         return prometheusProperties;
     }
 
-    private BeanFactory beanFactory;
-
     private PrometheusEndpoint prometheusEndpoint;
+
+    private volatile MeterRegistryConfigurer configurer;
 
     @Override
     public void _doInit() {
         propertiesMeterFilter = new PropertiesMeterFilter(metricsProperties);
+        addMeterFilter(propertiesMeterFilter);
         prometheusConfig = new PrometheusPropertiesConfigAdapter(getPrometheusProperties());
         prometheusMeterRegistry = new PrometheusMeterRegistry(getPrometheusConfig(), getCollectorRegistry(), getMicrometerClock());
+        getRegistries().add(prometheusMeterRegistry);
 
         metricsHttpServerUriTagFilter = metricsHttpServerUriTagFilter(metricsProperties);
+        addMeterFilter(metricsHttpServerUriTagFilter);
         noOpMeterRegistry = noOpMeterRegistry(getMicrometerClock());
+        getRegistries().add(noOpMeterRegistry);
 
-        meterRegistryPostProcessor = new MeterRegistryPostProcessor(metricsProperties);
-        meterRegistryPostProcessor.setBeanFactory(beanFactory);
-        meterRegistryPostProcessor.init();
+        configurer = new MeterRegistryConfigurer(
+                meterBinders,
+                meterFilters,
+                customizers, metricsProperties.isUseGlobalRegistry());
 
-        compositeMeterRegistry = compositeMeterRegistry(getMicrometerClock(), meterRegistryPostProcessor.getRegistries());
+        compositeMeterRegistry = compositeMeterRegistry(getMicrometerClock(), getRegistries());
 
         if (prometheusEndpoint == null) {
             prometheusEndpoint = new PrometheusEndpoint();
@@ -223,7 +128,9 @@ public class MetricsService extends AbstractLifecycle implements BeanFactoryAwar
      */
     @Override
     public void _doStart() {
-        meterRegistryPostProcessor.start();
+        for(MeterRegistry registry: getRegistries()) {
+            configurer.configure(registry);
+        }
         if (prometheusEndpoint != null) {
             prometheusEndpoint.start();
         }
@@ -235,7 +142,6 @@ public class MetricsService extends AbstractLifecycle implements BeanFactoryAwar
         if (prometheusEndpoint != null) {
             prometheusEndpoint.stop();
         }
-        meterRegistryPostProcessor.stop();
     }
 
     @Override
@@ -243,10 +149,6 @@ public class MetricsService extends AbstractLifecycle implements BeanFactoryAwar
         if (prometheusEndpoint != null) {
             prometheusEndpoint.destroy();
             prometheusEndpoint = null;
-        }
-        if (meterRegistryPostProcessor != null) {
-            meterRegistryPostProcessor.destroy();
-            meterRegistryPostProcessor = null;
         }
     }
 
@@ -278,44 +180,59 @@ public class MetricsService extends AbstractLifecycle implements BeanFactoryAwar
         return compositeMeterRegistry;
     }
 
-    public UptimeMetrics getUptimeMetrics() {
-        return uptimeMetrics;
-    }
-
-    public ProcessorMetrics getProcessorMetrics() {
-        return processorMetrics;
-    }
-
-    public FileDescriptorMetrics getFileDescriptorMetrics() {
-        return fileDescriptorMetrics;
-    }
-
-    public JvmGcMetrics getJvmGcMetrics() {
-        return jvmGcMetrics;
-    }
-
-    public JvmMemoryMetrics getJvmMemoryMetrics() {
-        return jvmMemoryMetrics;
-    }
-
-    public JvmThreadMetrics getJvmThreadMetrics() {
-        return jvmThreadMetrics;
-    }
-
-    public ClassLoaderMetrics getClassLoaderMetrics() {
-        return classLoaderMetrics;
-    }
-
-    @Override
-    public void setBeanFactory(BeanFactory factory) {
-        this.beanFactory = factory;
-    }
-
     public PrometheusEndpoint getPrometheusEndpoint() {
         return prometheusEndpoint;
     }
 
     public void setPrometheusEndpoint(PrometheusEndpoint prometheusEndpoint) {
         this.prometheusEndpoint = prometheusEndpoint;
+    }
+
+    public void addMeterBinder(MeterBinder binder) {
+        meterBinders.add(binder);
+    }
+
+    public List<MeterBinder> getMeterBinders() {
+        return meterBinders;
+    }
+
+    public void setMeterBinders(List<MeterBinder> meterBinders) {
+        this.meterBinders = meterBinders;
+    }
+
+    public void addMeterFilter(MeterFilter filter) {
+        meterFilters.add(filter);
+    }
+
+    public List<MeterFilter> getMeterFilters() {
+        return meterFilters;
+    }
+
+    public void setMeterFilters(List<MeterFilter> meterFilters) {
+        this.meterFilters = meterFilters;
+    }
+
+    public void addCustomizer(MeterRegistryCustomizer customizer) {
+        customizers.add(customizer);
+    }
+
+    public List<MeterRegistryCustomizer<?>> getCustomizers() {
+        return customizers;
+    }
+
+    public void setCustomizers(List<MeterRegistryCustomizer<?>> customizers) {
+        this.customizers = customizers;
+    }
+
+    public void addRegistry(MeterRegistry registry) {
+        registries.add(registry);
+    }
+
+    public List<MeterRegistry> getRegistries() {
+        return registries;
+    }
+
+    public void setRegistries(List<MeterRegistry> registries) {
+        this.registries = registries;
     }
 }

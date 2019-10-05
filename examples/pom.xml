@@ -26,6 +26,10 @@
             <groupId>org.femtoframework.coin</groupId>
             <artifactId>coin-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.femtoframework.coin</groupId>
+            <artifactId>coin-metrics</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -9,3 +9,11 @@ spec:
     host: 0.0.0.0
     port: 8090
     daemon: false
+  meterBinders:
+    - class: io.micrometer.core.instrument.binder.system.UptimeMetrics
+    - class: io.micrometer.core.instrument.binder.system.ProcessorMetrics
+    - class: io.micrometer.core.instrument.binder.system.FileDescriptorMetrics
+    - class: io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
+    - class: io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
+    - class: io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
+    - class: io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics
