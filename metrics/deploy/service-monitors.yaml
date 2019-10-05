@@ -1,0 +1,28 @@
+# Service Monitor for http /metrics
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: http-metrics
+    prometheus: k8s-prometheus
+    role: service-monitors
+  name: http-metrics
+  namespace: monitoring
+spec:
+  endpoints:
+    - interval: 30s
+      port: metrics
+      path: /metrics
+      scheme: http
+      metricRelabelings:
+        - regex: (exported_app)
+          action: labeldrop
+        - regex: (exported_env)
+          action: labeldrop
+  podTargetLabels: [app, env]
+  sampleLimit: 100
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      metrics: http-metrics
