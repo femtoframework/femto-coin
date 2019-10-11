@@ -13,7 +13,7 @@ public interface CoinConstants {
     String NAME_LOOKUP = "lookupBean";
     String NAME_VARIABLE_RESOLVER_FACTORY = "variable_resolver_factory";
     String NAME_CONFIGURATOR_FACTORY = "configurator_factory";
-    String NAME_DEFAULT_COMPONENT_FACTORY = "default_component_factory";
+    String NAME_ANNOTATION_STRATEGY_FACTORY = "annotation_strategy_factory";
     String NAME_LIFECYCLE_STRATEGY = "lifecycle_strategy";
     String NAME_NAMESPACE_FACTORY = "namespace_factory";
     String NAME_KIND_SPEC_FACTORY = "kind_spec_factory";

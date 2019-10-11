@@ -16,7 +16,6 @@ public class SimpleConfiguratorFactory extends BaseResourceFactory<Configurator>
 
     protected SimpleConfiguratorFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);
-
     }
 
     /**

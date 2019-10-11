@@ -33,10 +33,11 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
     private SimpleConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
 
 
+    private SimpleAnnotationStrategyFactory annotationStrategyFactory = new SimpleAnnotationStrategyFactory();
+
     private SimpleCronController cronController = new SimpleCronController(this);
 
     private SimpleLifecycleStrategy lifecycleStrategy = new SimpleLifecycleStrategy(this, configuratorFactory);
-
 
     private SimpleNamespaceFactory namespaceFactory = new SimpleNamespaceFactory(this, lifecycleStrategy);
 
@@ -76,6 +77,11 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
     @Override
     public NamespaceFactory getNamespaceFactory() {
         return namespaceFactory;
+    }
+
+    @Override
+    public AnnotationStrategyFactory getAnnotationStrategyFactory() {
+        return annotationStrategyFactory;
     }
 
 //    /**
@@ -178,6 +184,7 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
         reloader = new SimpleCoinReloader(coinController);
 
         ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
+        componentFactory.create(NAME_ANNOTATION_STRATEGY_FACTORY, annotationStrategyFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);
@@ -187,6 +194,7 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
         componentFactory.create(NAME_LOOKUP, lookup, BeanStage.INITIALIZE);
         componentFactory.create(NAME_MODULE, this, BeanStage.CREATE);
         componentFactory.create(NAME_CRON_CONTROLLER, cronController, BeanStage.INITIALIZE);
+
     }
 
     /**
