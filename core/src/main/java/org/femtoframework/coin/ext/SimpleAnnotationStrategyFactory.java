@@ -1,10 +1,11 @@
 package org.femtoframework.coin.ext;
 
-import org.femtoframework.bean.BeanStage;
-import org.femtoframework.coin.AnnotationStrategy;
-import org.femtoframework.coin.AnnotationStrategyFactory;
-import org.femtoframework.coin.CoinConstants;
-import org.femtoframework.coin.Component;
+import org.femtoframework.bean.*;
+import org.femtoframework.coin.*;
+import org.femtoframework.coin.event.BeanEvent;
+import org.femtoframework.coin.event.BeanEventListener;
+import org.femtoframework.implement.ImplementUtil;
+import org.femtoframework.implement.InstancesFunction;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -12,7 +13,7 @@ import java.lang.reflect.AnnotatedElement;
 /**
  * Simple Annotation Strategy Factory
  */
-public class SimpleAnnotationStrategyFactory extends BaseResourceFactory<AnnotationStrategy> implements AnnotationStrategyFactory {
+public class SimpleAnnotationStrategyFactory extends BaseResourceFactory<AnnotationStrategy> implements AnnotationStrategyFactory, LifecycleMBean, BeanEventListener {
 
     protected SimpleAnnotationStrategyFactory() {
         super(null, CoinConstants.NAMESPACE_COIN);
@@ -78,6 +79,45 @@ public class SimpleAnnotationStrategyFactory extends BaseResourceFactory<Annotat
     @Override
     public void destroy(AnnotatedElement element, Component component) {
         handleAnnotation(BeanStage.DESTROY, element, component);
+    }
+
+    private BeanPhase beanPhase = BeanPhase.DISABLED;
+
+    @Override
+    public BeanPhase _doGetPhase() {
+        return beanPhase;
+    }
+
+    @Override
+    public void _doSetPhase(BeanPhase phase) {
+        this.beanPhase = phase;
+    }
+
+    /**
+     * Initialize internally
+     */
+    @Override
+    public void _doInit() {
+        ImplementUtil.applyInstances(AnnotationStrategy.class, (InstancesFunction<String, AnnotationStrategy>) this::add);
+        applyStageToChildren("annotation_strategy_", BeanStage.INITIALIZE);
+    }
+
+    /**
+     * Start internally
+     */
+    @Override
+    public void _doStart() {
+        for(AnnotationStrategy annotationStrategy : this) {
+            if (annotationStrategy instanceof Startable) {
+                ((Startable)annotationStrategy).start();
+            }
+        }
+    }
+
+    @Override
+    public void handleEvent(BeanEvent event) {
+        //TODO Who go through all the annotatedElement and object heritage structures ?
+        //It will be very low performance, so pause this feature for now
     }
 }
 

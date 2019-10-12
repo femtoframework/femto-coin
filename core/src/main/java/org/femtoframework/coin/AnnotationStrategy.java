@@ -6,7 +6,7 @@ import java.lang.reflect.AnnotatedElement;
 /**
  * Annotation Strategy
  *
- * It is doing something on existing component in any statbe
+ * It is doing something on existing component in any state
  */
 public interface AnnotationStrategy {
 
