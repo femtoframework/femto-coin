@@ -36,6 +36,12 @@
         </dependency>
 
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.femtoframework.coin</groupId>
             <artifactId>coin-core</artifactId>
         </dependency>
