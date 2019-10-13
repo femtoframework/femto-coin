@@ -9,6 +9,15 @@ spec:
 
 ---
 apiVersion: coin/v1
+kind: Component
+metadata:
+  namespace: coin-examples
+  name: metrics-sample
+spec:
+  class: org.femtoframework.coin.examples.metrics.MetricSampleBean
+
+---
+apiVersion: coin/v1
 kind: Cron
 metadata:
   namespace: coin-examples
@@ -20,3 +29,5 @@ spec:
   second: 60/10
   arguments:
     1: CronTest
+
+

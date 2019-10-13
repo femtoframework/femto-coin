@@ -28,12 +28,12 @@ public interface CoinModule {
     NamespaceFactory getNamespaceFactory();
 
 
-    /**
-     * Return AnnotationStrategyFactory
-     *
-     * @return AnnotationStrategyFactory
-     */
-    AnnotationStrategyFactory getAnnotationStrategyFactory();
+//    /**
+//     * Return AnnotationStrategyFactory
+//     *
+//     * @return AnnotationStrategyFactory
+//     */
+//    AnnotationStrategyFactory getAnnotationStrategyFactory();
 
 //    /**
 //     * Return default component factory

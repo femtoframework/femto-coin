@@ -33,7 +33,7 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
     private SimpleConfiguratorFactory configuratorFactory = new SimpleConfiguratorFactory();
 
 
-    private SimpleAnnotationStrategyFactory annotationStrategyFactory = new SimpleAnnotationStrategyFactory();
+//    private SimpleAnnotationStrategyFactory annotationStrategyFactory = new SimpleAnnotationStrategyFactory();
 
     private SimpleCronController cronController = new SimpleCronController(this);
 
@@ -79,10 +79,10 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
         return namespaceFactory;
     }
 
-    @Override
-    public AnnotationStrategyFactory getAnnotationStrategyFactory() {
-        return annotationStrategyFactory;
-    }
+//    @Override
+//    public AnnotationStrategyFactory getAnnotationStrategyFactory() {
+//        return annotationStrategyFactory;
+//    }
 
 //    /**
 //     * Return default component factory
@@ -184,7 +184,7 @@ public class SimpleCoinModule extends AbstractLifecycle implements CoinModule {
         reloader = new SimpleCoinReloader(coinController);
 
         ComponentFactory componentFactory = namespaceCoin.getComponentFactory();
-        componentFactory.create(NAME_ANNOTATION_STRATEGY_FACTORY, annotationStrategyFactory, BeanStage.INITIALIZE);
+//        componentFactory.create(NAME_ANNOTATION_STRATEGY_FACTORY, annotationStrategyFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_KIND_SPEC_FACTORY, kindSpecFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_NAMESPACE_FACTORY, namespaceFactory, BeanStage.INITIALIZE);
         componentFactory.create(NAME_CONFIGURATOR_FACTORY, configuratorFactory, BeanStage.INITIALIZE);

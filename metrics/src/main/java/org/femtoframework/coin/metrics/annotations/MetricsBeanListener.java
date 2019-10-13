@@ -78,13 +78,13 @@ public class MetricsBeanListener implements BeanEventListener, CoinModuleAware
             return null;
         }
         if (valueExpression.startsWith("${") && valueExpression.endsWith("}")) {
-            String tagProperty = valueExpression.substring(2, valueExpression.length()-3);
+            String tagProperty = valueExpression.substring(2, valueExpression.length()-1);
             PropertyInfo tagPropertyInfo = beanInfo.getProperty(tagProperty);
             if (tagPropertyInfo == null) {
                 return valueExpression;
             }
             else {
-                return String.valueOf(tagPropertyInfo.invokeGetter(bean));
+                return String.valueOf((Object)tagPropertyInfo.invokeGetter(bean));
             }
         }
         return valueExpression;

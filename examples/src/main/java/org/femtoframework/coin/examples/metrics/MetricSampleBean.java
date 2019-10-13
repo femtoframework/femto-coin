@@ -1,10 +1,13 @@
-package org.femtoframework.coin.metrics.annotations;
+package org.femtoframework.coin.examples.metrics;
 
 import org.femtoframework.bean.annotation.Property;
+import org.femtoframework.coin.examples.service.CounterSample;
+import org.femtoframework.coin.metrics.annotations.Metric;
+import org.femtoframework.coin.metrics.annotations.Tag;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MetricSampleBean {
+public class MetricSampleBean implements CounterSample {
 
     private AtomicInteger counter = new AtomicInteger();
 
@@ -15,13 +18,9 @@ public class MetricSampleBean {
     }
 
     @Metric(name="coin_metrics_sample_counter", description = "My description",
-    tags = {@Tag(name="os", value="${tag_value}")})
-    public AtomicInteger getCounter() {
-        return counter;
-    }
-
-    public void setCounter(AtomicInteger counter) {
-        this.counter = counter;
+            tags = {@Tag(name="os", value="${tag_value}")})
+    public int getCounter() {
+        return counter.get();
     }
 
     @Metric(name="coin_metrics_sample_gauge", description = "My description",
