@@ -1,0 +1,7 @@
+apiVersion: coin/v1
+kind: Component
+metadata:
+  namespace: coin-metrics-sample
+  name: sample-bean
+spec:
+  class: org.femtoframework.coin.metrics.annotations.MetricSampleBean
