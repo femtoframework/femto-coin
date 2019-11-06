@@ -4,6 +4,7 @@ import org.femtoframework.bean.Startable;
 import org.femtoframework.coin.CoinController;
 import org.femtoframework.coin.CoinModule;
 import org.femtoframework.coin.CoinUtil;
+import org.femtoframework.util.SystemUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,8 @@ public class Launcher {
      * @throws IOException
      */
     public static void main(String... args) throws IOException {
+        System.setProperty("cube.system.host", SystemUtil.getHostName());
+
         LauncherListeners launcherListener = new LauncherListeners();
         launcherListener.onBeforeStarting();
 
