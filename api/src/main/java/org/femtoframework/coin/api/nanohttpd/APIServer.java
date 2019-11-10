@@ -18,7 +18,7 @@ import java.io.*;
 
 public class APIServer implements LifecycleMBean {
 
-    private String host = "0.0.0.0";
+    private String host;
     private int port = 9169;
     private int timeout = 20000;
     private boolean daemon = true;
