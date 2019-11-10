@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 
 public class PrometheusEndpoint extends AbstractLifecycle {
-    private String host = "0.0.0.0";
+    private String host;
     private int port = 8090;
     private int timeout = 20000;
     private boolean daemon = true;
@@ -27,6 +27,9 @@ public class PrometheusEndpoint extends AbstractLifecycle {
     }
 
     public String getHost() {
+        if (host == null) {
+            host = System.getProperty("cube.system.address", "0.0.0.0");
+        }
         return host;
     }
 

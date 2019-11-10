@@ -39,6 +39,9 @@ public class APIServer implements LifecycleMBean {
     }
 
     public String getHost() {
+        if (host == null) {
+            host = System.getProperty("cube.system.address", "0.0.0.0");
+        }
         return host;
     }
 
