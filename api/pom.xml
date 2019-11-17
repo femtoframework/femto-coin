@@ -6,11 +6,11 @@
   <parent>
     <groupId>org.femtoframework.coin</groupId>
     <artifactId>femto-coin</artifactId>
-    <version>7.2.1</version>
+    <version>7.2.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>coin-api</artifactId>
-  <version>7.2.1</version>
+  <version>7.2.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <dependencies>
