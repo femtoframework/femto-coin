@@ -10,6 +10,8 @@ import org.femtoframework.coin.event.BeanEventListener;
 import org.femtoframework.coin.metrics.MetricsService;
 import org.femtoframework.coin.metrics.MetricsUtil;
 import org.femtoframework.coin.spi.CoinModuleAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.naming.NamingException;
 
@@ -24,6 +26,8 @@ public class MetricsBeanListener implements BeanEventListener, CoinModuleAware
     private CompositeMeterRegistry registry;
 
     private CoinModule coinModule;
+
+    private static Logger logger = LoggerFactory.getLogger(MetricsBeanListener.class);
 
     @Override
     public void handleEvent(BeanEvent event) {
@@ -42,8 +46,11 @@ public class MetricsBeanListener implements BeanEventListener, CoinModuleAware
                 MetricsService service = (MetricsService)coinModule.getLookup().lookupBean("coin-metrics:metrics-service");
                 registry = service.getCompositeMeterRegistry();
             }
+            catch(IllegalArgumentException iae) {
+                logger.warn("The namespace 'coin-metrics' is not initialized yet.");
+            }
             catch(NamingException ne) {
-                //Ignore
+                logger.warn("The metrics service 'metrics-service' is not initialized yet.");
             }
         }
         return registry;
