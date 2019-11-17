@@ -16,6 +16,7 @@ import javax.naming.NamingException;
 /**
  * A bean listener to handle metrics related annotations
  *
+ * TODO remove the metrics from registry
  */
 public class MetricsBeanListener implements BeanEventListener, CoinModuleAware
 {
