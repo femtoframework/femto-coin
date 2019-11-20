@@ -91,29 +91,30 @@ public class MapElement<E extends Element> extends LinkedHashMap<String, E>
             return (T)value;
         }
         else {
-            BeanInfo beanInfo = BeanInfoUtil.getBeanInfo(expectedType);
-            if (beanInfo != null) {
-                try {
-                    value = expectedType.newInstance();
-                } catch (Exception x) {
-                    return null;
-                }
-                if (value != null) {
-                    for (Map.Entry<String, Object> entry : values.entrySet()) {
-                        if (entry.getValue() != null) {
-                            PropertyInfo propertyInfo = beanInfo.getProperty(entry.getKey());
-                            if (propertyInfo != null) {
-                                try {
-                                    propertyInfo.invokeSetter(value, entry.getValue());
-                                }
-                                catch(Exception ex) {
-                                    log.warn("Set property:" + entry.getKey() + " error", ex);
+            if (expectedType != null) {
+                BeanInfo beanInfo = BeanInfoUtil.getBeanInfo(expectedType);
+                if (beanInfo != null) {
+                    try {
+                        value = expectedType.newInstance();
+                    } catch (Exception x) {
+                        return null;
+                    }
+                    if (value != null) {
+                        for (Map.Entry<String, Object> entry : values.entrySet()) {
+                            if (entry.getValue() != null) {
+                                PropertyInfo propertyInfo = beanInfo.getProperty(entry.getKey());
+                                if (propertyInfo != null) {
+                                    try {
+                                        propertyInfo.invokeSetter(value, entry.getValue());
+                                    } catch (Exception ex) {
+                                        log.warn("Set property:" + entry.getKey() + " error", ex);
+                                    }
                                 }
                             }
                         }
                     }
+                    return (T) value;
                 }
-                return (T)value;
             }
             return (T)values;
         }
