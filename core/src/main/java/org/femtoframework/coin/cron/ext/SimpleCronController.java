@@ -16,6 +16,8 @@ import org.femtoframework.util.thread.LifecycleThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class SimpleCronController extends LifecycleThread
         implements CronController {
 
@@ -25,10 +27,19 @@ public class SimpleCronController extends LifecycleThread
 
     private long checkInterval = 1000;
 
-    protected final SortedList<Cron> cronList = new SortedList<Cron>(new CronComparator());
+    protected final SortedList<Cron> cronList = new SortedList<>(new CronComparator());
 
     public SimpleCronController(CoinModule coinModule) {
         this.coinModule = coinModule;
+    }
+
+    /**
+     * Cron List to show the details
+     *
+     * @return Cron List
+     */
+    public List<Cron> getCronList() {
+        return cronList;
     }
 
     /**

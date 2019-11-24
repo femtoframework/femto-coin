@@ -56,11 +56,11 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <femto-util-version>7.1.0</femto-util-version>
-    <slf4j-version>1.7.7</slf4j-version>
+    <femto.util.version>7.1.0</femto.util.version>
+    <slf4j.version>1.7.7</slf4j.version>
     <nanohttpd.version>2.3.1</nanohttpd.version>
     <logback.version>1.2.3</logback.version>
-    <coin.version>7.2.2-SNAPSHOT</coin.version>
+    <femto.coin.version>7.2.2-SNAPSHOT</femto.coin.version>
   </properties>
 
   <dependencyManagement>
@@ -88,27 +88,27 @@
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-core</artifactId>
-        <version>${coin.version}</version>
+        <version>${femto.coin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-codec</artifactId>
-        <version>${coin.version}</version>
+        <version>${femto.coin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-metrics</artifactId>
-        <version>${coin.version}</version>
+        <version>${femto.coin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-api</artifactId>
-        <version>${coin.version}</version>
+        <version>${femto.coin.version}</version>
       </dependency>
       <dependency>
         <groupId>org.femtoframework.coin</groupId>
         <artifactId>coin-metrics</artifactId>
-        <version>${coin.version}</version>
+        <version>${femto.coin.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
