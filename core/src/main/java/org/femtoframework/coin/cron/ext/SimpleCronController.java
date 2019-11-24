@@ -124,13 +124,38 @@ public class SimpleCronController extends LifecycleThread
                 log.warn("No such component type:" + componentType);
                 return;
             }
-            invoker.invoke(component, cron);
+            Thread thread = new Thread(new CronRunnable(invoker, component, cron), "Crontab-" + cron.getName());
+            thread.start();
         }
         else {
             log.warn("No component type specified:" + cron);
         }
     }
 
+    private static class CronRunnable implements Runnable {
+
+        private CronInvoker invoker;
+        private Component component;
+        private final Cron cron;
+
+        private CronRunnable(CronInvoker invoker, Component component, final Cron cron) {
+            this.invoker = invoker;
+            this.component = component;
+            this.cron = cron;
+        }
+
+        public void run() {
+            if (log.isDebugEnabled()) {
+                log.debug("Invoke cron:" + cron);
+            }
+            try {
+                invoker.invoke(component, cron);
+            }
+            catch (Throwable t) {
+                log.error("Invoke cron exception", t);
+            }
+        }
+    }
 
     /**
      * The real logic
