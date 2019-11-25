@@ -156,6 +156,12 @@ public class SimpleCron
         return entry.getDayOfWeek();
     }
 
+    @Override
+    @Property
+    public long getRunningTime() {
+        return entry.getRunningTime();
+    }
+
     /**
      * 返回下次任务执行的时间
      *

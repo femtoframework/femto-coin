@@ -52,6 +52,7 @@
     <dependency>
       <groupId>org.femtoframework.util</groupId>
       <artifactId>femto-util</artifactId>
+      <version>${femto.util.version}</version>
     </dependency>
   </dependencies>
 <!--  <build>-->

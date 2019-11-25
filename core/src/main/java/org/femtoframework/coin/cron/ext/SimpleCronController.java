@@ -16,6 +16,7 @@ import org.femtoframework.util.thread.LifecycleThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleCronController extends LifecycleThread
@@ -176,26 +177,50 @@ public class SimpleCronController extends LifecycleThread
 
         long now = System.currentTimeMillis();
         long next = cron.getNextRunningTime();
-        while (next <= now) {
-            synchronized (cronList) {
-                cronList.remove(0);
-            }
-            invoke(cron);
-            next = cron.nextRunningTime();
-            if (next != -1) {//仍然需要执行
+        if (next <= now) {
+            while (next <= now) {
                 synchronized (cronList) {
-                    cronList.add(cron);
+                    cronList.remove(0);
+                }
+                invoke(cron);
+                next = cron.nextRunningTime();
+                if (next != -1) {//仍然需要执行
+                    synchronized (cronList) {
+                        cronList.add(cron);
+                    }
+                } else if (cronList.isEmpty()) {
+                    break;
+                }
+                cron = (Cron) cronList.first();
+                if (cron == null) {
+                    return;
+                }
+                next = cron.getNextRunningTime();
+                now = System.currentTimeMillis();
+            }
+        }
+        else { //For those cron updated
+            synchronized (cronList) {
+                List<Integer> toRemove = new ArrayList<>();
+                List<Cron> toAdd = new ArrayList<>();
+                for(int i = 0; i < cronList.size(); i ++) {
+                    Cron c = cronList.get(i);
+                    if (c.getRunningTime() == -1) {
+                        toRemove.add(i);
+                        toAdd.add(c);
+                    }
+                }
+
+                if (!toRemove.isEmpty()) {
+                    for(Integer i: toRemove) {
+                        cronList.remove(i);
+                    }
+
+                    cronList.addAll(toAdd);
+                    //Ignore sleeping
+                    return;
                 }
             }
-            else if (cronList.isEmpty()) {
-                break;
-            }
-            cron = (Cron)cronList.first();
-            if (cron == null) {
-                return;
-            }
-            next = cron.getNextRunningTime();
-            now = System.currentTimeMillis();
         }
 
         long sleep = getCheckInterval();

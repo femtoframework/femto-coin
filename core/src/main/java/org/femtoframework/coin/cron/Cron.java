@@ -93,6 +93,13 @@ public interface Cron extends NamedBean
     String getDayOfWeek();
 
     /**
+     * Return the current running time
+     *
+     * @return the current running time, without re-calc
+     */
+    long getRunningTime();
+
+    /**
      * 返回下次任务执行的时间
      *
      * @return 下次任务执行的时间
